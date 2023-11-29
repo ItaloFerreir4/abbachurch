@@ -1,0 +1,26 @@
+You should take the polished files from the "dist" directory and share them.
+
+----------------------------------------------------------------------------
+"dist" Directory:
+----------------------------------------------------------------------------
+• Purpose: Stores optimized, production-ready files.
+• Contents: HTML, CSS,SCSS and JavaScript Files.
+• Usage: Deploy these files to serve your website.
+
+This is where you keep the final files, cleaned-up version files, ready for sharing.
+
+----------------------------------------------------------------------------
+"src" Directory:
+----------------------------------------------------------------------------
+
+• Purpose: The "src" (short for source) directory is used during the development phase to house your source code, assets, and development files.
+
+• Purpose: Contains source code and development files.
+• Contents: Unoptimized HTML, CSS, JavaScript, original assets.
+• Usage: Work on code and assets during development, run a build process to generate "dist" files before deployment.
+
+Here, you store the initial drafts and materials for building and improving your template.
+
+
+
+
