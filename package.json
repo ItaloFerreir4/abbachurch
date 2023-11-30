@@ -60,6 +60,7 @@
     "leaflet": "^1.8.0",
     "masonry-layout": "^4.2.2",
     "moment": "^2.24.0",
+    "mysql2": "^3.6.5",
     "node-waves": "^0.7.6",
     "nouislider": "^15.6.0",
     "particles.js": "^2.0.0",
