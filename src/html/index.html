@@ -1319,19 +1319,7 @@
 
     <script>
         function testarConexao(){
-            $.ajax({
-                type: "POST",
-                url: "../assets/backend/carrega-conteudo.php",
-                data: {
-                    origem: "teste"
-                }
-            }).done(function(data) {
-
-                const conteudoPagina = JSON.parse(data);
-
-                console.log(conteudoPagina);
-
-            });
+            
         }
     </script>
 
