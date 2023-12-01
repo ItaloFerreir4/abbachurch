@@ -16,7 +16,6 @@ Thumbs.db
 /test-results
 
 # Arquivos de ambiente
-.env
 .env.local
 .env.*.local
 .env.test
@@ -45,6 +44,3 @@ yarn.lock
 # Arquivos de cache do eslint
 .eslintcache
 
-# Arquivos de compilação de TypeScript
-*.js
-*.js.map
