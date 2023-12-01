@@ -3803,8 +3803,6 @@
     <!-- Color Picker JS -->
     <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
     <!-- JSVector Maps JS -->
     <script src="../assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
 
@@ -3829,19 +3827,7 @@
 
     <script>
         function testarConexao(){
-            $.ajax({
-                type: "POST",
-                url: "../assets/backend/carrega-conteudo.php",
-                data: {
-                    origem: "teste"
-                }
-            }).done(function(data) {
-
-                const conteudoPagina = JSON.parse(data);
-
-                console.log(conteudoPagina);
-
-            });
+            
         }
     </script>
 
