@@ -1,0 +1,50 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Gulp
+gulp-debug.log
+gulpfile.js.log
+
+# Arquivos temporários
+.DS_Store
+Thumbs.db
+
+# Logs e saídas de teste
+/logs
+/test-results
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+
+# Arquivos de compilação
+/dist
+/build
+
+# Arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração
+*.sublime-project
+*.sublime-workspace
+*.idea
+.vscode
+
+# Dependências e módulos locais (pode variar dependendo do seu ambiente)
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Arquivos de cache do eslint
+.eslintcache
+
+# Arquivos de compilação de TypeScript
+*.js
+*.js.map
