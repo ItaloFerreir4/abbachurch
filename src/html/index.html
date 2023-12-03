@@ -1317,9 +1317,22 @@
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
     <script>
         function testarConexao(){
-            
+            $.ajax({
+                url: '/consultarPastores',
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    // Manipule os dados recebidos aqui
+                    console.log('Dados recebidos:', data);
+                },
+                error: function (error) {
+                    console.error('Erro na requisição:', error);
+                }
+            });
         }
     </script>
 

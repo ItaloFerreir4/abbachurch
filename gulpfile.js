@@ -15,6 +15,7 @@ let sass = require('sass');
 let autoprefixer = require("gulp-autoprefixer");
 let sourcemaps = require("gulp-sourcemaps");
 let cleanCSS = require('gulp-clean-css');
+let nodemon = require('nodemon');
 
 let sass$ = gulpsass(sass)
 let browsersync$ = browsersync.create();
@@ -23,12 +24,24 @@ const isSourceMap = true;
 
 const sourceMapWrite = (isSourceMap) ? "./" : false;
 
+
+function startServer(callback) {
+    nodemon({
+        script: './dist/backend/server.js',
+        watch: ['./dist/backend'], // Observa mudanças nos arquivos na pasta backend
+        env: {
+            'NODE_ENV': 'development'
+        },
+        ext: 'js,json' // Reinicia apenas quando os arquivos JS ou JSON são alterados
+    });
+
+    callback();
+};
+
 function browsersyncFn(callback) {
     var baseDir = './dist';
     browsersync$.init({
-        server: {
-            baseDir: [baseDir, baseDir + '/html'],
-        },
+        proxy: 'http://localhost:3000',
         port: 1111,
     });
     callback();
@@ -44,7 +57,7 @@ function watch() {
     gulp.watch(['./src/assets/js/*', './src/assets/js/*.js'], gulp.series('js', browsersyncReload));
     gulp.watch(['./src/assets/plugins/*', './src/assets/plugins/**/*.js'], gulp.series('plugins', browsersyncReload));
     gulp.watch(['./src/html/**/*.html', './src/html/partials/*'], gulp.series('html', browsersyncReload));
-    gulp.watch(['./src/backend/**/*'], gulp.series('backend', browsersyncReload)); // Adicionado para observar mudanças na pasta backend
+    gulp.watch(['./src/backend/**/*'], gulp.series('backend', startServer)); // Adicionado para observar mudanças na pasta backend
 };
 
 function html(callback) {
@@ -176,9 +189,10 @@ const build = gulp.series(
 
 const defaults = gulp.series(
     gulp.parallel(cleanDist, copyAll, html, scss, js, plugins, backend, copyLibs), // Adicionado 'backend' aqui
-    gulp.parallel(browsersyncFn, watch, html, js, scss, plugins)
+    gulp.parallel(startServer, browsersyncFn, watch, html, js, scss, plugins)
 );
 
+exports.startServer = startServer;
 exports.browsersyncReload = browsersyncReload;
 exports.browsersyncFn = browsersyncFn;
 exports.plugins = plugins;

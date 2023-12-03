@@ -1,0 +1,63 @@
+@SPK@include("partials/mainhead.html")
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Pastor", "dashbordsubtitle":
+        'Pastores', "dashbordsubtitle2": 'Cadastrar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <!-- Start::row-1 -->
+                <div class="row mt-5">
+                    <div class="col-12 col-lg-6">
+                        <button type="button" onClick="cadastrarUsuario()">Teste</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        function cadastrarUsuario() {
+            const formData = $('#seuFormulario').serialize();
+
+            $.ajax({
+                url: '/cadastrarPastor',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json', // Defina o tipo de conteúdo para application/json
+                data: JSON.stringify({ pessoaId: 2 }), // Envie pessoaId como um número
+                success: function (data) {
+                    console.log('Dados recebidos:', data);
+                },
+                error: function (error) {
+                    console.error('Erro na requisição:', error);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
