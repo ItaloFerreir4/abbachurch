@@ -1,5 +1,5 @@
 {
-  "name": "velvet",
+  "name": "abba church",
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
@@ -8,7 +8,7 @@
     "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "spruko technology",
+  "author": "code +",
   "license": "ISC",
   "devDependencies": {
     "browser-sync": "^2.27.10",
