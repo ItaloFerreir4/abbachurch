@@ -1,12 +1,13 @@
 const mysql = require('mysql2');
+const config = require('./config/conexao-bd');
 
 // Configurações da conexão com o banco de dados
-const config = {
-    host: "162.241.3.11",
-    user: "italof39_admin",
-    password: "WFG7wSx)}8nX",
-    database: "italof39_abbachurch",
-};
+// const config = {
+//     host: "162.241.3.11",
+//     user: "italof39_admin",
+//     password: "WFG7wSx)}8nX",
+//     database: "italof39_abbachurch",
+// };
 
 function executarQuery(query, callback) {
 
