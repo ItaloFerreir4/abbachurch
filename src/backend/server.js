@@ -10,6 +10,7 @@ const port = 3000;
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use(express.static(path.join(__dirname, '../html')));
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Adicione essa linha para configurar o body-parser para tratar JSON
 
 // Rota para a consulta SQL
@@ -17,36 +18,43 @@ app.post('/consultarPastores', (req, res) => {
 
     const query = 'SELECT * FROM pastores';
 
-    executarQuery(query, (erro, resultados) => {
-        if (erro) {
-            console.error('Erro durante a execução da consulta:', erro);
-            res.status(500).json({ error: 'Erro durante a execução da consulta' });
-            return;
-        }
-
-        // Envie os resultados como resposta JSON
+    executarQuery(query)
+    .then(resultados => {
+        console.log('Resultados:', resultados);
+        // Faça algo com os resultados
         res.json(resultados);
+    })
+    .catch(erro => {
+        console.error('Erro:', erro);
+        // Lide com o erro
     });
+
 });
 
 app.post('/cadastrarPastor', (req, res) => {
 
-    console.log('valor post: ', req.body);
+    const { nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa } = req.body;
 
-    const { pessoaId } = req.body;
+    const query = `INSERT INTO pessoas (nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) VALUES ('${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
 
-    const query = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+    executarQuery(query)
+    .then(resultados => {
+        console.log('Resultados:', resultados);
 
-    executarQuery(query, (erro, resultados) => {
-        if (erro) {
-            console.error('Erro durante a execução:', erro);
-            res.status(500).json({ error: 'Erro durante a execução' });
-            return;
-        }
+        const pessoaId = resultados.insertId;
 
-        // Envie os resultados como resposta JSON
+        // Segundo INSERT para cadastrar o pastor associado à pessoa
+        const insertPastorQuery = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+
         res.json(resultados);
+
+        return executarQuery(insertPastorQuery);
+    })
+    .catch(erro => {
+        console.error('Erro:', erro);
+        // Lide com o erro
     });
+
 });
 
 // Rota padrão, pode ser usada para servir a página inicial
