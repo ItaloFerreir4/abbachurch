@@ -81,17 +81,24 @@
                 });
             } else {
                 $.post('/cadastrarPastor', formData)
-                    .done(function (data) {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Cadastrado com sucesso!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    })
-                    .fail(function (error) {
+                .done(function (data) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .fail(function (error) {
                     console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 });
             }
 
