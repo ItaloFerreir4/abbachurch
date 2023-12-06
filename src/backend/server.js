@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const executarQuery = require('./consulta');
-
+const { autenticarUsuario } = require('./auth');
 const app = express();
 const port = 3000;
 
@@ -56,6 +56,29 @@ app.post('/cadastrarPastor', (req, res) => {
     });
 
 });
+
+app.get('/login', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'html', 'sign-in-cover2.html');
+    res.sendFile(filePath);
+});
+
+app.post('/auth/login', async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        const usuario = await autenticarUsuario(email, senha);
+
+        if (usuario) {
+            res.json({ message: 'Login bem-sucedido', usuario });
+        } else {
+            res.status(401).json({ message: 'Credenciais inválidas' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
 
 // Rota padrão, pode ser usada para servir a página inicial
 app.get('/', (req, res) => {
