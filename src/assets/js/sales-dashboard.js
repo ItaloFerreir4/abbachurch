@@ -90,7 +90,7 @@ var options = {
         fill: {
           type: ['solid', 'gradient', 'gradient'],
           gradient: {
-            gradientToColors: ["transparent", '#4776E6', '#f5bb74']
+            gradientToColors: ["transparent", '#a32822', '#f5bb74']
           },
         },
       yaxis: {

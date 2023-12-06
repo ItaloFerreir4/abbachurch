@@ -2219,3 +2219,15 @@ h6 {
 #primaryToast .toast-body {
   color: #fff;
 }
+
+/* custom italo */
+
+.btns-actions{
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 10px;
+}
+
+.header-logo img{
+  width: 80px;
+}

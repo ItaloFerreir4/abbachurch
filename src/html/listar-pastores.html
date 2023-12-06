@@ -1,0 +1,120 @@
+@SPK@include("partials/mainhead.html")
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de pastores", "dashbordsubtitle":
+        'Pastores', "dashbordsubtitle2": 'Listar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="card custom-card">
+                    <div class="card-body" id="form-pessoa">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Telefone</th>
+                                            <th scope="col">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Datatables Cdn -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.6/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        window.addEventListener("load", function() {
+
+            const loader = document.getElementById("loader");
+
+            loader.classList.remove('d-none');
+
+            let tabela = $('#responsiveTable').DataTable({
+                responsive: true,
+                language: {
+                    searchPlaceholder: 'Procurar...',
+                    sSearch: '',
+                },
+                "pageLength": 10,
+            });
+
+            $.post('/listarPastores')
+                .done(function (data) {
+
+                    data.forEach(function(pastor) {
+                        tabela.row.add([
+                            pastor.nomePessoa,
+                            pastor.emailPessoa,
+                            pastor.telefonePessoa,
+                            `<div class="btns-actions">
+                                <button class="btn btn-success btn-sm mr-1" id="${pastor.idPessoa}" onClick="EditarPastor(${pastor.idPessoa})">Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1" id="${pastor.idPessoa}" onClick="DeletarPastor(${pastor.idPessoa})">Deletar</button>
+                            </div>`
+                        ]).draw();
+                    });
+
+                    loader.classList.add('d-none');
+
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        });
+    </script>
+
+</body>
+
+</html>

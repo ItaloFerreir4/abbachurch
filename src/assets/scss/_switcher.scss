@@ -917,7 +917,7 @@
   .app-sidebar {
     background: linear-gradient(
       to right,
-      #4776e6 0%,
+      #a32822 0%,
       var(--primary-color) 100%
     );
   }
@@ -1070,7 +1070,7 @@
   }
 
   &[data-theme-mode="light"] {
-    --menu-bg: linear-gradient(to right, #4776e6 0%, var(--primary-color) 100%);
+    --menu-bg: linear-gradient(to right, #a32822 0%, var(--primary-color) 100%);
 
     &[data-bg-img="bgimg1"] {
       --menu-bg: url(../images/menu-bg-images/bg-img1.jpg);
@@ -1395,7 +1395,7 @@
 
 //header-gradient start
 [data-default-header-styles="gradient"] {
-  --header-bg: linear-gradient(to right, #4776e6 0%, #{$primary}100%);
+  --header-bg: linear-gradient(to right, #a32822 0%, #{$primary}100%);
   --header-border-color: rgba(255, 255, 255, 0.1);
   --header-prime-color: rgba(255, 255, 255, 0.7);
   &[data-nav-layout="horizontal"] {
@@ -1732,7 +1732,7 @@
 
 //header-gradient start
 [data-header-styles="gradient"] {
-  --header-bg: linear-gradient(to right, #4776e6 0%, #{$primary}100%);
+  --header-bg: linear-gradient(to right, #a32822 0%, #{$primary}100%);
   --header-border-color: rgba(255, 255, 255, 0.1);
   --header-prime-color: rgba(255, 255, 255, 0.7);
 

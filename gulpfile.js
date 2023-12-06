@@ -39,7 +39,6 @@ function startServer(callback) {
 };
 
 function browsersyncFn(callback) {
-    var baseDir = './dist';
     browsersync$.init({
         proxy: 'http://localhost:3000',
         port: 1111,

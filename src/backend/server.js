@@ -14,19 +14,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Adicione essa linha para configurar o body-parser para tratar JSON
 
 // Rota para a consulta SQL
-app.post('/consultarPastores', (req, res) => {
+app.post('/listarPastores', (req, res) => {
 
-    const query = 'SELECT * FROM pastores';
+    const query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
 
     executarQuery(query)
     .then(resultados => {
-        console.log('Resultados:', resultados);
-        // Faça algo com os resultados
         res.json(resultados);
     })
     .catch(erro => {
         console.error('Erro:', erro);
-        // Lide com o erro
     });
 
 });

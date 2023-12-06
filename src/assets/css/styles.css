@@ -805,7 +805,7 @@ typography
   --menu-border-color: rgba(255, 255, 255, 0.1);
 }
 [data-menu-styles=gradient] .app-sidebar {
-  background: linear-gradient(to right, #4776e6 0%, var(--primary-color) 100%);
+  background: linear-gradient(to right, #a32822 0%, var(--primary-color) 100%);
 }
 @media (min-width: 992px) {
   [data-menu-styles=gradient][data-nav-layout=horizontal] .app-header,
@@ -908,7 +908,7 @@ typography
   border-color: #fff;
 }
 [data-menu-styles=gradient][data-theme-mode=light] {
-  --menu-bg: linear-gradient(to right, #4776e6 0%, var(--primary-color) 100%);
+  --menu-bg: linear-gradient(to right, #a32822 0%, var(--primary-color) 100%);
 }
 [data-menu-styles=gradient][data-theme-mode=light][data-bg-img=bgimg1] {
   --menu-bg: url(../images/menu-bg-images/bg-img1.jpg);
@@ -1174,7 +1174,7 @@ typography
 }
 
 [data-default-header-styles=gradient] {
-  --header-bg: linear-gradient(to right, #4776e6 0%, var(--primary-color)100%);
+  --header-bg: linear-gradient(to right, #a32822 0%, var(--primary-color)100%);
   --header-border-color: rgba(255, 255, 255, 0.1);
   --header-prime-color: rgba(255, 255, 255, 0.7);
 }
@@ -1444,7 +1444,7 @@ typography
 }
 
 [data-header-styles=gradient] {
-  --header-bg: linear-gradient(to right, #4776e6 0%, var(--primary-color)100%);
+  --header-bg: linear-gradient(to right, #a32822 0%, var(--primary-color)100%);
   --header-border-color: rgba(255, 255, 255, 0.1);
   --header-prime-color: rgba(255, 255, 255, 0.7);
 }
@@ -12016,6 +12016,17 @@ h6 {
 /* data tables */
 #primaryToast .toast-body {
   color: #fff;
+}
+
+/* custom italo */
+.btns-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.header-logo img {
+  width: 80px;
 }
 
 /* Start:: Sales Dashboard Styles */
