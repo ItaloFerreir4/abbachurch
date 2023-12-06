@@ -64,7 +64,7 @@ typography
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap");
 :root {
   --body-bg-rgb: 237, 238, 241;
-  --primary-rgb:	142, 84, 233;
+  --primary-rgb:	240, 77, 56;
   --secondary-rgb:	245, 111, 75;
   --warning-rgb:	245, 184, 73;
   --info-rgb:	73, 182, 245;
