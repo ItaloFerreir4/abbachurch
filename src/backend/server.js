@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const executarQuery = require('./consulta');
 const { autenticarUsuario } = require('./auth');
+const { listarPessoas, cadastrarPessoa, cadastrarPastor } = require('./pessoas');
 const app = express();
 const port = 3000;
 
@@ -11,47 +12,47 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use(express.static(path.join(__dirname, '../html')));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); // Adicione essa linha para configurar o body-parser para tratar JSON
+app.use(bodyParser.json());
 
-// Rota para a consulta SQL
-app.post('/listarPastores', (req, res) => {
+app.post('/listarPastores', async (req, res) => {
 
-    const query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
+    try {
+        const lista = await listarPessoas('pastor');
 
-    executarQuery(query)
-    .then(resultados => {
-        res.json(resultados);
-    })
-    .catch(erro => {
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
         console.error('Erro:', erro);
-    });
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
 
 });
 
-app.post('/cadastrarPastor', (req, res) => {
+app.post('/cadastrarPastor', async (req, res) => {
 
     const { nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa } = req.body;
 
-    const query = `INSERT INTO pessoas (nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) VALUES ('${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
+    try {
+        const pessoa = await cadastrarPessoa(nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa);
+        
+        const pessoaId = pessoa.insertId;
+        
+        const pastor = await cadastrarPastor(pessoaId);
 
-    executarQuery(query)
-    .then(resultados => {
-        console.log('Resultados:', resultados);
+        if (pastor) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
 
-        const pessoaId = resultados.insertId;
-
-        // Segundo INSERT para cadastrar o pastor associado à pessoa
-        const insertPastorQuery = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
-
-        res.json(resultados);
-
-        return executarQuery(insertPastorQuery);
-    })
-    .catch(erro => {
+    } catch (erro) {
         console.error('Erro:', erro);
-        // Lide com o erro
-    });
-
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
 });
 
 app.get('/login', (req, res) => {
@@ -80,6 +81,20 @@ app.post('/auth/login', async (req, res) => {
 // Rota padrão, pode ser usada para servir a página inicial
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../html', 'index.html'));
+});
+
+// Rota para tratar solicitações de páginas HTML
+app.get('/:page', (req, res) => {
+    const { page } = req.params;
+    const filePath = path.join(__dirname, '../html', `${page}.html`);
+    res.sendFile(filePath);
+});
+
+// Rota para tratar solicitações de recursos estáticos (CSS, imagens, etc.)
+app.get('/assets/:file', (req, res) => {
+    const { file } = req.params;
+    const filePath = path.join(__dirname, '../assets', file);
+    res.sendFile(filePath);
 });
 
 // Inicie o servidor
