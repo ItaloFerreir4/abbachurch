@@ -34,7 +34,7 @@ app.post('/listarPastores', async (req, res) => {
 
 app.post('/cadastrarPastor', async (req, res) => {
 
-    const { nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa } = req.body;
+    const { nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin } = req.body;
 
     try {
         const pessoa = await cadastrarPessoa(nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa);

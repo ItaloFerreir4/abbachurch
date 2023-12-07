@@ -15,41 +15,69 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <div class="card custom-card">
-                    <form class="card-body" id="form-pessoa">
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <label class="mb-2 text-muted">Nome</label>
-                                <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <label class="mb-2 text-muted">Email</label>
-                                <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <label class="mb-2 text-muted">Telefone</label>
-                                <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <label class="mb-2 text-muted">Estado Civil</label>
-                                <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
-                                    <option>Solteiro(a)</option>
-                                    <option>Casado(a)</option>
-                                    <option>Separado(a)</option>
-                                    <option>Divorciado(a)</option>
-                                    <option>Viúvo(a)</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <label class="mb-2 text-muted">Data Nascimento</label>
-                                <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary mt-4" type="button" onClick="cadastrarUsuario()">Cadastrar</button>
+                <form id="form-pessoa">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Pastor</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Nome</label>
+                                    <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Email</label>
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Telefone</label>
+                                    <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Estado Civil</label>
+                                    <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
+                                        <option>Solteiro(a)</option>
+                                        <option>Casado(a)</option>
+                                        <option>Separado(a)</option>
+                                        <option>Divorciado(a)</option>
+                                        <option>Viúvo(a)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Data Nascimento</label>
+                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Redes Sociais</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Instagram</label>
+                                    <input type="text" class="form-control mb-2" id="instagram" name="instagram">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Facebook</label>
+                                    <input type="text" class="form-control mb-2" id="facebook" name="facebook">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Linkedin</label>
+                                    <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" type="button" onClick="cadastrarUsuario()">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <!-- End::app-content -->
