@@ -115,4 +115,59 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarPastor, cadastrarRedes, deletarPessoa };
+async function carregarPessoa(idPessoa, tipoPessoa) {
+    
+    let query = '';
+
+    switch(tipoPessoa){
+        case 'pastor':
+            query = `SELECT * FROM pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa`;
+            break;
+    }
+
+    try {
+        const resultados = await executarQuery(query);
+
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
+    
+    let query = `
+        UPDATE pessoas
+        SET nomePessoa = '${nomePessoa}', emailPessoa = '${emailPessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
+        WHERE idPessoa = ${idPessoa};
+        `;
+        
+    try {
+        const resultados = await executarQuery(query);
+
+        query = `
+        UPDATE redessociais
+        SET instagram = '${instagram}', facebook = '${facebook}', linkedin = '${linkedin}'
+        WHERE pessoaId = ${idPessoa};
+        `;
+
+        await executarQuery(query);
+
+        if(resultados){
+            switch(tipoPessoa){
+                case 'pastor':
+                    return true;
+                break;
+            }
+        }
+        else{
+            return null;
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarPastor, cadastrarRedes, deletarPessoa, carregarPessoa, atualizarPessoa };

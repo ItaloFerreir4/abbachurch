@@ -1,0 +1,209 @@
+@SPK@include("partials/mainhead.html")
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Pastor", "dashbordsubtitle":
+        'Pastores', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <form id="form-pessoa">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Pastor</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Nome</label>
+                                    <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Email</label>
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Telefone</label>
+                                    <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Estado Civil</label>
+                                    <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
+                                        <option>Solteiro(a)</option>
+                                        <option>Casado(a)</option>
+                                        <option>Separado(a)</option>
+                                        <option>Divorciado(a)</option>
+                                        <option>Viúvo(a)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Data Nascimento</label>
+                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Redes Sociais</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Instagram</label>
+                                    <input type="text" class="form-control mb-2" id="instagram" name="instagram">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Facebook</label>
+                                    <input type="text" class="form-control mb-2" id="facebook" name="facebook">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label class="mb-2 text-muted">Linkedin</label>
+                                    <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" type="button" onClick="EditarPastor()">Atualizar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+
+        window.addEventListener("load", function() {
+            CarregarPastor();
+        });
+
+        function CarregarPastor(){
+            const idPessoa = sessionStorage.getItem('pessoa');
+            const formData = { idPessoa : idPessoa}
+
+            IniLoader();
+
+            $.post('api/carregarPastor', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(pastor) {
+                        for (const propriedade in pastor) {
+                            const valor = pastor[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if (propriedade === 'dataNascimentoPessoa') {
+                                    const valorComoData = new Date(valor);
+
+                                    if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
+                                        const dataFormatada = valorComoData.toISOString().split('T')[0];
+                                        campo.value = dataFormatada;
+                                    } else {
+                                        campo.value = valor;
+                                    }
+                                } else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarPastor() {
+
+            const idPessoa = sessionStorage.getItem('pessoa');
+            const formData = $('#form-pessoa').serializeArray();
+
+            formData.push({ name: 'idPessoa', value: idPessoa });
+
+            if (formData.some(field => field.value.trim() === '')) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarPessoa', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>
