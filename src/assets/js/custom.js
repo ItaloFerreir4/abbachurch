@@ -431,3 +431,12 @@ headerbtn1.forEach(button => {
 });
     /* for notifications dropdown */
 
+function IniLoader(){
+    const loader = document.getElementById("loader");
+    loader.classList.remove('d-none');
+}
+
+function FinLoader(){
+    const loader = document.getElementById("loader");
+    loader.classList.add('d-none');
+}

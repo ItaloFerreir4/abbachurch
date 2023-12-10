@@ -111,7 +111,8 @@
                 });
 
             } else {
-                $.post('/cadastrarPastor', formData)
+                IniLoader();
+                $.post('api/cadastrarPastor', formData)
                 .done(function (data) {
                     
                     Swal.fire({
@@ -135,6 +136,9 @@
                         timer: 1500
                     });
 
+                })
+                .always(function () {
+                    FinLoader();
                 });
             }
 
