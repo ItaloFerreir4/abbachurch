@@ -99,6 +99,8 @@
         function cadastrarUsuario() {
             
             const formData = $('#form-pessoa').serializeArray();
+            
+            formData.push({ name: 'tipoPessoa', value: 'pastor' });
 
             if (formData.some(field => field.value.trim() === '')) {
 
@@ -112,7 +114,7 @@
 
             } else {
                 IniLoader();
-                $.post('api/cadastrarPastor', formData)
+                $.post('api/cadastrarPessoa', formData)
                 .done(function (data) {
                     
                     Swal.fire({

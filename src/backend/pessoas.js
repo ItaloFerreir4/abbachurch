@@ -19,41 +19,26 @@ async function listarPessoas(tipoPessoa) {
     }
 }
 
-async function cadastrarPessoa(nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) {
+async function cadastrarPessoa(tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
     
     const query = `
     INSERT INTO pessoas (nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) 
     VALUES ('${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
 
     try {
-        const resultados = await executarQuery(query);
-        return resultados;
-    } catch (erro) {
-        console.error('Erro:', erro);
-        throw erro;
-    }
-}
+        const pessoa = await executarQuery(query);
 
-async function cadastrarPastor(pessoaId) {
-    
-    const query = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+        const pessoaId = pessoa.insertId;
 
-    try {
-        const resultados = await executarQuery(query);
-        return resultados;
-    } catch (erro) {
-        console.error('Erro:', erro);
-        throw erro;
-    }
-}
+        switch(tipoPessoa){
+            case 'pastor':
+                await cadastrarPastor(pessoaId);
+            break;
+        }
 
-async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
-    
-    const query = `INSERT INTO redessociais (pessoaId, instagram, facebook, linkedin) VALUES ('${pessoaId}', '${instagram}', '${facebook}', '${linkedin}')`;
+        await cadastrarRedes(pessoaId, instagram, facebook, linkedin);
 
-    try {
-        const resultados = await executarQuery(query);
-        return resultados;
+        return pessoa;
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
@@ -86,10 +71,10 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
                         if(await executarQuery(query)){
 
                             query = `DELETE FROM esposas WHERE pastorId = ${idPastor};`;
-                            await executarQuery(query)
+                            await executarQuery(query);
 
                             query = `DELETE FROM filhos WHERE pastorId = ${idPastor};`;
-                            await executarQuery(query)
+                            await executarQuery(query);
 
                             return true;
 
@@ -170,4 +155,30 @@ async function atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, te
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarPastor, cadastrarRedes, deletarPessoa, carregarPessoa, atualizarPessoa };
+async function cadastrarPastor(pessoaId) {
+    
+    const query = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
+    
+    const query = `INSERT INTO redessociais (pessoaId, instagram, facebook, linkedin) VALUES ('${pessoaId}', '${instagram}', '${facebook}', '${linkedin}')`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+module.exports = { listarPessoas, cadastrarPessoa, deletarPessoa, carregarPessoa, atualizarPessoa };

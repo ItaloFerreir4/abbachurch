@@ -93,7 +93,9 @@
 
             tabela.clear().draw();
 
-            $.post('api/listarPastores')
+            const formData = { tipoPessoa : 'pastor' }
+
+            $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     data.forEach(function(pastor) {
                         tabela.row.add([
@@ -125,7 +127,7 @@
 
         function DeletarPastor(pessoaId){
 
-            const dataApi = { pessoaId: pessoaId };
+            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'pastor' };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -137,7 +139,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     IniLoader();
-                    $.post('/api/deletarPastor', dataApi)
+                    $.post('/api/deletarPessoa', dataApi)
                         .done(function (data) {
                             Swal.fire({
                                 position: 'center',

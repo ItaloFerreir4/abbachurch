@@ -103,11 +103,11 @@
 
         function CarregarPastor(){
             const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa}
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'pastor' }
 
             IniLoader();
 
-            $.post('api/carregarPastor', formData)
+            $.post('api/carregarPessoa', formData)
                 .done(function (data) {
                     
                     data.forEach(function(pastor) {
@@ -158,6 +158,7 @@
             const formData = $('#form-pessoa').serializeArray();
 
             formData.push({ name: 'idPessoa', value: idPessoa });
+            formData.push({ name: 'tipoPessoa', value: 'pastor' });
 
             if (formData.some(field => field.value.trim() === '')) {
 
