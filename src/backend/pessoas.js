@@ -8,6 +8,9 @@ async function listarPessoas(tipoPessoa) {
         case 'pastor':
             query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
             break;
+        case 'lider':
+            query = 'SELECT * FROM lideres li, pessoas pe WHERE li.pessoaId = pe.idPessoa';
+            break;
     }
 
     try {
@@ -19,11 +22,11 @@ async function listarPessoas(tipoPessoa) {
     }
 }
 
-async function cadastrarPessoa(tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
     
     const query = `
-    INSERT INTO pessoas (nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) 
-    VALUES ('${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
+    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) 
+    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
 
     try {
         const pessoa = await executarQuery(query);
@@ -33,6 +36,9 @@ async function cadastrarPessoa(tipoPessoa, nomePessoa, emailPessoa, telefonePess
         switch(tipoPessoa){
             case 'pastor':
                 await cadastrarPastor(pessoaId);
+            break;
+            case 'lider':
+                await cadastrarLider(pessoaId);
             break;
         }
 
@@ -89,6 +95,21 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
                     }
 
                 break;
+                case 'lider':
+                    query = `SELECT * FROM lideres WHERE pessoaId = ${pessoaId};`
+
+                    const lider = await executarQuery(query);
+
+                    if(lider){
+
+                        return true;
+
+                    }
+                    else{
+                        return null;
+                    }
+
+                break;
             }
         }
         else{
@@ -108,6 +129,9 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
         case 'pastor':
             query = `SELECT * FROM pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa`;
             break;
+        case 'lider':
+        query = `SELECT * FROM lideres li, pessoas pe, redessociais re WHERE li.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa`;
+        break;
     }
 
     try {
@@ -120,11 +144,11 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
     
     let query = `
         UPDATE pessoas
-        SET nomePessoa = '${nomePessoa}', emailPessoa = '${emailPessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
+        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', emailPessoa = '${emailPessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
         WHERE idPessoa = ${idPessoa};
         `;
         
@@ -144,6 +168,9 @@ async function atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, te
                 case 'pastor':
                     return true;
                 break;
+                case 'lider':
+                    return true;
+                break;
             }
         }
         else{
@@ -158,6 +185,19 @@ async function atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, te
 async function cadastrarPastor(pessoaId) {
     
     const query = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function cadastrarLider(pessoaId) {
+    
+    const query = `INSERT INTO lideres (pessoaId) VALUES (${pessoaId})`;
 
     try {
         const resultados = await executarQuery(query);

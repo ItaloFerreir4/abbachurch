@@ -1,5 +1,7 @@
 @SPK@include("partials/mainhead.html")
 
+@SPK@include("partials/fileupload_link.html")
+
 </head>
 
 <body>
@@ -9,16 +11,16 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Pastor", "dashbordsubtitle":
-        'Pastores', "dashbordsubtitle2": 'Editar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Lider", "dashbordsubtitle":
+        'Lideres', "dashbordsubtitle2": 'Cadastrar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <form id="form-pessoa">
+                <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Pastor</div>
+                            <div class="card-title">Lider</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -78,7 +80,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
+                            <button class="btn btn-primary mb-4" type="button" onClick="CadastrarUsuario()">Cadastrar</button>
                         </div>
                     </div>
                 </form>
@@ -96,80 +98,27 @@
 
     @SPK@include("partials/custom_switcherjs.html")
 
+    @SPK@include("partials/fileupload_script.html")
+
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
 
     <script>
-
         window.addEventListener("load", function() {
-            CarregarPessoa();
+            InputSemImagem();
         });
 
-        function CarregarPessoa(){
-            const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa, tipoPessoa : 'pastor' }
-
-            IniLoader();
-
-            $.post('api/carregarPessoa', formData)
-                .done(function (data) {
-                    
-                    data.forEach(function(pessoa) {
-                        for (const propriedade in pessoa) {
-                            const valor = pessoa[propriedade];
-                            const campo = document.getElementById(propriedade);
-    
-                            if (campo) {
-                                if (propriedade === 'dataNascimentoPessoa') {
-                                    const valorComoData = new Date(valor);
-
-                                    if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
-                                        const dataFormatada = valorComoData.toISOString().split('T')[0];
-                                        campo.value = dataFormatada;
-                                    } else if(propriedade === 'fotoPessoa') {
-                                    
-                                        const caminho = '../assets/uploads/' + valor;
-                                        InputComImagem(caminho);
-
-                                    } else {
-                                        campo.value = valor;
-                                    }
-                                } else {
-                                    campo.value = valor;
-                                }
-                            }
-
-                        }
-                    });
-
-                })
-                .fail(function (error) {
-
-                    console.error('Erro na requisição:', error);
-
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao carregar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-
-                })
-                .always(function () {
-                    FinLoader();
-                });
-        }
-
-        function EditarPessoa() {
-
-            const idPessoa = sessionStorage.getItem('pessoa');
+        function CadastrarUsuario() {
+            
             const formData = $('#form-pessoa').serializeArray();
+            
+            formData.push({ name: 'tipoPessoa', value: 'lider' });
 
-            formData.push({ name: 'idPessoa', value: idPessoa });
-            formData.push({ name: 'tipoPessoa', value: 'pastor' });
+            console.log(formData);
 
-            if (formData.some(field => field.value.trim() === '')) {
+            let isEmptyField = formData.some(field => field.value.trim() === '');
+
+            if (isEmptyField) {
 
                 Swal.fire({
                     position: 'center',
@@ -179,15 +128,16 @@
                     timer: 1500
                 });
 
-            } else {
+            } 
+            else {
                 IniLoader();
-                $.post('api/atualizarPessoa', formData)
+                $.post('api/cadastrarPessoa', formData)
                 .done(function (data) {
                     
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
-                        title: 'Atualizado com sucesso!',
+                        title: 'Cadastrado com sucesso!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -200,7 +150,7 @@
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao atualizar!',
+                        title: 'Erro ao cadastrar!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -210,7 +160,7 @@
                     FinLoader();
                 });
             }
-
+            
         }
     </script>
 

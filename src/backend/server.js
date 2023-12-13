@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { autenticarUsuario } = require('./auth');
+const { saveImage } = require('./upload-imagem');
 const { listarPessoas, cadastrarPessoa, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
 const app = express();
 const port = 3000;
@@ -35,10 +36,13 @@ app.post('/api/listarPessoas', async (req, res) => {
 
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin } = req.body;
-
+    const { tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin } = req.body;
+    
     try {
-        const pessoa = await cadastrarPessoa(tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin);
+
+        const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
+
+        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin);
 
         if (pessoa) {
             res.json({ message: 'Cadastrado com sucesso' });
@@ -92,10 +96,11 @@ app.post('/api/carregarPessoa', async (req, res) => {
 
 app.post('/api/atualizarPessoa', async (req, res) => {
 
-    const { idPessoa, tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin } = req.body;
+    const { idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin } = req.body;
 
     try {
-        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin);
+        const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
+        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin);
 
         if (resultado) {
             res.json(resultado);

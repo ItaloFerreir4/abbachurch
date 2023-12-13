@@ -23,6 +23,10 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
+                                    <label class="mb-2 text-muted">Foto</label>
+                                    <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
+                                </div>
+                                <div class="col-12 col-lg-6">
                                     <label class="mb-2 text-muted">Nome</label>
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
                                 </div>
@@ -74,7 +78,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" type="button" onClick="cadastrarUsuario()">Cadastrar</button>
+                            <button class="btn btn-primary mb-4" type="button" onClick="CadastrarUsuario()">Cadastrar</button>
                         </div>
                     </div>
                 </form>
@@ -96,10 +100,14 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
-        function cadastrarUsuario() {
+        window.addEventListener("load", function() {
+            InputSemImagem();
+        });
+        
+        function CadastrarUsuario() {
             
             const formData = $('#form-pessoa').serializeArray();
-            
+
             formData.push({ name: 'tipoPessoa', value: 'pastor' });
 
             if (formData.some(field => field.value.trim() === '')) {

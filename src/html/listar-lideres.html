@@ -13,8 +13,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de pastores", "dashbordsubtitle":
-        'Pastores', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de lideres", "dashbordsubtitle":
+        'Lideres', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -93,7 +93,7 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'pastor' }
+            const formData = { tipoPessoa : 'lider' }
 
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
@@ -126,7 +126,7 @@
 
         function DeletarPessoa(pessoaId){
 
-            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'pastor' };
+            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'lider' };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -167,7 +167,7 @@
 
         function EditarPessoa(pessoaId){
             sessionStorage.setItem('pessoa', pessoaId);
-            window.location.href = "editar-pastor";
+            window.location.href = "editar-lider";
         }
     </script>
 

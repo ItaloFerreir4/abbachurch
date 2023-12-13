@@ -1,5 +1,7 @@
 @SPK@include("partials/mainhead.html")
 
+@SPK@include("partials/fileupload_link.html")
+
 </head>
 
 <body>
@@ -9,8 +11,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Pastor", "dashbordsubtitle":
-        'Pastores', "dashbordsubtitle2": 'Editar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Lider", "dashbordsubtitle":
+        'Lideres', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -18,7 +20,7 @@
                 <form id="form-pessoa">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Pastor</div>
+                            <div class="card-title">Lider</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -96,6 +98,8 @@
 
     @SPK@include("partials/custom_switcherjs.html")
 
+    @SPK@include("partials/fileupload_script.html")
+
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
 
@@ -107,7 +111,7 @@
 
         function CarregarPessoa(){
             const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa, tipoPessoa : 'pastor' }
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'lider' }
 
             IniLoader();
 
@@ -126,14 +130,14 @@
                                     if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
                                         const dataFormatada = valorComoData.toISOString().split('T')[0];
                                         campo.value = dataFormatada;
-                                    } else if(propriedade === 'fotoPessoa') {
-                                    
-                                        const caminho = '../assets/uploads/' + valor;
-                                        InputComImagem(caminho);
-
                                     } else {
                                         campo.value = valor;
                                     }
+                                } else if(propriedade === 'fotoPessoa') {
+                                    
+                                    const caminho = '../assets/uploads/' + valor;
+                                    InputComImagem(caminho);
+
                                 } else {
                                     campo.value = valor;
                                 }
@@ -167,7 +171,7 @@
             const formData = $('#form-pessoa').serializeArray();
 
             formData.push({ name: 'idPessoa', value: idPessoa });
-            formData.push({ name: 'tipoPessoa', value: 'pastor' });
+            formData.push({ name: 'tipoPessoa', value: 'lider' });
 
             if (formData.some(field => field.value.trim() === '')) {
 
