@@ -196,7 +196,7 @@
                 <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                     <div class="d-flex align-items-center">
                         <div class="d-sm-flex wd-100p">
-                            <div class="avatar avatar-sm"><img alt="avatar" class="rounded-circle" src="../assets/images/faces/1.jpg"></div>
+                            <div class="avatar avatar-sm"><img alt="avatar" class="rounded-circle" id="userPhoto" src="../assets/images/faces/1.jpg"></div>
                             <div class="ms-2 my-auto d-none d-xl-flex">
                                 <h6 class=" font-weight-semibold mb-0 fs-13 user-name d-sm-block d-none" id="userName"></h6>
                             </div>
@@ -256,6 +256,7 @@
     })
     .then(data => {
       document.getElementById('userName').innerText = data.nomeUsuario;
+      document.getElementById('userPhoto').src = '../assets/uploads/' + data.fotoUsuario;
     })
     .catch(error => {
       console.error(error);

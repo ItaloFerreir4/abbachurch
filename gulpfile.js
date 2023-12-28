@@ -24,7 +24,6 @@ const isSourceMap = true;
 
 const sourceMapWrite = (isSourceMap) ? "./" : false;
 
-
 function startServer(callback) {
     nodemon({
         script: './dist/backend/server.js',
@@ -56,7 +55,7 @@ function watch() {
     gulp.watch(['./src/assets/js/*', './src/assets/js/*.js'], gulp.series('js', browsersyncReload));
     gulp.watch(['./src/assets/plugins/*', './src/assets/plugins/**/*.js'], gulp.series('plugins', browsersyncReload));
     gulp.watch(['./src/html/**/*.html', './src/html/partials/*'], gulp.series('html', browsersyncReload));
-    gulp.watch(['./src/backend/**/*'], gulp.series('backend', startServer)); // Adicionado para observar mudanças na pasta backend
+    gulp.watch(['./src/backend/**/*'], gulp.series('backend', browsersyncReload)); // Adicionado para observar mudanças na pasta backend
 };
 
 function html(callback) {
