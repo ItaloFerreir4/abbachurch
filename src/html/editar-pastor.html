@@ -1,5 +1,7 @@
 @SPK@include("partials/mainhead.html")
 
+@SPK@include("partials/fileupload_link.html")
+
 </head>
 
 <body>
@@ -96,6 +98,8 @@
 
     @SPK@include("partials/custom_switcherjs.html")
 
+    @SPK@include("partials/fileupload_script.html")
+
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
 
@@ -126,14 +130,14 @@
                                     if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
                                         const dataFormatada = valorComoData.toISOString().split('T')[0];
                                         campo.value = dataFormatada;
-                                    } else if(propriedade === 'fotoPessoa') {
-                                    
-                                        const caminho = '../assets/uploads/' + valor;
-                                        InputComImagem(caminho);
-
                                     } else {
                                         campo.value = valor;
                                     }
+                                } else if(propriedade === 'fotoPessoa') {
+                                    
+                                    const caminho = '../assets/uploads/' + valor;
+                                    InputComImagem(caminho);
+
                                 } else {
                                     campo.value = valor;
                                 }
