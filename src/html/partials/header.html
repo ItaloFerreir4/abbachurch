@@ -198,18 +198,18 @@
                         <div class="d-sm-flex wd-100p">
                             <div class="avatar avatar-sm"><img alt="avatar" class="rounded-circle" src="../assets/images/faces/1.jpg"></div>
                             <div class="ms-2 my-auto d-none d-xl-flex">
-                                <h6 class=" font-weight-semibold mb-0 fs-13 user-name d-sm-block d-none">Harry Jones</h6>
+                                <h6 class=" font-weight-semibold mb-0 fs-13 user-name d-sm-block d-none" id="userName"></h6>
                             </div>
                         </div>
                     </div>
                 </a>
                 <!-- End::header-link|dropdown-toggle -->
                 <ul class="dropdown-menu  border-0 main-header-dropdown  overflow-hidden header-profile-dropdown" aria-labelledby="mainHeaderProfile">
-                    <li><a class="dropdown-item" href="profile.html"><i class="fs-13 me-2 bx bx-user"></i>Profile</a></li>
-                    <li><a class="dropdown-item" href="mail.html"><i class="fs-13 me-2 bx bx-comment"></i>Message</a></li>
+                    <li><a class="dropdown-item" href="profile.html"><i class="fs-13 me-2 bx bx-user"></i>Perfil</a></li>
+                    <!-- <li><a class="dropdown-item" href="mail.html"><i class="fs-13 me-2 bx bx-comment"></i>Message</a></li>
                     <li><a class="dropdown-item" href="mail-settings.html"><i class="fs-13 me-2 bx bx-cog"></i>Settings</a></li>
-                    <li><a class="dropdown-item" href="faq's.html"><i class="fs-13 me-2 bx bx-help-circle"></i>Help</a></li>
-                    <li><a class="dropdown-item" href="login"><i class="fs-13 me-2 bx bx-arrow-to-right"></i>Log Out</a></li>
+                    <li><a class="dropdown-item" href="faq's.html"><i class="fs-13 me-2 bx bx-help-circle"></i>Help</a></li> -->
+                    <li><a class="dropdown-item" style="cursor: pointer;" id="logout"><i class="fs-13 me-2 bx bx-arrow-to-right"></i>Sair</a></li>
                 </ul>
             </div>
             <!-- End::header-element -->
@@ -230,3 +230,37 @@
 
 </header>
 <!-- /app-header -->
+
+<script>
+
+    document.getElementById('logout').addEventListener('click', function() {
+      fetch('/api/logout', { method: 'POST' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Não foi possível efetuar o logout');
+          }
+          window.location.href = '/login';
+        })
+        .catch(error => {
+          console.error(error);
+          // Lide com o erro, por exemplo, exiba uma mensagem de erro
+        });
+    });
+
+    fetch('/api/data')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Usuário não autenticado');
+      }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('userName').innerText = data.nomeUsuario;
+    })
+    .catch(error => {
+      console.error(error);
+      // Lide com o erro, por exemplo, redirecione para a página de login
+      window.location.href = '/login';
+    });
+
+</script>

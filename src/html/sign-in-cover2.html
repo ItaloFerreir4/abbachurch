@@ -96,18 +96,18 @@
         </div>
         <div class="col-xxl-6 col-xl-5 col-lg-5 d-xl-block d-none px-0">
             <div class="authentication-cover">
-                <img src="../assets/images/authentication/2.png" class="authentication1" alt="">
-                <img src="../assets/images/authentication/3.png" class="authentication2" alt="">
+                <!-- <img src="../assets/images/authentication/2.png" class="authentication1" alt="">
+                <img src="../assets/images/authentication/3.png" class="authentication2" alt=""> -->
                 <div class="">
                     <div class="row justify-content-center g-0">
                         <div class="col-xl-9">
-                            <!-- <a href="index.html"> <img src="../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand cover-dark-logo op-9"></a>  -->
-                            <div class="text-fixed-white text-start  d-flex align-items-center">
+                            <a href="index.html"> <img src="../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand cover-dark-logo op-9"></a> 
+                            <!-- <div class="text-fixed-white text-start  d-flex align-items-center">
                                 <div>
                                      <h3 class="fw-semibold op-8 mb-3  text-fixed-white">Entrar</h3>
                                     <p class="mb-5 fw-normal fs-14 op-6"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.  Porro rem voluptates possimus, ad, autem quae culpa architecto, quam labore blanditiis at ratione.</p>
                                 </div>
-                            </div>
+                            </div> -->
                             <!-- <div class="authentication-footer text-end">
                                 <span class="text-fixed-white op-8"> Copyright © <span id="year">2023</span> <a href="javascript:void(0);" class=" text-fixed-white fw-semibold">Velvet</a>.
                                     Designed with <span class="bi bi-heart-fill text-danger"></span> by <a href="javascript:void(0);">
@@ -144,7 +144,7 @@
             const senha = document.getElementById('signin-password').value;
     
             try {
-                const response = await fetch('http://localhost:3000/auth/login', {
+                const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,10 +158,7 @@
                 if (response.ok) {
 
                     showMessage('Login realizado com sucesso!', 'success');
-
-                    setTimeout(function () {
-                       // window.location.href = 'http://localhost:3000';
-                    }, 5000);
+                    window.location.href = '/';
                     
                 } else {
 
