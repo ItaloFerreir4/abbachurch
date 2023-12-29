@@ -2,6 +2,8 @@
 
 @SPK@include("partials/fileupload_link.html")
 
+<link rel="stylesheet" href="../assets/css/custom.css">
+
 </head>
 
 <body>
@@ -17,7 +19,7 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <form id="form-pessoa">
+                <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
                             <div class="card-title">Pastor</div>
@@ -25,23 +27,19 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Foto</label>
+                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto</label>
                                     <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Nome</label>
+                                    <label for="nomePessoa" class="mb-2 text-muted">Nome</label>
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Email</label>
-                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Telefone</label>
+                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone</label>
                                     <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Estado Civil</label>
+                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil</label>
                                     <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
                                         <option>Solteiro(a)</option>
                                         <option>Casado(a)</option>
@@ -51,7 +49,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Data Nascimento</label>
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento</label>
                                     <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
                                 </div>
                             </div>
@@ -64,23 +62,46 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Instagram</label>
+                                    <label for="instagram" class="mb-2 text-muted">Instagram</label>
                                     <input type="text" class="form-control mb-2" id="instagram" name="instagram">
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Facebook</label>
+                                    <label for="facebook" class="mb-2 text-muted">Facebook</label>
                                     <input type="text" class="form-control mb-2" id="facebook" name="facebook">
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Linkedin</label>
+                                    <label for="linkedin" class="mb-2 text-muted">Linkedin</label>
                                     <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <span id="optionAccess">Alterar dados de acesso</span>
+                    <div class="card custom-card" id="contentAccess" data-close="1">
+                        <div class="card-header">
+                            <div class="card-title">Acesso</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-4" style="position: relative;">
+                                    <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <input type="hidden" name="changeAccess" id="changeAccess" value="0">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
+                            <button id="submitBtn" class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
                         </div>
                     </div>
                 </form>
@@ -107,6 +128,43 @@
 
         window.addEventListener("load", function() {
             CarregarPessoa();
+        });
+
+        document.getElementById('optionAccess').addEventListener('click', function() {
+
+            let contentAccess = document.getElementById('contentAccess');
+            let close = contentAccess.getAttribute('data-close');
+            let emailPessoa = document.getElementById('emailPessoa');
+            let senhaUsuario = document.getElementById('senhaUsuario');
+            let confirmeSenhaUsuario = document.getElementById('confirmeSenhaUsuario');
+            let optionAccess = document.getElementById('optionAccess');
+            let changeAccess = document.getElementById('changeAccess');
+
+            if (close === '1') {
+
+                contentAccess.setAttribute('data-close', '0');
+                emailPessoa.disabled = false;
+                senhaUsuario.disabled = false;
+                confirmeSenhaUsuario.disabled = false;
+                senhaUsuario.value = '';
+                confirmeSenhaUsuario.value = '';
+                optionAccess.innerHTML = 'Cancelar';
+                changeAccess.value = '1';
+                validarSenha();
+
+            } else {
+
+                contentAccess.setAttribute('data-close', '1');
+                emailPessoa.disabled = true;
+                senhaUsuario.disabled = true;
+                confirmeSenhaUsuario.disabled = true;
+                senhaUsuario.value = 'undefined';
+                confirmeSenhaUsuario.value = 'undefined';
+                optionAccess.innerHTML = 'Alterar dados de acesso';
+                changeAccess.value = '0';
+                validarSenha();
+
+            }
         });
 
         function CarregarPessoa(){
@@ -137,6 +195,11 @@
                                     
                                     const caminho = '../assets/uploads/' + valor;
                                     InputComImagem(caminho);
+
+                                } else if (propriedade === 'senhaUsuario'){
+
+                                    campo.value = 'undefined';
+                                    document.getElementById('confirmeSenhaUsuario').value = 'undefined';
 
                                 } else {
                                     campo.value = valor;
@@ -216,6 +279,32 @@
             }
 
         }
+
+        function validarSenha() {
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            if (senha.value.length < 5) {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                submitBtn.disabled = true;
+            } else if (senha.value !== confirmaSenha.value) {
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                senha.classList.add('border-red');
+                confirmaSenha.classList.add('border-red');
+                submitBtn.disabled = true;
+            } else {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.add('border-green');
+                confirmaSenha.classList.add('border-green');
+                submitBtn.disabled = false;
+            }
+        }
+
     </script>
 
 </body>

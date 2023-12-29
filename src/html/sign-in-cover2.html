@@ -57,9 +57,9 @@
                                 <input type="email" class="form-control form-control-lg" id="signin-mail" placeholder="Digite seu e-mail">
                             </div>
                             <div class="col-xl-12 mb-3  px-0">
-                                <label for="signin-password" class="form-label text-default d-block">Senha<a href="reset-password-cover.html" class="float-end text-primary">Esqueceu sua senha ?</a></label>
+                                <label for="signin-password" class="form-label text-default d-block">Senha</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-lg" id="signin-password" placeholder="Digite sua senha">
+                                    <input type="password" class="form-control form-control-lg" id="signin-password" placeholder="Digite sua senha" onkeydown="checkEnter(event)">
                                     <button class="btn btn-light bg-transparent" type="button" onclick="createpassword('signin-password',this)" id="button-addon2"><i class="ri-eye-off-line align-middle"></i></button>
                                 </div>
                                 <div class="mt-2">
@@ -67,7 +67,7 @@
                                         <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
                                         <label class="form-check-label text-muted fw-normal" for="defaultCheck1">
                                             Lembre-me
-                                        </label>
+                                        </label><a href="reset-password-cover.html" class="float-end text-primary">Esqueceu a senha ?</a>
                                     </div>
                                 </div>
                             </div>
@@ -138,6 +138,12 @@
 
     <script>
 
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                fazerLogin();
+            }
+        }
+
         async function fazerLogin() {
 
             const email = document.getElementById('signin-mail').value;
@@ -185,6 +191,14 @@
             }, 5000);
 
         }
+
+        document.getElementById("meuFormulario").addEventListener("submit", function(event) {
+            event.preventDefault(); // Impede o comportamento padrão de recarregar a página
+
+            // Adicione aqui o código que você quer executar ao enviar o formulário
+
+            console.log("Formulário enviado!");
+        });
 
     </script>
 

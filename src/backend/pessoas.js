@@ -1,4 +1,7 @@
 const executarQuery = require('./consulta');
+const { cadastrarUsuario } = require('./usuarios');
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
 
 async function listarPessoas(tipoPessoa) {
     
@@ -22,7 +25,7 @@ async function listarPessoas(tipoPessoa) {
     }
 }
 
-async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario) {
     
     const query = `
     INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) 
@@ -43,6 +46,8 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
         }
 
         await cadastrarRedes(pessoaId, instagram, facebook, linkedin);
+
+        await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa)
 
         return pessoa;
     } catch (erro) {
@@ -127,10 +132,10 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
 
     switch(tipoPessoa){
         case 'pastor':
-            query = `SELECT * FROM pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa`;
+            query = `SELECT * FROM pastores pa, pessoas pe, redessociais re, usuarios u WHERE pa.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa`;
             break;
         case 'lider':
-        query = `SELECT * FROM lideres li, pessoas pe, redessociais re WHERE li.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa`;
+            query = `SELECT * FROM lideres li, pessoas pe, redessociais re, usuarios u WHERE li.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa`;
         break;
     }
 
@@ -144,11 +149,11 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess) {
     
     let query = `
         UPDATE pessoas
-        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', emailPessoa = '${emailPessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
+        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
         WHERE idPessoa = ${idPessoa};
         `;
         
@@ -162,6 +167,32 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
         `;
 
         await executarQuery(query);
+        
+        if(changeAccess == 1){
+
+            query = `
+            UPDATE pessoas
+            SET emailPessoa = '${emailPessoa}'
+            WHERE idPessoa = ${idPessoa};
+            `;
+
+            await executarQuery(query);
+
+            if(senhaUsuario != '' || senhaUsuario != null || senhaUsuario != undefined || senhaUsuario != 'undefined'){
+
+                const salt = await bcrypt.genSalt(saltRounds);
+                const hashSenha = await bcrypt.hash(senhaUsuario, salt);
+
+                query = `
+                UPDATE usuarios
+                SET senhaUsuario = '${hashSenha}'
+                WHERE pessoaId = ${idPessoa};
+                `;
+
+                await executarQuery(query);
+
+            }
+        }
 
         if(resultados){
             switch(tipoPessoa){

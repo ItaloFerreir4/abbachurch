@@ -2,6 +2,8 @@
 
 @SPK@include("partials/fileupload_link.html")
 
+<link rel="stylesheet" href="../assets/css/custom.css">
+
 </head>
 
 <body>
@@ -17,7 +19,7 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <form id="form-pessoa">
+                <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
                             <div class="card-title">Pastor</div>
@@ -25,23 +27,34 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Foto</label>
+                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto</label>
                                     <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Nome</label>
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6" style="position: relative;">
+                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha</label>
+                                    <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                    <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                    </span>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
+                                    <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="nomePessoa" class="mb-2 text-muted">Nome</label>
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Email</label>
-                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Telefone</label>
+                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone</label>
                                     <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Estado Civil</label>
+                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil</label>
                                     <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
                                         <option>Solteiro(a)</option>
                                         <option>Casado(a)</option>
@@ -51,7 +64,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label class="mb-2 text-muted">Data Nascimento</label>
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento</label>
                                     <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
                                 </div>
                             </div>
@@ -64,15 +77,15 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Instagram</label>
+                                    <label for="instagram" class="mb-2 text-muted">Instagram</label>
                                     <input type="text" class="form-control mb-2" id="instagram" name="instagram">
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Facebook</label>
+                                    <label for="facebook" class="mb-2 text-muted">Facebook</label>
                                     <input type="text" class="form-control mb-2" id="facebook" name="facebook">
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <label class="mb-2 text-muted">Linkedin</label>
+                                    <label for="linkedin" class="mb-2 text-muted">Linkedin</label>
                                     <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
                                 </div>
                             </div>
@@ -80,7 +93,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarUsuario()">Cadastrar</button>
                         </div>
                     </div>
                 </form>
@@ -157,6 +170,40 @@
             }
 
         }
+
+        function validarSenha() {
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            if (senha.value.length < 5) {
+                submitBtn.disabled = true;
+            } else if (senha.value !== confirmaSenha.value) {
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                senha.classList.add('border-red');
+                confirmaSenha.classList.add('border-red');
+                submitBtn.disabled = true;
+            } else {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.add('border-green');
+                confirmaSenha.classList.add('border-green');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function toggleVisibilidadeSenha() {
+            var senhaInput = document.getElementById('senhaUsuario');
+            var iconeOlho = document.getElementById('icon-eye');
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
+            } else {
+                senhaInput.type = 'password';
+                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+            }
+        }
+
     </script>
 
 </body>

@@ -17,3 +17,33 @@
 #notification-message {
     margin: 0;
 }
+
+.border-red, .border-red:focus, .border-red:hover {
+    border: 1px solid red;
+}
+
+.border-green, .border-green:focus, .border-green:hover {
+    border: 1px solid green;
+}
+
+#icon-eye {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#contentAccess[data-close="1"] {
+    filter: grayscale(50%);
+}
+
+#contentAccess[data-close="0"] {
+    filter: grayscale(0%);
+}
+
+#optionAccess{
+    color: #e04635;
+    text-decoration: underline;
+    cursor: pointer;
+}
