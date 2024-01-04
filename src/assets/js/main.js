@@ -4,9 +4,7 @@
   if (localStorage.getItem("velvetdarktheme")) {
     document.querySelector("html").setAttribute("data-theme-mode", "dark");
     document.querySelector("html").setAttribute("data-menu-styles", "dark");
-    document
-      .querySelector("html")
-      .setAttribute("data-header-styles", "gradient");
+    document.querySelector("html").setAttribute("data-header-styles", "gradient");
   }
   if (localStorage.velvetrtl) {
     let html = document.querySelector("html");
@@ -33,7 +31,7 @@
     document.querySelector("html").setAttribute("loader", "enable");
   } else {
     if (!document.querySelector("html").getAttribute("loader")) {
-      document.querySelector("html").setAttribute("loader", "disable");
+      document.querySelector("html").setAttribute("loader", "enable");
     }
   }
 

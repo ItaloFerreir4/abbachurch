@@ -12024,8 +12024,16 @@ h6 {
   gap: 10px;
 }
 
-.header-logo img {
+.header-logo .desktop-dark, .header-logo .desktop-logo {
   width: 80px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.header-logo .toggle-dark, .header-logo .toggle-logo {
+  width: 30px;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 /* Start:: Sales Dashboard Styles */

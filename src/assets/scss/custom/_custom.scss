@@ -2228,6 +2228,12 @@ h6 {
   gap: 10px;
 }
 
-.header-logo img{
+.header-logo .desktop-dark, .header-logo .desktop-logo{
   width: 80px;
+  object-fit: contain;
+}
+
+.header-logo .toggle-dark, .header-logo .toggle-logo{
+  width: 30px;
+  object-fit: contain;
 }
