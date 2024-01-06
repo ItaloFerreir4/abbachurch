@@ -13,16 +13,21 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Lider", "dashbordsubtitle":
-        'Lideres', "dashbordsubtitle2": 'Cadastrar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Filho(a)", "dashbordsubtitle":
+        'Filhos', "dashbordsubtitle2": 'Cadastrar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
+                <div class="btns-dist">
+                    <div class="left">
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="listar-filhos">Voltar</a>
+                    </div>
+                </div>
                 <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Lider</div>
+                            <div class="card-title">Filho(a)</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -33,17 +38,6 @@
                                 <div class="col-12 col-lg-6">
                                     <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
                                     <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
-                                </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
-                                    <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
-                                    <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -124,7 +118,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarUsuario()">Cadastrar</button>
                         </div>
                     </div>
                 </form>
@@ -153,8 +147,10 @@
         window.addEventListener("load", function() {
             InputSemImagem();
         });
-
+        
         function CadastrarUsuario() {
+
+            const pessoaId = sessionStorage.getItem('pessoa');
             
             let formData = $('#form-pessoa').serializeArray();
             let idiomasSelecionados = $('#idiomaPessoa').val();
@@ -166,7 +162,8 @@
             });
 
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
-            formData.push({ name: 'tipoPessoa', value: 'lider' });
+            formData.push({ name: 'tipoPessoa', value: 'filho' });
+            formData.push({ name: 'pessoaId', value: pessoaId });
 
             if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 
@@ -178,8 +175,7 @@
                     timer: 1500
                 });
 
-            } 
-            else {
+            } else {
                 IniLoader();
                 $.post('api/cadastrarPessoa', formData)
                 .done(function (data) {
@@ -210,7 +206,7 @@
                     FinLoader();
                 });
             }
-            
+
         }
 
         function verificacaoCampos(excludedFields, field){
@@ -221,40 +217,6 @@
                 return false;
             }
         }
-
-        function validarSenha() {
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
-            let submitBtn = document.getElementById('submitBtn');
-            if (senha.value.length < 5) {
-                submitBtn.disabled = true;
-            } else if (senha.value !== confirmaSenha.value) {
-                senha.classList.remove('border-green');
-                confirmaSenha.classList.remove('border-green');
-                senha.classList.add('border-red');
-                confirmaSenha.classList.add('border-red');
-                submitBtn.disabled = true;
-            } else {
-                senha.classList.remove('border-red');
-                confirmaSenha.classList.remove('border-red');
-                senha.classList.add('border-green');
-                confirmaSenha.classList.add('border-green');
-                submitBtn.disabled = false;
-            }
-        }
-
-        function toggleVisibilidadeSenha() {
-            var senhaInput = document.getElementById('senhaUsuario');
-            var iconeOlho = document.getElementById('icon-eye');
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
-            } else {
-                senhaInput.type = 'password';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
-            }
-        }
-
     </script>
 
 </body>

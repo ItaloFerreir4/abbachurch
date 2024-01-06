@@ -3,7 +3,7 @@ const { cadastrarUsuario } = require('./usuarios');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
-async function listarPessoas(tipoPessoa) {
+async function listarPessoas(tipoPessoa, pessoaId) {
     
     let query = '';
 
@@ -13,6 +13,9 @@ async function listarPessoas(tipoPessoa) {
             break;
         case 'lider':
             query = 'SELECT * FROM lideres li, pessoas pe WHERE li.pessoaId = pe.idPessoa';
+            break;
+        case 'filho':
+            query = `SELECT * FROM filhos fi, pessoas pe WHERE fi.pastorId = ${pessoaId} AND fi.pessoaId = pe.idPessoa`;
             break;
     }
 
@@ -25,11 +28,11 @@ async function listarPessoas(tipoPessoa) {
     }
 }
 
-async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa) {
     
     const query = `
-    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa) 
-    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}')`;
+    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa) 
+    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}')`;
 
     try {
         const pessoa = await executarQuery(query);
@@ -38,16 +41,18 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
 
         switch(tipoPessoa){
             case 'pastor':
-                await cadastrarPastor(pessoaId);
+                const pastor = await cadastrarPastor(pessoaId);
+                const esposa = await cadastrarPessoa('esposa', '', '', '', '', '', '', '', '', '', '');
+                await cadastrarEsposa(esposa.insertId, pastor.insertId);
+                await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
             case 'lider':
                 await cadastrarLider(pessoaId);
+                await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
         }
 
         await cadastrarRedes(pessoaId, instagram, facebook, linkedin);
-
-        await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa)
 
         return pessoa;
     } catch (erro) {
@@ -115,6 +120,10 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
                     }
 
                 break;
+                case 'filho':
+                    query = `DELETE FROM filhos WHERE pessoaId = ${pessoaId};`;
+                    return await executarQuery(query) ?  true :  null;
+                break;
             }
         }
         else{
@@ -137,6 +146,12 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
         case 'lider':
             query = `SELECT * FROM lideres li, pessoas pe, redessociais re, usuarios u WHERE li.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa`;
         break;
+        case 'esposa':
+            query = `SELECT es.*, pe.*, re.* FROM esposas es, pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = ${idPessoa} AND es.pessoaId = pe.idPessoa AND es.pastorId = pa.idPastor AND re.pessoaId = pe.idPessoa;`;
+            break;
+        case 'filho':
+            query = `SELECT * FROM filhos fi, pessoas pe, redessociais re WHERE fi.pessoaId = 34 AND fi.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            break;
     }
 
     try {
@@ -149,11 +164,11 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa) {
     
     let query = `
         UPDATE pessoas
-        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}'
+        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}', profissaoPessoa = '${profissaoPessoa}', escolaridadePessoa = '${escolaridadePessoa}', idiomaPessoa = '${idiomaPessoa}'
         WHERE idPessoa = ${idPessoa};
         `;
         
@@ -202,6 +217,12 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
                 case 'lider':
                     return true;
                 break;
+                case 'esposa':
+                    return true;
+                break;
+                case 'filho':
+                    return true;
+                break;
             }
         }
         else{
@@ -239,6 +260,32 @@ async function cadastrarLider(pessoaId) {
     }
 }
 
+async function cadastrarEsposa(pessoaId, pastorId) {
+    
+    const query = `INSERT INTO esposas (pessoaId, pastorId) VALUES (${pessoaId}, ${pastorId})`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function cadastrarFilho(pessoaId, pastorId) {
+    
+    const query = `INSERT INTO filhos (pessoaId, pastorId) VALUES (${pessoaId}, ${pastorId})`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
 async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     
     const query = `INSERT INTO redessociais (pessoaId, instagram, facebook, linkedin) VALUES ('${pessoaId}', '${instagram}', '${facebook}', '${linkedin}')`;
@@ -252,4 +299,4 @@ async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, deletarPessoa, carregarPessoa, atualizarPessoa };
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, deletarPessoa, carregarPessoa, atualizarPessoa };

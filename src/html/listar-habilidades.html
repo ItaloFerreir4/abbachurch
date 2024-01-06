@@ -13,22 +13,20 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de pastores", "dashbordsubtitle":
-        'Pastores', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de habilidades", "dashbordsubtitle":
+        'Habilidades', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
                 <div class="card custom-card">
-                    <div class="card-body" id="form-pessoa">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-12">
                                 <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th scope="col">Nome</th>
-                                            <th scope="col">E-mail</th>
-                                            <th scope="col">Telefone</th>
                                             <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
@@ -70,10 +68,10 @@
 
     <script>
         window.addEventListener("load", function() {
-            ListarPessoas();
+            ListarCategorias();
         });
 
-        function ListarPessoas(){
+        function ListarCategorias(){
 
             IniLoader();
 
@@ -93,18 +91,14 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'pastor',  pessoaId : '' }
-
-            $.post('api/listarPessoas', formData)
+            $.post('api/listarCategorias')
                 .done(function (data) {
-                    data.forEach(function(pessoa) {
+                    data.forEach(function(categoria) {
                         tabela.row.add([
-                            pessoa.nomePessoa,
-                            pessoa.emailPessoa,
-                            pessoa.telefonePessoa,
+                            categoria.nomeCategoria,
                             `<div class="btns-actions">
-                                <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
-                                <button class="btn btn-danger btn-sm mr-1" id="${pessoa.idPessoa}" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
+                                <button class="btn btn-success btn-sm mr-1" onClick="EditarCategoria(${categoria.idCategoria})">Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1" onClick="DeletarCategoria(${categoria.idCategoria})">Deletar</button>
                             </div>`
                         ]).draw();
                     });
@@ -124,9 +118,9 @@
                 });
         }
 
-        function DeletarPessoa(pessoaId){
+        function DeletarCategoria(idCategoria){
 
-            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'pastor' };
+            const dataApi = { idCategoria: idCategoria };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -138,7 +132,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     IniLoader();
-                    $.post('/api/deletarPessoa', dataApi)
+                    $.post('/api/deletarCategoria', dataApi)
                         .done(function (data) {
                             Swal.fire({
                                 position: 'center',
@@ -148,7 +142,7 @@
                                 timer: 2500
                             });
 
-                            ListarPessoas();
+                            ListarCategorias();
                         })
                         .fail(function (error) {
                             console.error('Erro na requisição:', error);
@@ -165,9 +159,9 @@
 
         }
 
-        function EditarPessoa(pessoaId){
-            sessionStorage.setItem('pessoa', pessoaId);
-            window.location.href = "editar-pastor";
+        function EditarCategoria(idCategoria){
+            sessionStorage.setItem('habilidade', idCategoria);
+            window.location.href = "editar-habilidade";
         }
     </script>
 

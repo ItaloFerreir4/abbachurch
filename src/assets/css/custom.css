@@ -41,9 +41,3 @@
 #contentAccess[data-close="0"] {
     filter: grayscale(0%);
 }
-
-#optionAccess{
-    color: #e04635;
-    text-decoration: underline;
-    cursor: pointer;
-}

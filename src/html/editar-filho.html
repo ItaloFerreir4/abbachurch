@@ -13,7 +13,7 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Esposa", "dashbordsubtitle":
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Filho(a)", "dashbordsubtitle":
         'Pastores', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
@@ -21,19 +21,23 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="editar-pastor">Voltar</a>
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="listar-filhos">Voltar</a>
                     </div>
                     <div class="col-12">
                         <form id="form-pessoa" enctype="multipart/form-data">
                             <div class="card custom-card">
                                 <div class="card-header">
-                                    <div class="card-title">Esposa</div>
+                                    <div class="card-title">Filho(a)</div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-lg-6">
                                             <label for="fotoPessoa" class="mb-2 text-muted">Foto*</label>
                                             <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
+                                            <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
                                         </div>
                                         <div class="col-12 col-lg-6">
                                             <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -43,7 +47,7 @@
                                             <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
                                             <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                         </div>
-                                        <div class="col-12 col-lg-6 d-none">
+                                        <div class="col-12 col-lg-6">
                                             <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil*</label>
                                             <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
                                                 <option>Solteiro(a)</option>
@@ -148,17 +152,17 @@
 
         window.addEventListener('beforeunload', function() {
             // Obtém o valor atual do sessionStorage
-            var pessoaEsposa = sessionStorage.getItem('pessoaEsposa');
+            var pessoaFilho = sessionStorage.getItem('pessoaFilho');
 
             // Se o valor existir, remove o item do sessionStorage
-            if (pessoaEsposa) {
-                sessionStorage.removeItem('pessoaEsposa');
+            if (pessoaFilho) {
+                sessionStorage.removeItem('pessoaFilho');
             }
         });
 
         function CarregarPessoa(){
-            const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa, tipoPessoa : 'esposa' }
+            const idPessoa = sessionStorage.getItem('pessoaFilho');
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'filho' }
 
             IniLoader();
 
@@ -169,10 +173,6 @@
                         for (const propriedade in pessoa) {
                             const valor = pessoa[propriedade];
                             const campo = document.getElementById(propriedade);
-
-                            if (propriedade === 'idPessoa') {
-                                sessionStorage.setItem('pessoaEsposa', valor);
-                            }
     
                             if (campo) {
                                 if (propriedade === 'dataNascimentoPessoa') {
@@ -207,7 +207,7 @@
                                     const idiomasArray = valor.split(',');
                                     $('.multiple-select').val(idiomasArray).trigger('change');
 
-                                }
+                                } 
                                 else {
                                     campo.value = valor;
                                 }
@@ -237,7 +237,7 @@
 
         function EditarPessoa() {
 
-            const idPessoa = sessionStorage.getItem('pessoaEsposa');
+            const idPessoa = sessionStorage.getItem('pessoaFilho');
             let formData = $('#form-pessoa').serializeArray();
             let idiomasSelecionados = $('#idiomaPessoa').val();
             let idiomasString = idiomasSelecionados.join(',');
@@ -249,7 +249,7 @@
 
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
             formData.push({ name: 'idPessoa', value: idPessoa });
-            formData.push({ name: 'tipoPessoa', value: 'esposa' });
+            formData.push({ name: 'tipoPessoa', value: 'filho' });
 
             if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 

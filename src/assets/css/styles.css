@@ -4796,6 +4796,8 @@ typography
   inset-block-start: -1px;
   inset-block-end: -1px;
   background-color: var(--white-2);
+  border-top-left-radius: 0.35rem;
+  border-bottom-left-radius: 0.35rem;
 }
 
 .label-btn.label-end {
@@ -12034,6 +12036,23 @@ h6 {
   width: 30px;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.option-access {
+  color: #e04635;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.option-access:hover {
+  color: #fff;
+}
+
+.btns-dist {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Start:: Sales Dashboard Styles */

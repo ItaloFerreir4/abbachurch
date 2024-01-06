@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
-const { listarPessoas, cadastrarPessoa, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
+const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
+const { listarPessoas, cadastrarPessoa, cadastrarFilho, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
 const e = require('express');
 const app = express();
 const port = 3000;
@@ -85,10 +86,10 @@ app.get('/assets/:file', (req, res) => {
 
 app.post('/api/listarPessoas', async (req, res) => {
 
-    const { tipoPessoa } = req.body;
+    const { tipoPessoa, pessoaId } = req.body;
 
     try {
-        const lista = await listarPessoas(tipoPessoa);
+        const lista = await listarPessoas(tipoPessoa, pessoaId);
 
         if (lista) {
             res.json(lista);
@@ -105,13 +106,16 @@ app.post('/api/listarPessoas', async (req, res) => {
 
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario } = req.body;
+    const { tipoPessoa, pessoaId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa } = req.body;
     
     try {
 
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
-        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario);
+        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa);
+        if(pessoaId != '' && tipoPessoa == 'filho'){
+            await cadastrarFilho(pessoa.insertId, pessoaId);
+        }
 
         if (pessoa) {
             res.json({ message: 'Cadastrado com sucesso' });
@@ -165,16 +169,108 @@ app.post('/api/carregarPessoa', async (req, res) => {
 
 app.post('/api/atualizarPessoa', async (req, res) => {
 
-    const { idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess } = req.body;
+    const { idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa } = req.body;
 
     try {
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
-        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess);
+        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa);
 
         if (resultado) {
             res.json(resultado);
         } else {
             res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarCategorias', async (req, res) => {
+
+    try {
+        const lista = await listarCategorias();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarCategoria', async (req, res) => {
+
+    const { nomeCategoria } = req.body;
+    
+    try {
+        const categoria = await cadastrarCategoria(nomeCategoria);
+        
+        if (categoria) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarCategoria', async (req, res) => {
+
+    const { idCategoria, nomeCategoria } = req.body;
+    
+    try {
+        const categoria = await atualizarCategoria(idCategoria, nomeCategoria);
+        
+        if (categoria) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarCategoria', async (req, res) => {
+
+    const { idCategoria } = req.body;
+
+    try {
+        const resultado = await deletarCategoria(idCategoria);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarCategoria', async (req, res) => {
+
+    const { idCategoria } = req.body;
+
+    try {
+        const resultado = await carregarCategoria(idCategoria);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
         }
 
     } catch (erro) {

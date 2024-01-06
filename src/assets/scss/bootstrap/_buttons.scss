@@ -1280,6 +1280,8 @@
   inset-block-start: -1px;
   inset-block-end: -1px;
   background-color: $white-2;
+  border-top-left-radius: 0.35rem;
+  border-bottom-left-radius: 0.35rem;
 }
 .label-btn.label-end {
   padding-inline-start: 1rem;

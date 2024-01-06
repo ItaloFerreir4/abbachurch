@@ -27,34 +27,34 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto</label>
+                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto*</label>
                                     <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
                                     <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
                                 </div>
                                 <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha</label>
+                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
                                     <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
                                     <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
                                         <i class="bi bi-eye-slash-fill"></i>
                                     </span>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
+                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
                                     <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="nomePessoa" class="mb-2 text-muted">Nome</label>
+                                    <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone</label>
+                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
                                     <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil</label>
+                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil*</label>
                                     <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
                                         <option>Solteiro(a)</option>
                                         <option>Casado(a)</option>
@@ -64,8 +64,39 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento</label>
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
                                     <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="profissaoPessoa" class="mb-2 text-muted">Profissão*</label>
+                                    <input type="text" class="form-control mb-2" id="profissaoPessoa" name="profissaoPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade*</label>
+                                    <select class="form-select mb-2" id="escolaridadePessoa" name="escolaridadePessoa">
+                                        <option>Selecione uma opção</option>
+                                        <option>Analfabeto</option>
+                                        <option>Até 5º Ano Incompleto</option>
+                                        <option>5º Ano Completo</option>
+                                        <option>6º ao 9º Ano do Fundamental</option>
+                                        <option>Fundamental Completo</option>
+                                        <option>Médio Incompleto</option>
+                                        <option>Médio Completo</option>
+                                        <option>Superior Incompleto</option>
+                                        <option>Superior Completo</option>
+                                        <option>Mestrado</option>
+                                        <option>Doutorado</option>
+                                        <option>Prefiro não dizer</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="idiomaPessoa" class="mb-2 text-muted">Idiomas*</label>
+                                    <select class="form-select multiple-select mb-2" id="idiomaPessoa" name="idiomaPessoa" multiple="multiple">
+                                        <option>Português</option>
+                                        <option>Ingles</option>
+                                        <option>Espanhol</option>
+                                        <option>Outros</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -117,17 +148,27 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin'];
+
         window.addEventListener("load", function() {
             InputSemImagem();
         });
         
         function CadastrarUsuario() {
             
-            const formData = $('#form-pessoa').serializeArray();
+            let formData = $('#form-pessoa').serializeArray();
+            let idiomasSelecionados = $('#idiomaPessoa').val();
+            let idiomasString = idiomasSelecionados.join(',');
 
+            // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
+            formData = formData.filter(function(item) {
+                return item.name !== 'idiomaPessoa';
+            });
+
+            formData.push({ name: 'idiomaPessoa', value: idiomasString });
             formData.push({ name: 'tipoPessoa', value: 'pastor' });
 
-            if (formData.some(field => field.value.trim() === '')) {
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 
                 Swal.fire({
                     position: 'center',
@@ -169,6 +210,15 @@
                 });
             }
 
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
         }
 
         function validarSenha() {

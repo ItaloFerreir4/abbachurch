@@ -13,12 +13,20 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de pastores", "dashbordsubtitle":
-        'Pastores', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de filhos", "dashbordsubtitle":
+        'Filhos', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
+                <div class="btns-dist">
+                    <div class="left">
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="editar-pastor">Voltar</a>
+                    </div>
+                    <div class="right">
+                        <a class="btn btn-info btn-wave waves-effect waves-light" href="cadastrar-filho">Cadastrar</a>
+                    </div>
+                </div>
                 <div class="card custom-card">
                     <div class="card-body" id="form-pessoa">
                         <div class="row">
@@ -75,6 +83,8 @@
 
         function ListarPessoas(){
 
+            const pessoaId = sessionStorage.getItem('pessoa');
+
             IniLoader();
 
             // Verifica se a tabela já existe e a destrói se necessário
@@ -93,7 +103,7 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'pastor',  pessoaId : '' }
+            const formData = { tipoPessoa : 'filho',  pessoaId : pessoaId}
 
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
@@ -126,7 +136,7 @@
 
         function DeletarPessoa(pessoaId){
 
-            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'pastor' };
+            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'filho' };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -166,8 +176,8 @@
         }
 
         function EditarPessoa(pessoaId){
-            sessionStorage.setItem('pessoa', pessoaId);
-            window.location.href = "editar-pastor";
+            sessionStorage.setItem('pessoaFilho', pessoaId);
+            window.location.href = "editar-filho";
         }
     </script>
 

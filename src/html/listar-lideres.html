@@ -93,7 +93,7 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'lider' }
+            const formData = { tipoPessoa : 'lider',  pessoaId : '' }
 
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
