@@ -9401,7 +9401,7 @@ div.dtr-modal div.dtr-modal-display {
 }
 .authentication .card.custom-card {
   box-shadow: 0 1rem 2.1rem rgba(0, 0, 0, 0.05);
-  margin-block-end: 6rem;
+  margin: 20px 0;
 }
 .authentication .authentication-brand.desktop-logo {
   display: block;
