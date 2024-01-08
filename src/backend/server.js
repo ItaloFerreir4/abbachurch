@@ -49,6 +49,9 @@ app.get('/reset-password', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
+    if (req.session.authenticated) {
+        res.redirect('/home');
+    }
     const filePath = path.join(__dirname, '../html', 'sign-in-cover2.html');
     res.sendFile(filePath);
 });
