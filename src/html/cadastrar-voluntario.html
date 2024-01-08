@@ -99,6 +99,11 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
+                                    <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
+                                    <select class="form-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
                                     <label for="categoriasVoluntario" class="mb-2 text-muted">Habilidades*</label>
                                     <select class="form-select multiple-select" id="categoriasVoluntario" name="categoriasVoluntario" multiple="multiple">
                                     </select>
@@ -164,6 +169,7 @@
             InputSemImagem();
             ListaPastores();
             ListaHabilidades();
+            ListaPaises();
         });
 
         function CadastrarUsuario() {
@@ -332,6 +338,34 @@
                 });
         }
 
+        function ListaPaises(){
+            const selectPaises = $("#nacionalidadePessoa");
+
+            selectPaises.empty();
+
+            IniLoader();
+
+            $.post('api/listarNomePaises')
+                .done(function (data) {
+                    data.forEach(function(pais) {
+                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
     </script>
 
 </body>

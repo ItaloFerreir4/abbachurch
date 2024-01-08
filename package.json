@@ -39,6 +39,7 @@
     "chart.js": "^3.8.0",
     "choices.js": "^10.1.0",
     "cleave.js": "^1.6.0",
+    "countries-list": "^3.0.6",
     "datatables.net-bs5": "^1.12.1",
     "date-fns": "^3.1.0",
     "dotenv": "^16.3.1",

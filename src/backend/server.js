@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
+const { listarNomePaises } = require('./paises');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
 const e = require('express');
@@ -276,6 +277,23 @@ app.post('/api/carregarCategoria', async (req, res) => {
 
         if (resultado) {
             res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarNomePaises', async (req, res) => {
+
+    try {
+        const lista = await listarNomePaises();
+
+        if (lista) {
+            res.json(lista);
         } else {
             res.status(401).json({ message: 'Erro ao Carregar' });
         }
