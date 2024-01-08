@@ -157,6 +157,7 @@
 
         window.addEventListener("load", function() {
             InputSemImagem();
+            ListaPaises();
         });
         
         function CadastrarUsuario() {
@@ -259,6 +260,34 @@
             }
         }
 
+        function ListaPaises(){
+            const selectPaises = $("#nacionalidadePessoa");
+
+            selectPaises.empty();
+
+            IniLoader();
+
+            $.post('api/listarNomePaises')
+                .done(function (data) {
+                    data.forEach(function(pais) {
+                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
     </script>
 
 </body>
