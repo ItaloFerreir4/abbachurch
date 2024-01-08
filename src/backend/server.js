@@ -6,7 +6,7 @@ const path = require('path');
 const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
-const { listarPessoas, cadastrarPessoa, cadastrarFilho, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
+const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
 const e = require('express');
 const app = express();
 const port = 3000;
@@ -70,12 +70,12 @@ app.post('/login', async (req, res) => {
 // Rota para a página inicial
 app.get('/', (req, res) => {
     // Verifique se o usuário está autenticado antes de servir a página inicial
-    if (req.session.authenticated) {
-        res.sendFile(path.join(__dirname, '../html', 'home.html'));
-    } else {
-        // Se o usuário não estiver autenticado, redirecione para a página de login
-        res.redirect('/login');
-    }
+    // if (req.session.authenticated) {
+        res.sendFile(path.join(__dirname, '../html', 'index.html'));
+    // } else {
+    //  Se o usuário não estiver autenticado, redirecione para a página de login
+    //     res.redirect('/login');
+    // }
 });
 
 // Rota para tratar solicitações de páginas HTML
@@ -114,15 +114,22 @@ app.post('/api/listarPessoas', async (req, res) => {
 
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, pessoaId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa } = req.body;
+    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, categoriasVoluntario } = req.body;
     
     try {
 
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
         const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa);
-        if(pessoaId != '' && tipoPessoa == 'filho'){
-            await cadastrarFilho(pessoa.insertId, pessoaId);
+        if(pastorId){
+            switch(tipoPessoa){
+                case 'filho':
+                    await cadastrarFilho(pessoa.insertId, pastorId);
+                break;
+                case 'voluntario':
+                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario);
+                break;
+            }
         }
 
         if (pessoa) {

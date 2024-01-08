@@ -1,5 +1,6 @@
 const executarQuery = require('./consulta');
 const { cadastrarUsuario } = require('./usuarios');
+const { format } = require('date-fns');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
@@ -30,9 +31,12 @@ async function listarPessoas(tipoPessoa, pessoaId) {
 
 async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa) {
     
+    let date = new Date();
+    date = format(date, 'yyyy-MM-dd');
+
     const query = `
-    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa) 
-    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}')`;
+    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, dataEntradaPessoa) 
+    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${date}')`;
 
     try {
         const pessoa = await executarQuery(query);
@@ -286,6 +290,18 @@ async function cadastrarFilho(pessoaId, pastorId) {
     }
 }
 
+async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario) {
+    
+    const query = `INSERT INTO voluntarios (pessoaId, pastorId, categoriasVoluntario, statusVoluntario) VALUES (${pessoaId}, ${pastorId}, '${categoriasVoluntario}', 0)`;
+
+    try {
+        return await executarQuery(query);
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
 async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     
     const query = `INSERT INTO redessociais (pessoaId, instagram, facebook, linkedin) VALUES ('${pessoaId}', '${instagram}', '${facebook}', '${linkedin}')`;
@@ -299,4 +315,4 @@ async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, deletarPessoa, carregarPessoa, atualizarPessoa };
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa };

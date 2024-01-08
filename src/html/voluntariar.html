@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="dark" data-header-styles="dark" data-menu-styles="dark" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Voluntariar-se</title>
+    <meta name="Description" content="Voluntariar-se a Abba Church">
+    <meta name="Author" content="Code+">
+	<meta name="keywords" content="painel">
+
+    @SPK@include("partials/fileupload_link.html")
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/libs/sweetalert2/sweetalert2.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/fav.ico" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="../assets/js/authentication-main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.min.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.min.css" rel="stylesheet" >
+
+
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Custom Css -->
+    <link href="../assets/css/custom.css" rel="stylesheet" >
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="row mx-0 authentication">
+        <div class="col-xxl-6 col-xl-7 col-lg-12">
+            <div class="btns-dist mt-3">
+                <div class="left">
+                    <a class="btn btn-secondary btn-wave waves-effect waves-light" href="./">Voltar</a>
+                </div>
+            </div>
+            <form id="form-pessoa" enctype="multipart/form-data">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <div class="card-title">Voluntario</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <label for="fotoPessoa" class="mb-2 text-muted">Foto</label>
+                                <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
+                                <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                            </div>
+                            <div class="col-12 col-lg-6" style="position: relative;">
+                                <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
+                                <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
+                                    <i class="bi bi-eye-slash-fill"></i>
+                                </span>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
+                                <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
+                                <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
+                                <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil*</label>
+                                <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
+                                    <option>Solteiro(a)</option>
+                                    <option>Casado(a)</option>
+                                    <option>Separado(a)</option>
+                                    <option>Divorciado(a)</option>
+                                    <option>Viúvo(a)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
+                                <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="profissaoPessoa" class="mb-2 text-muted">Profissão*</label>
+                                <input type="text" class="form-control mb-2" id="profissaoPessoa" name="profissaoPessoa">
+                            </div>
+                            <div class="col-12 col-lg-6 mb-2">
+                                <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade*</label>
+                                <select class="form-select" id="escolaridadePessoa" name="escolaridadePessoa">
+                                    <option>Selecione uma opção</option>
+                                    <option>Analfabeto</option>
+                                    <option>Até 5º Ano Incompleto</option>
+                                    <option>5º Ano Completo</option>
+                                    <option>6º ao 9º Ano do Fundamental</option>
+                                    <option>Fundamental Completo</option>
+                                    <option>Médio Incompleto</option>
+                                    <option>Médio Completo</option>
+                                    <option>Superior Incompleto</option>
+                                    <option>Superior Completo</option>
+                                    <option>Mestrado</option>
+                                    <option>Doutorado</option>
+                                    <option>Prefiro não dizer</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-2">
+                                <label for="idiomaPessoa" class="mb-2 text-muted">Idiomas*</label>
+                                <select class="form-select multiple-select" id="idiomaPessoa" name="idiomaPessoa" multiple="multiple">
+                                    <option>Português</option>
+                                    <option>Ingles</option>
+                                    <option>Espanhol</option>
+                                    <option>Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-2">
+                                <label for="categoriasVoluntario" class="mb-2 text-muted">Habilidades*</label>
+                                <select class="form-select multiple-select" id="categoriasVoluntario" name="categoriasVoluntario" multiple="multiple">
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-2 d-none">
+                                <label for="pastorId" class="mb-2 text-muted">Pastor Responsavel*</label>
+                                <select class="form-select" id="pastorId" name="pastorId">
+                                    <option value="0">Sem</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <div class="card-title">Redes Sociais</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                <label for="instagram" class="mb-2 text-muted">Instagram</label>
+                                <input type="text" class="form-control mb-2" id="instagram" name="instagram">
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <label for="facebook" class="mb-2 text-muted">Facebook</label>
+                                <input type="text" class="form-control mb-2" id="facebook" name="facebook">
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <label for="linkedin" class="mb-2 text-muted">Linkedin</label>
+                                <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xxl-6 col-xl-5 col-lg-5 d-xl-block d-none px-0">
+            <div class="authentication-cover">
+                <div class="">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-xl-9">
+                            <a href="./"> <img src="../assets/images/brand-logos/desktop-dark.png" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    
+    @SPK@include("partials/fileupload_script.html")
+
+    <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Show Password JS -->
+    <script src="../assets/js/show-password.js"></script>
+
+    <!-- Select2 Cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $('.multiple-select').select2({
+            dir: "ltr"
+        });
+
+        function IniLoader(){
+            let loader = document.getElementById("loader");
+            loader.classList.remove('d-none');
+        }
+
+        function FinLoader(){
+            let loader = document.getElementById("loader");
+            loader.classList.add('d-none');
+        }
+    </script>
+
+    <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin'];
+
+        window.addEventListener("load", function() {
+            InputSemImagem();
+            ListaHabilidades();
+        });
+
+        function CadastrarUsuario() {
+            
+            let formData = $('#form-pessoa').serializeArray();
+            let habilidadesSelecionadas = $('#categoriasVoluntario').val();
+            let idiomasSelecionados = $('#idiomaPessoa').val();
+            let habilidadesString = habilidadesSelecionadas.join(',');
+            let idiomasString = idiomasSelecionados.join(',');
+
+            const itensParaRemover = ['idiomaPessoa', 'categoriasVoluntario'];
+
+            // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
+            formData = formData.filter(function(item) {
+                return !itensParaRemover.includes(item.name);
+            });
+
+            formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
+            formData.push({ name: 'idiomaPessoa', value: idiomasString });
+            formData.push({ name: 'tipoPessoa', value: 'voluntario' });
+
+            console.log(formData);
+
+            if (formData.some(field => verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } 
+            else {
+                IniLoader();
+                $.post('api/cadastrarPessoa', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                });
+            }
+            
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+
+        function validarSenha() {
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            if (senha.value.length < 5) {
+                submitBtn.disabled = true;
+            } else if (senha.value !== confirmaSenha.value) {
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                senha.classList.add('border-red');
+                confirmaSenha.classList.add('border-red');
+                submitBtn.disabled = true;
+            } else {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.add('border-green');
+                confirmaSenha.classList.add('border-green');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function toggleVisibilidadeSenha() {
+            var senhaInput = document.getElementById('senhaUsuario');
+            var iconeOlho = document.getElementById('icon-eye');
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
+            } else {
+                senhaInput.type = 'password';
+                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+            }
+        }
+
+        function ListaHabilidades(){
+
+            IniLoader();
+
+            $.post('api/listarCategorias')
+                .done(function (data) {
+                    const categorias = data.map(function(categoria) {
+                        return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
+                    });
+
+                    $('#categoriasVoluntario').select2({
+                        data: categorias
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+    </script>
+</body>
+
+</html>
