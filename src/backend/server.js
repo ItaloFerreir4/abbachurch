@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
@@ -17,6 +18,7 @@ app.use('/html', express.static(path.join(__dirname, '../html')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(cookieParser());
 app.use(session({
     secret: 's3Cr3T4BbA',
     resave: false,
@@ -39,16 +41,22 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const { email, senha } = req.body;
+    const { email, senha, remember } = req.body;
 
     try {
         const usuario = await autenticarUsuario(email, senha); //return resultados.length > 0 ? resultados[0] : null;
 
         if (usuario) {
+
+            if (remember) {
+                req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 dias
+            }
+
             req.session.authenticated = true;
             req.session.email = email;
             req.session.nome = usuario.nomePessoa;
             req.session.foto = usuario.fotoPessoa;
+            req.session.idPessoa = usuario.idPessoa;
             res.json({ message: 'Login bem-sucedido', usuario });
         } else {
             res.status(401).json({ message: 'Credenciais inválidas' });
@@ -182,8 +190,29 @@ app.post('/api/atualizarPessoa', async (req, res) => {
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
         const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa);
 
-        if (resultado) {
-            res.json(resultado);
+        if (resultado) 
+        {
+            let newData = {};
+            if (req.session.idPessoa == idPessoa){
+                
+                req.session.nome = nomePessoa;
+                req.session.foto = nomeFoto;
+                newData = {
+                    changeData: true,
+                    resultado: resultado,
+                    nomePessoa: nomePessoa,
+                    nomeFoto: nomeFoto
+                };
+
+            } else {
+                newData = {
+                    changeData: false,
+                    resultado: resultado,
+                };
+            }
+
+            res.json(newData);
+
         } else {
             res.status(401).json({ message: 'Erro ao atualizar' });
         }
