@@ -27,7 +27,9 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (req.url === '/login' || req.session.authenticated) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/'].includes(req.url)) {
+        next();
+    } else if (req.session.authenticated) {
         next();
     } else {
         res.redirect('/login');
@@ -35,6 +37,16 @@ const authenticateMiddleware = (req, res, next) => {
 };
 
 app.use(authenticateMiddleware);
+
+app.get('/voluntariar', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'voluntariar.html');
+    res.sendFile(filePath);
+})
+
+app.get('/reset-password', (req, res) => {
+    const filePath = path.join(__dirname, '../html', 'reset-password.html');
+    res.sendFile(filePath);
+})
 
 app.get('/login', (req, res) => {
     const filePath = path.join(__dirname, '../html', 'sign-in-cover2.html');
@@ -44,13 +56,18 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, senha, remember } = req.body;
 
+    if (!email || !senha) {
+        res.status(400).json({ message: 'Credenciais inválidas' });
+        return;
+    }
+
     try {
         const usuario = await autenticarUsuario(email, senha); //return resultados.length > 0 ? resultados[0] : null;
 
         if (usuario) {
 
             if (remember) {
-                req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 dias
+                req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 dias
             }
 
             req.session.authenticated = true;
