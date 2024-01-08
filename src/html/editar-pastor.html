@@ -323,7 +323,12 @@
                 IniLoader();
                 $.post('api/atualizarPessoa', formData)
                 .done(function (data) {
-                    
+
+                    if (data.changeData) {
+                        document.getElementById('userName').innerHTML = data.nomePessoa;
+                        document.getElementById('userPhoto').src = '../assets/uploads/' +  data.nomeFoto;
+                    }
+
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
