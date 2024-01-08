@@ -29,14 +29,14 @@ async function listarPessoas(tipoPessoa, pessoaId) {
     }
 }
 
-async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa) {
     
     let date = new Date();
     date = format(date, 'yyyy-MM-dd');
 
     const query = `
-    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, dataEntradaPessoa) 
-    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${date}')`;
+    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, dataEntradaPessoa) 
+    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${nacionalidadePessoa}', '${date}')`;
 
     try {
         const pessoa = await executarQuery(query);
@@ -168,11 +168,11 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa) {
     
     let query = `
         UPDATE pessoas
-        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}', profissaoPessoa = '${profissaoPessoa}', escolaridadePessoa = '${escolaridadePessoa}', idiomaPessoa = '${idiomaPessoa}'
+        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}', profissaoPessoa = '${profissaoPessoa}', escolaridadePessoa = '${escolaridadePessoa}', idiomaPessoa = '${idiomaPessoa}', nacionalidadePessoa = '${nacionalidadePessoa}'
         WHERE idPessoa = ${idPessoa};
         `;
         
