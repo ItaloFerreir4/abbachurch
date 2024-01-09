@@ -1,0 +1,165 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Ministerio", "dashbordsubtitle":
+        'Ministerios', "dashbordsubtitle2": 'Cadastrar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <form id="form-ministerio" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Ministerio</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="nomeMinisterio" class="mb-2 text-muted">Nome*</label>
+                                    <input type="text" class="form-control mb-2" id="nomeMinisterio" name="nomeMinisterio">
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="liderId" class="mb-2 text-muted">Lider Responsavel*</label>
+                                    <select class="form-select" id="liderId" name="liderId">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="dataEntradaMinisterio" class="mb-2 text-muted">Data de Entrada*</label>
+                                    <input type="date" class="form-control mb-2" id="dataEntradaMinisterio" name="dataEntradaMinisterio">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarMinisterio()">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            ListaLideres();
+        });
+        
+        function CadastrarMinisterio() {
+            
+            let formData = $('#form-ministerio').serializeArray();
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/cadastrarMinisterio', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    
+        function ListaLideres(){
+            const formData = { tipoPessoa : 'lider' };
+            const selectLider = $("#liderId");
+
+            selectLider.empty();
+
+            IniLoader();
+
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    data.forEach(function(pessoa) {
+                        selectLider.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
+    </script>
+
+</body>
+
+</html>

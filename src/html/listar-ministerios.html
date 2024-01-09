@@ -1,0 +1,212 @@
+@SPK@include("partials/mainhead.html")
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Ministerios", "dashbordsubtitle":
+        'Ministerios', "dashbordsubtitle2": 'Listar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="card custom-card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">Lider</th>
+                                            <th scope="col">Data</th>
+                                            <th scope="col">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Datatables Cdn -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.6/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        window.addEventListener("load", function() {
+            ListarMinisterios();
+        });
+
+        function ListarMinisterios() {
+            IniLoader();
+
+            // Verifica se a tabela já existe e a destrói se necessário
+            if ($.fn.DataTable.isDataTable('#responsiveTable')) {
+                $('#responsiveTable').DataTable().destroy();
+            }
+
+            let tabela = $('#responsiveTable').DataTable({
+                responsive: true,
+                language: {
+                    searchPlaceholder: 'Procurar...',
+                    sSearch: '',
+                },
+                "pageLength": 10,
+            });
+
+            tabela.clear().draw();
+
+            // Usando uma Promise para esperar pela lista de líderes
+            ListaLideres().then(function (listaLideres) {
+                $.post('api/listarMinisterios')
+                    .done(function (data) {
+                        data.forEach(function (ministerio) {
+                            const idProcurado = ministerio.liderId;
+                            let nomeLider = listaLideres.find(lider => lider.idPessoa === idProcurado)?.nomePessoa;
+                            nomeLider = nomeLider ? nomeLider : 'Lider não encontrado!';
+
+                            const dataOld = ministerio.dataEntradaMinisterio;
+                            let data = new Date(dataOld);
+
+                            if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
+                                const dataFormatada = data.toISOString().split('T')[0];
+                                data = dataFormatada;
+                            } else {
+                                data = dataOld;
+                            }
+
+                            tabela.row.add([
+                                ministerio.nomeMinisterio,
+                                nomeLider,
+                                data,
+                                `<div class="btns-actions">
+                                    <button class="btn btn-success btn-sm mr-1" onClick="EditarMinisterio(${ministerio.idMinisterio})">Editar</button>
+                                    <button class="btn btn-danger btn-sm mr-1" onClick="DeletarMinisterio(${ministerio.idMinisterio})">Deletar</button>
+                                </div>`
+                            ]).draw();
+                        });
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .always(function () {
+                        FinLoader();
+                    });
+            });
+        }
+
+        function DeletarMinisterio(idMinisterio){
+
+            const dataApi = { idMinisterio: idMinisterio };
+
+            Swal.fire({
+            title: "Quer realmente deletar?",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Deletar",
+            cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    IniLoader();
+                    $.post('/api/deletarMinisterio', dataApi)
+                        .done(function (data) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Deletado com sucesso!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+
+                            ListarMinisterios();
+                        })
+                        .fail(function (error) {
+                            console.error('Erro na requisição:', error);
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Erro ao deletar!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        });
+                }
+            });
+
+        }
+
+        function EditarMinisterio(idMinisterio){
+            sessionStorage.setItem('ministerio', idMinisterio);
+            window.location.href = "editar-ministerio";
+        }
+    
+        function ListaLideres() {
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa: 'lider' };
+
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        resolve(data);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+    </script>
+
+</body>
+
+</html>

@@ -7,6 +7,7 @@ const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarNomePaises } = require('./paises');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
+const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
 const e = require('express');
 const app = express();
@@ -371,6 +372,98 @@ app.post('/api/listarNomePaises', async (req, res) => {
 
         if (lista) {
             res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarMinisterios', async (req, res) => {
+
+    try {
+        const lista = await listarMinisterios();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarMinisterio', async (req, res) => {
+
+    const { nomeMinisterio, liderId, dataEntradaMinisterio } = req.body;
+    
+    try {
+        const ministerio = await cadastrarMinisterio(nomeMinisterio, liderId, dataEntradaMinisterio);
+        
+        if (ministerio) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarMinisterio', async (req, res) => {
+
+    const { idMinisterio, nomeMinisterio, liderId, dataEntradaMinisterio } = req.body;
+    
+    try {
+        const ministerio = await atualizarMinisterio(idMinisterio, nomeMinisterio, liderId, dataEntradaMinisterio);
+        
+        if (ministerio) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarMinisterio', async (req, res) => {
+
+    const { idMinisterio } = req.body;
+
+    try {
+        const resultado = await deletarMinisterio(idMinisterio);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarMinisterio', async (req, res) => {
+
+    const { idMinisterio } = req.body;
+
+    try {
+        const resultado = await carregarMinisterio(idMinisterio);
+
+        if (resultado) {
+            res.json(resultado);
         } else {
             res.status(401).json({ message: 'Erro ao Carregar' });
         }
