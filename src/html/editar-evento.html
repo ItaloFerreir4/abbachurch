@@ -1,0 +1,241 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Evento", "dashbordsubtitle":
+        'Eventos', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-evento" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Evento</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-6">
+                                            <label for="nomeEvento" class="mb-2 text-muted">Nome*</label>
+                                            <input type="text" class="form-control mb-2" id="nomeEvento" name="nomeEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2">
+                                            <label for="localEvento" class="mb-2 text-muted">Local*</label>
+                                            <input type="text" class="form-control" id="localEvento" name="localEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="dataHoraEvento" class="mb-2 text-muted">Data e Hora do Evento*</label>
+                                            <input type="text" class="form-control mb-2 datetime" id="dataHoraEvento" name="dataHoraEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2">
+                                            <label for="ministerioId" class="mb-2 text-muted">Ministerio Responsavel*</label>
+                                            <select class="form-select" id="ministerioId" name="ministerioId">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label for="observacoesEvento" class="mb-2 text-muted">Observações</label>
+                                            <textarea class="form-control" id="observacoesEvento" name="observacoesEvento" rows="8"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarEvento()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['observacoesEvento'];
+
+        window.addEventListener("load", function() {
+            ListaMinisterios();
+            CarregarEvento();
+        });
+
+        window.addEventListener('beforeunload', function() {
+            // Obtém o valor atual do sessionStorage
+            var evento = sessionStorage.getItem('evento');
+
+            // Se o valor existir, remove o item do sessionStorage
+            if (evento) {
+                sessionStorage.removeItem('evento');
+            }
+        });
+
+        function CarregarEvento(){
+            const idEvento = sessionStorage.getItem('evento');
+            const formData = { idEvento : idEvento}
+
+            IniLoader();
+
+            $.post('api/carregarEvento', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(evento) {
+                        for (const propriedade in evento) {
+                            const valor = evento[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                console.log(valor);
+                                if (propriedade === 'dataHoraEvento') {
+                                    let valorComoData = new Date(valor);
+                                    let formattedDate = valorComoData.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                                    campo.value = formattedDate;
+                                    console.log(valorComoData);
+                                    console.log(formattedDate);
+
+                                }
+                                else{
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarEvento() {
+
+            const idEvento = sessionStorage.getItem('evento');
+            let formData = $('#form-evento').serializeArray();
+
+            formData.push({ name: 'idEvento', value: idEvento });
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarEvento', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    
+        function ListaMinisterios(){
+            const selectLider = $("#ministerioId");
+
+            selectLider.empty();
+
+            IniLoader();
+
+            $.post('api/listarMinisterios')
+                .done(function (data) {
+                    data.forEach(function(ministerio) {
+                        selectLider.append('<option value="' + ministerio.idMinisterio + '">' + ministerio.nomeMinisterio + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
+    </script>
+
+</body>
+
+</html>

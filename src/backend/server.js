@@ -6,6 +6,7 @@ const path = require('path');
 const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarNomePaises } = require('./paises');
+const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
@@ -461,6 +462,98 @@ app.post('/api/carregarMinisterio', async (req, res) => {
 
     try {
         const resultado = await carregarMinisterio(idMinisterio);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarEventos', async (req, res) => {
+
+    try {
+        const lista = await listarEventos();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarEvento', async (req, res) => {
+
+    const { nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento } = req.body;
+    
+    try {
+        const resultado = await cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarEvento', async (req, res) => {
+
+    const { idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento} = req.body;
+    
+    try {
+        const resultado = await atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarEvento', async (req, res) => {
+
+    const { idEvento } = req.body;
+
+    try {
+        const resultado = await deletarEvento(idEvento);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarEvento', async (req, res) => {
+
+    const { idEvento } = req.body;
+
+    try {
+        const resultado = await carregarEvento(idEvento);
 
         if (resultado) {
             res.json(resultado);
