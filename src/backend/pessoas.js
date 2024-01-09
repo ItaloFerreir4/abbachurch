@@ -18,6 +18,9 @@ async function listarPessoas(tipoPessoa, pessoaId) {
         case 'filho':
             query = `SELECT * FROM filhos fi, pessoas pe WHERE fi.pastorId = ${pessoaId} AND fi.pessoaId = pe.idPessoa`;
             break;
+        case 'voluntario':
+            query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa`;
+            break;
     }
 
     try {
@@ -128,6 +131,10 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
                     query = `DELETE FROM filhos WHERE pessoaId = ${pessoaId};`;
                     return await executarQuery(query) ?  true :  null;
                 break;
+                case 'voluntario':
+                    query = `DELETE FROM voluntarios WHERE pessoaId = ${pessoaId};`;
+                    return await executarQuery(query) ?  true :  null;
+                break;
             }
         }
         else{
@@ -154,7 +161,10 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
             query = `SELECT es.*, pe.*, re.* FROM esposas es, pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = ${idPessoa} AND es.pessoaId = pe.idPessoa AND es.pastorId = pa.idPastor AND re.pessoaId = pe.idPessoa;`;
             break;
         case 'filho':
-            query = `SELECT * FROM filhos fi, pessoas pe, redessociais re WHERE fi.pessoaId = 34 AND fi.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            query = `SELECT * FROM filhos fi, pessoas pe, redessociais re WHERE fi.pessoaId = ${idPessoa} AND fi.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            break;
+        case 'voluntario':
+            query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.pessoaId = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
             break;
     }
 
@@ -214,24 +224,45 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
         }
 
         if(resultados){
-            switch(tipoPessoa){
-                case 'pastor':
-                    return true;
-                break;
-                case 'lider':
-                    return true;
-                break;
-                case 'esposa':
-                    return true;
-                break;
-                case 'filho':
-                    return true;
-                break;
-            }
+            return true;
         }
         else{
             return null;
         }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function atualizarVoluntario(pessoaId, pastorId, categoriasVoluntario) {
+    
+    let query = `
+        UPDATE voluntarios
+        SET pastorId = '${pastorId}', categoriasVoluntario = '${categoriasVoluntario}'
+        WHERE pessoaId = ${pessoaId};
+        `;
+        
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
+    
+    let query = `
+        UPDATE voluntarios
+        SET statusVoluntario = '${statusVoluntario}'
+        WHERE pessoaId = ${pessoaId};
+        `;
+        
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
@@ -315,4 +346,4 @@ async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa };
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario };

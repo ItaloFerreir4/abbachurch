@@ -12055,6 +12055,18 @@ h6 {
   justify-content: space-between;
 }
 
+.status[status="0"] {
+  color: rgba(var(--warning-rgb), 1);
+}
+
+.status[status="1"] {
+  color: rgba(var(--success-rgb), 1);
+}
+
+.status[status="2"] {
+  color: rgba(var(--danger-rgb), 1);
+}
+
 /* Start:: Sales Dashboard Styles */
 .main-card-icon {
   inset-block-end: 0.75rem;

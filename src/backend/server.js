@@ -7,7 +7,7 @@ const { autenticarUsuario } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarNomePaises } = require('./paises');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
-const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa } = require('./pessoas');
+const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
 const e = require('express');
 const app = express();
 const port = 3000;
@@ -205,11 +205,18 @@ app.post('/api/carregarPessoa', async (req, res) => {
 
 app.post('/api/atualizarPessoa', async (req, res) => {
 
-    const { idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa } = req.body;
+    const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario } = req.body;
 
     try {
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
         const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa);
+
+        switch(tipoPessoa){
+            case 'voluntario':
+                const voluntario = await atualizarVoluntario(idPessoa, pastorId, categoriasVoluntario);
+                console.log(voluntario);
+            break;
+        }
 
         if (resultado) 
         {
@@ -233,6 +240,27 @@ app.post('/api/atualizarPessoa', async (req, res) => {
             }
 
             res.json(newData);
+
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarStatusVoluntario', async (req, res) => {
+
+    const { pessoaId, statusVoluntario } = req.body;
+
+    try {
+        const resultado = await atualizarStatusVoluntario(pessoaId, statusVoluntario);
+
+        if (resultado) 
+        {
+            res.json({message: 'Atualizado o status'});
 
         } else {
             res.status(401).json({ message: 'Erro ao atualizar' });

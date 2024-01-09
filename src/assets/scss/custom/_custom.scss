@@ -2254,3 +2254,15 @@ h6 {
   align-items: center;
   justify-content: space-between;
 }
+
+.status[status="0"] {
+  color: rgba(var(--warning-rgb), 1);
+}
+
+.status[status="1"] {
+  color: rgba(var(--success-rgb), 1);
+}
+
+.status[status="2"] {
+  color: rgba(var(--danger-rgb), 1);
+}

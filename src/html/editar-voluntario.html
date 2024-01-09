@@ -13,8 +13,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Voluntario", "dashbordsubtitle":
-        'Voluntarios', "dashbordsubtitle2": 'Cadastrar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Voluntario", "dashbordsubtitle":
+        'Voluntarios', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -29,21 +29,6 @@
                                 <div class="col-12 col-lg-6">
                                     <label for="fotoPessoa" class="mb-2 text-muted">Foto*</label>
                                     <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
-                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
-                                </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
-                                    <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
-                                    <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -137,9 +122,32 @@
                             </div>
                         </div>
                     </div>
+                    <span id="optionAccess">Alterar dados de acesso</span>
+                    <div class="card custom-card" id="contentAccess" data-close="1">
+                        <div class="card-header">
+                            <div class="card-title">Acesso</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-4" style="position: relative;">
+                                    <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <input type="hidden" name="changeAccess" id="changeAccess" value="0">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                            <button id="submitBtn"  class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
                         </div>
                     </div>
                 </form>
@@ -164,16 +172,133 @@
 
     <script>
         const excludedFields = ['instagram', 'facebook', 'linkedin'];
-
+        
         window.addEventListener("load", function() {
-            InputSemImagem();
+            ListaPaises();
             ListaPastores();
             ListaHabilidades();
-            ListaPaises();
+            CarregarPessoa();
         });
 
-        function CadastrarUsuario() {
-            
+        document.getElementById('optionAccess').addEventListener('click', function() {
+
+            let contentAccess = document.getElementById('contentAccess');
+            let close = contentAccess.getAttribute('data-close');
+            let emailPessoa = document.getElementById('emailPessoa');
+            let senhaUsuario = document.getElementById('senhaUsuario');
+            let confirmeSenhaUsuario = document.getElementById('confirmeSenhaUsuario');
+            let optionAccess = document.getElementById('optionAccess');
+            let changeAccess = document.getElementById('changeAccess');
+
+            if (close === '1') {
+
+                contentAccess.setAttribute('data-close', '0');
+                emailPessoa.disabled = false;
+                senhaUsuario.disabled = false;
+                confirmeSenhaUsuario.disabled = false;
+                senhaUsuario.value = '';
+                confirmeSenhaUsuario.value = '';
+                optionAccess.innerHTML = 'Cancelar';
+                changeAccess.value = '1';
+                validarSenha();
+
+            } else {
+
+                contentAccess.setAttribute('data-close', '1');
+                emailPessoa.disabled = true;
+                senhaUsuario.disabled = true;
+                confirmeSenhaUsuario.disabled = true;
+                senhaUsuario.value = 'undefined';
+                confirmeSenhaUsuario.value = 'undefined';
+                optionAccess.innerHTML = 'Alterar dados de acesso';
+                changeAccess.value = '0';
+                validarSenha();
+
+            }
+        });
+
+        function CarregarPessoa(){
+            const idPessoa = sessionStorage.getItem('pessoa');
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'voluntario' }
+
+            IniLoader();
+
+            $.post('api/carregarPessoa', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(pessoa) {
+                        for (const propriedade in pessoa) {
+                            const valor = pessoa[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if (propriedade === 'dataNascimentoPessoa') {
+                                    const valorComoData = new Date(valor);
+
+                                    if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
+                                        const dataFormatada = valorComoData.toISOString().split('T')[0];
+                                        campo.value = dataFormatada;
+                                    } else {
+                                        campo.value = valor;
+                                    }
+                                } else if(propriedade === 'fotoPessoa') {
+                                    
+                                    if(valor){
+                                        const caminho = '../assets/uploads/' + valor;
+                                        InputComImagem(caminho);
+                                    }
+                                    else{
+                                        InputSemImagem();
+                                    }
+
+                                } else if (propriedade === 'senhaUsuario'){
+
+                                    campo.value = 'undefined';
+                                    document.getElementById('confirmeSenhaUsuario').value = 'undefined';
+
+                                } 
+                                else if (propriedade === 'idiomaPessoa'){
+
+                                    const idiomasArray = valor.split(',');
+                                    $('#idiomaPessoa').val(idiomasArray).trigger('change');
+
+                                }
+                                else if (propriedade === 'categoriasVoluntario'){
+
+                                    const idiomasArray = valor.split(',');
+                                    $('#categoriasVoluntario').val(idiomasArray).trigger('change');
+
+                                }
+                                else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarPessoa() {
+
+            const idPessoa = sessionStorage.getItem('pessoa');
             let formData = $('#form-pessoa').serializeArray();
             let habilidadesSelecionadas = $('#categoriasVoluntario').val();
             let idiomasSelecionados = $('#idiomaPessoa').val();
@@ -189,9 +314,10 @@
 
             formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
+            formData.push({ name: 'idPessoa', value: idPessoa });
             formData.push({ name: 'tipoPessoa', value: 'voluntario' });
 
-            if (formData.some(field => verificacaoCampos(excludedFields, field) )) {
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 
                 Swal.fire({
                     position: 'center',
@@ -201,16 +327,15 @@
                     timer: 1500
                 });
 
-            } 
-            else {
+            } else {
                 IniLoader();
-                $.post('api/cadastrarPessoa', formData)
+                $.post('api/atualizarPessoa', formData)
                 .done(function (data) {
                     
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
-                        title: 'Cadastrado com sucesso!',
+                        title: 'Atualizado com sucesso!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -223,7 +348,7 @@
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao cadastrar!',
+                        title: 'Erro ao atualizar!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -233,16 +358,7 @@
                     FinLoader();
                 });
             }
-            
-        }
 
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
         }
 
         function validarSenha() {
@@ -250,6 +366,10 @@
             let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
             if (senha.value.length < 5) {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
                 submitBtn.disabled = true;
             } else if (senha.value !== confirmaSenha.value) {
                 senha.classList.remove('border-green');
@@ -266,25 +386,20 @@
             }
         }
 
-        function toggleVisibilidadeSenha() {
-            var senhaInput = document.getElementById('senhaUsuario');
-            var iconeOlho = document.getElementById('icon-eye');
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
-            } else {
-                senhaInput.type = 'password';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
             }
         }
-
+    
         function ListaPastores(){
             const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
             const selectPastor = $("#pastorId");
 
             selectPastor.empty();
-
-            IniLoader();
 
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
@@ -301,15 +416,10 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
                 });
         }
     
         function ListaHabilidades(){
-
-            IniLoader();
 
             $.post('api/listarCategorias')
                 .done(function (data) {
@@ -330,9 +440,6 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
                 });
         }
 
@@ -340,8 +447,6 @@
             const selectPaises = $("#nacionalidadePessoa");
 
             selectPaises.empty();
-
-            IniLoader();
 
             $.post('api/listarNomePaises')
                 .done(function (data) {
@@ -358,9 +463,6 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
                 });
         }
     
