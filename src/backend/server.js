@@ -29,7 +29,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/'].includes(req.url)) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/'].includes(req.url)) {
         next();
     } else if (req.session.authenticated) {
         next();
