@@ -2,7 +2,7 @@
 
 @SPK@include("partials/fileupload_link.html")
 
-<link rel="stylesheet" href="../assets/css/custom.css">
+<link rel="stylesheet" href="../assets/libs/fullcalendar/main.min.css">
 
 </head>
 
@@ -13,14 +13,14 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Dashboard", "dashbordsubtitle": 'Dashboard' ,"dashbordsubtitle2": 'Dashboard'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Calendario", "dashbordsubtitle": 'Dashboard' ,"dashbordsubtitle2": 'Calendario'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
                 <div class="card custom-card">
                     <div class="card-body">
-                        <h1>Bem-vindo!</h1>
+                        <div id="calendario"></div>
                     </div>
                 </div>
             </div>
@@ -37,10 +37,199 @@
 
     @SPK@include("partials/custom_switcherjs.html")
 
-    @SPK@include("partials/fileupload_script.html")
+    <!-- Fullcalendar JS -->
+    <script src="../assets/libs/fullcalendar/main.min.js"></script>
+    <!-- <script src="../assets/js/fullcalendar.js"></script> -->
 
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
+
+    <script>
+        window.addEventListener("load", function() {
+            CalendarioFull();        
+        });
+        
+        function CalendarioFull(){
+            IniLoader();
+
+            Promise.all([ListarEventos(), ListarPessoas()]).then(function ([dataEventos, dataPessoas]) {
+
+                const dataCalendarEvents = {
+                    id: 1,
+                    backgroundColor: 'rgba(var(--primary-rgb), 0.4)',
+                    borderColor: 'rgba(var(--primary-rgb), 1)',
+                    textColor: '#fff',
+                    events: dataEventos
+                }
+
+                const dataCalendarBirthday = {
+                    id: 2,
+                    backgroundColor: 'rgba(var(--teal-rgb), 0.4)',
+                    borderColor: 'rgba(var(--teal-rgb), 1)',
+                    textColor: '#fff',
+                    events: dataPessoas
+                }
+
+                console.log(dataCalendarEvents);
+                console.log(dataCalendarBirthday);
+
+                const calendarEl = document.getElementById('calendario');
+                let calendar = new FullCalendar.Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    },
+                    defaultView: 'month',
+                    navLinks: true, // can click day/week names to navigate views
+                    businessHours: true, // display business hours
+                    editable: false,
+                    selectable: false,
+                    selectMirror: false,
+                    droppable: false, // this allows things to be dropped onto the calendar
+
+                    eventClick: function (arg) {
+                        console.log('arg.event:', arg.event);
+                        const description = arg.event.extendedProps.description;
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'info',
+                            title: arg.event.title,
+                            html:
+                            'Data: ' + arg.event.start +
+                            '<br> Descrição: ' + description,
+                            showConfirmButton: true,
+                        });
+                    },
+
+                    dayMaxEvents: true, // allow "more" link when too many events
+                    eventSources: [dataCalendarBirthday, dataCalendarEvents,],
+
+                });
+                calendar.render();
+
+                FinLoader();
+            });
+        }
+        
+        function ListarEventos() {
+            return new Promise(function (resolve, reject) {
+
+                let dataEvents = [];
+                let count = 1;
+
+                // Usando uma Promise para esperar pela lista de líderes
+                ListaMinisterios().then(function (listaMinisterios) {
+                    $.post('api/listarEventos')
+                        .done(function (data) {
+
+                            data.forEach(function (evento) {
+                                const idProcurado = evento.ministerioId;
+                                let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
+                                nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
+
+                                const dataOld = evento.dataHoraEvento;
+                                let data = new Date(dataOld);
+
+                                if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
+                                    const dataFormatada = data.toISOString().split('T')[0]; 
+                                    // const dataFormatada = data.toLocaleString();
+                                    data = dataFormatada;
+                                } else {
+                                    data = dataOld;
+                                }
+
+                                dataEvents.push({ id: count, start: data, end: data, title: evento.nomeEvento, description: evento.observacoesEvento });
+
+                                count ++;
+                            });
+
+                            resolve(dataEvents);
+                        })
+                        .fail(function (error) {
+                            console.error('Erro na requisição:', error);
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Erro ao listar!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            reject(error);
+                        });
+                });
+        
+            });
+        }
+
+        function ListaMinisterios() {
+            return new Promise(function (resolve, reject) {
+
+                $.post('api/listarMinisterios')
+                    .done(function (data) {
+                        resolve(data);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+    
+        function ListarPessoas(){
+            return new Promise(function (resolve, reject) {
+                
+                let dataEvents = [];
+                let count = 1;
+
+                const formData = { tipoPessoa : 'todos' }
+
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+
+                        data.forEach(function(pessoa) {
+
+                            const nome = 'Aniversário de ' + pessoa.nomePessoa;
+                            const description = 'Hoje ' + pessoa.nomePessoa + ' está fazendo aniversário';
+                            const dataOld = pessoa.dataNascimentoPessoa;
+                            let data = new Date(dataOld);
+
+                            if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
+                                // const dataFormatada = data.toISOString().split('T')[0]; 
+                                const dataFormatada = data.toISOString().split('T')[0];
+                                data = dataFormatada;
+                            } else {
+                                data = dataOld;
+                            }
+
+                            dataEvents.push({ id: count, start: data, end: data, title: nome, description: description });
+
+                            count ++;
+                        });
+
+                        resolve(dataEvents);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+    </script>
 
 </body>
 
