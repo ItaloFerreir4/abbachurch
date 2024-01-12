@@ -150,7 +150,7 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
                     await cadastrarFilho(pessoa.insertId, pastorId);
                 break;
                 case 'voluntario':
-                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario);
+                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa);
                 break;
             }
         }

@@ -172,7 +172,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                        <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button">Cadastrar</button>
                     </div>
                 </div>
             </form>
@@ -231,10 +231,10 @@
         window.addEventListener("load", function() {
             InputSemImagem();
             ListaHabilidades();
-            ListaPaises();
+            //ListaPaises();
         });
 
-        function CadastrarUsuario() {
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
             
             let formData = $('#form-pessoa').serializeArray();
             let habilidadesSelecionadas = $('#categoriasVoluntario').val();
@@ -269,7 +269,7 @@
             else {
                 IniLoader();
                 $.post('api/cadastrarPessoa', formData)
-                .done(function (data) {
+                .done(function (data) { console.log(data);
                     
                     Swal.fire({
                         position: 'center',
@@ -301,7 +301,7 @@
                 });
             }
             
-        }
+        });
 
         function verificacaoCampos(excludedFields, field){
             if(!excludedFields.includes(field.name)){

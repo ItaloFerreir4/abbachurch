@@ -1,6 +1,8 @@
 const executarQuery = require('./consulta');
 const { cadastrarUsuario } = require('./usuarios');
 const { format } = require('date-fns');
+const { enviarEmail } = require('./send-email');
+const { gerarTokenConfirmacao } = require('./global');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
@@ -321,12 +323,23 @@ async function cadastrarFilho(pessoaId, pastorId) {
     }
 }
 
-async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario) {
+async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa) {
     
     const query = `INSERT INTO voluntarios (pessoaId, pastorId, categoriasVoluntario, statusVoluntario) VALUES (${pessoaId}, ${pastorId}, '${categoriasVoluntario}', 0)`;
 
     try {
-        return await executarQuery(query);
+        
+        const resultados = await executarQuery(query);
+
+        token = gerarTokenConfirmacao(pessoaId, emailPessoa);
+
+        const destinatario = emailPessoa;
+        const assunto = 'Confirmação de cadastro';
+        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:3000/confirmar-cadastro/${token}`;
+
+        enviarEmail(destinatario, assunto, corpo)
+
+        return resultados;
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
