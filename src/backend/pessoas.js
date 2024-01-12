@@ -11,6 +11,9 @@ async function listarPessoas(tipoPessoa, pessoaId) {
     let query = '';
 
     switch(tipoPessoa){
+        case 'todos':
+            query = 'SELECT * FROM pessoas';
+            break;
         case 'pastor':
             query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
             break;

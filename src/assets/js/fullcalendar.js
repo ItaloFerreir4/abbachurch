@@ -3,8 +3,9 @@
     //_____Calendar Events Intialization
 
     // sample calendar events data
-    var curYear = moment().format('YYYY');
-    var curMonth = moment().format('MM');
+    var currentDate = new Date();
+    var curYear = currentDate.getFullYear();
+    var curMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
     // Calendar Event Source
     var sptCalendarEvents = {
       id: 1,
@@ -143,7 +144,7 @@
         }
       }
     });
-    var calendarEl = document.getElementById('calendar2');
+    var calendarEl = document.getElementById('calendario');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
       headerToolbar: {
