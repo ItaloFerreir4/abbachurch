@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 const segredo = 's3Cr3T4BbA';
 
-function gerarTokenConfirmacao(pessoaId, email) {
+function gerarTokenConfirmacao(pessoaId, email, senhaUsuario='') {
     const payload = {
         pessoaId: pessoaId,
         email: email,
-        exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // O token expirará em 1 dia
+        senhaUsuario: senhaUsuario,
+        exp: Math.floor(Date.now() / 1000) + (6 * 60 * 60), // O token expirará em 1 dia
     };
   
     return jwt.sign(payload, segredo);
@@ -17,6 +18,7 @@ function verificarTokenConfirmacao(token) {
         return {
             pessoaId: decoded.pessoaId,
             email: decoded.email,
+            senhaUsuario: decoded.senhaUsuario,
         };
     } catch (error) {
         // Token inválido ou expirado

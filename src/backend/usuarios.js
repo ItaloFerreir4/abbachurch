@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const executarQuery = require('./consulta');
+const { verificarTokenConfirmacao } = require('./global');
 
 async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
 
@@ -24,12 +25,12 @@ async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
 
     try {
 
-        const salt = await bcrypt.genSalt(saltRounds);
-        const hashSenha = await bcrypt.hash(senhaUsuario, salt);
+        let salt = await bcrypt.genSalt(saltRounds);
+        let hashSenha = await bcrypt.hash(senhaUsuario, salt);
 
-        const query = `INSERT INTO usuarios (pessoaId, senhaUsuario, tipoUsuario) VALUES ('${pessoaId}', '${hashSenha}', '${tipoPessoa}')`;
+        let query = `INSERT INTO usuarios (pessoaId, senhaUsuario, tipoUsuario) VALUES ('${pessoaId}', '${hashSenha}', '${tipoPessoa}')`;
 
-        const resultados = await executarQuery(query);
+        let resultados = await executarQuery(query);
         return resultados;
 
     } catch (erro) {
@@ -40,4 +41,30 @@ async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
     }
 }
 
-module.exports = { cadastrarUsuario };
+async function recNovaSenha(token ,senhaUsuario) {
+    
+    let payload = verificarTokenConfirmacao(token);
+
+    if (payload) {
+
+        let salt = await bcrypt.genSalt(saltRounds);
+        let hashSenha = await bcrypt.hash(senhaUsuario, salt);
+
+        let query = `
+            UPDATE usuarios
+            SET senhaUsuario = '${hashSenha}'
+            WHERE pessoaId = ${payload.pessoaId}`;
+
+        try {
+            await executarQuery(query);
+            return senhaUsuario;
+        } catch (erro) {
+            throw erro;
+        }
+    } else {
+        return false;
+    }
+
+}
+
+module.exports = { cadastrarUsuario, recNovaSenha };

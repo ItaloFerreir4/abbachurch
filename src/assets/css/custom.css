@@ -19,11 +19,11 @@
 }
 
 .border-red, .border-red:focus, .border-red:hover {
-    border: 1px solid red;
+    border: 1px solid red!important;
 }
 
 .border-green, .border-green:focus, .border-green:hover {
-    border: 1px solid green;
+    border: 1px solid green!important;
 }
 
 #icon-eye {
