@@ -13,51 +13,38 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Evento", "dashbordsubtitle":
-        'Eventos', "dashbordsubtitle2": 'Cadastrar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Voluntario no Evento", "dashbordsubtitle":
+        'Evento', "dashbordsubtitle2": 'Cadastrar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <form id="form-evento" enctype="multipart/form-data">
+                <div class="btns-dist">
+                    <div class="left">
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="listar-voluntarios-evento">Voltar</a>
+                    </div>
+                </div>
+                <form id="form-voluntario" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Evento</div>
+                            <div class="card-title">Voluntario</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <label for="nomeEvento" class="mb-2 text-muted">Nome*</label>
-                                    <input type="text" class="form-control mb-2" id="nomeEvento" name="nomeEvento">
+                                    <label for="voluntarioId" class="mb-2 text-muted">Voluntario*</label>
+                                    <select type="text" class="form-control mb-2" id="voluntarioId" name="voluntarioId"></select>
                                 </div>
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="localEvento" class="mb-2 text-muted">Local*</label>
-                                    <input type="text" class="form-control" id="localEvento" name="localEvento">
-                                </div>
-                                <div class="col-12 col-lg-4">
-                                    <label for="dataHoraEvento" class="mb-2 text-muted">Data e Hora do Evento*</label>
-                                    <input type="text" class="form-control mb-2 datetime" id="dataHoraEvento" name="dataHoraEvento">
-                                </div>
-                                <div class="col-12 col-lg-4 mb-2">
-                                    <label for="ministerioId" class="mb-2 text-muted">Ministerio Responsavel*</label>
-                                    <select class="form-select" id="ministerioId" name="ministerioId">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-4 mb-2">
-                                    <label for="categoriaEventoId" class="mb-2 text-muted">Categoria*</label>
-                                    <select class="form-select" id="categoriaEventoId" name="categoriaEventoId">
-                                    </select>
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <label for="observacoesEvento" class="mb-2 text-muted">Observações</label>
-                                    <textarea class="form-control" id="observacoesEvento" name="observacoesEvento" rows="8"></textarea>
+                                <div class="col-12 col-lg-6">
+                                    <label for="categoria" class="mb-2 text-muted">Habilidade*</label>
+                                    <select type="text" class="form-control mb-2" id="categoria" name="categoria"></select>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarEvento()">Cadastrar</button>
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarVoluntarioEvento()">Cadastrar</button>
                         </div>
                     </div>
                 </form>
@@ -79,17 +66,25 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
-        const excludedFields = ['observacoesEvento'];
+        const excludedFields = [];
 
         window.addEventListener("load", function() {
-            ListaMinisterios();
-            ListaCategorias();
+            ListarVoluntarios();
+
+            const selectVoluntario = document.getElementById("voluntarioId");
+
+            selectVoluntario.addEventListener("change", function() {
+                ListarCategorias(this.value);
+            });
         });
         
-        function CadastrarEvento() {
+        function CadastrarVoluntarioEvento() {
             
-            let formData = $('#form-evento').serializeArray();
-            console.log(formData);
+            const idEvento = sessionStorage.getItem('evento');
+            let formData = $('#form-voluntario').serializeArray();
+
+            formData.push({ name: 'eventoId', value: idEvento });
+
             if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 
                 Swal.fire({
@@ -100,10 +95,9 @@
                     timer: 1500
                 });
 
-            } 
-            else {
+            } else {
                 IniLoader();
-                $.post('api/cadastrarEvento', formData)
+                $.post('api/cadastrarVoluntarioEvento', formData)
                 .done(function (data) {
                     
                     Swal.fire({
@@ -132,7 +126,7 @@
                     FinLoader();
                 });
             }
-           
+
         }
 
         function verificacaoCampos(excludedFields, field){
@@ -144,17 +138,23 @@
             }
         }
     
-        function ListaMinisterios(){
-            const selectLider = $("#ministerioId");
+        function ListarVoluntarios(){
 
-            selectLider.empty();
+            const formData = { tipoPessoa : 'voluntarioAtivo' }
+            const selectVo = $("#voluntarioId");
+
+            selectVo.empty();
 
             IniLoader();
 
-            $.post('api/listarMinisterios')
+            selectVo.append('<option value="">Selecione uma opção</option>');
+
+            $.post('api/listarPessoas', formData)
                 .done(function (data) {
-                    data.forEach(function(ministerio) {
-                        selectLider.append('<option value="' + ministerio.idMinisterio + '">' + ministerio.nomeMinisterio + '</option>');
+                    data.forEach(function(pessoa) {
+
+                        selectVo.append('<option value="' + pessoa.idVoluntario + '">' + pessoa.nomePessoa + '</option>');
+
                     });
                 })
                 .fail(function (error) {
@@ -171,29 +171,45 @@
                     FinLoader();
                 });
         }
-    
-        function ListaCategorias(){
-            const selectLider = $("#categoriaEventoId");
 
-            selectLider.empty();
+        function ListarCategorias(idVoluntario){
+
+            console.log(idVoluntario);
+            const formData = { idPessoa : idVoluntario, tipoPessoa : 'voluntarioId' }
+            const selectCat = $("#categoria");
+
+            selectCat.empty();
 
             IniLoader();
 
-            $.post('api/listarCategoriasEventos')
+            $.post('api/carregarPessoa', formData)
                 .done(function (data) {
-                    data.forEach(function(categoria) {
-                        selectLider.append('<option value="' + categoria.idCategoriaEvento + '">' + categoria.nomeCategoriaEvento + '</option>');
+
+                    let categorias = '';
+
+                    data.forEach(function(pessoa) {
+                        categorias = pessoa.categoriasVoluntario;
                     });
+
+                    categorias = categorias.split(',');
+                    
+                    categorias.forEach(function(cat){
+                        selectCat.append(`<option value="${cat}">${cat}</option>`);
+                    });
+
                 })
                 .fail(function (error) {
+
                     console.error('Erro na requisição:', error);
+
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao listar!',
+                        title: 'Erro ao carregar!',
                         showConfirmButton: false,
                         timer: 1500
                     });
+
                 })
                 .always(function () {
                     FinLoader();

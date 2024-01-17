@@ -26,6 +26,9 @@ async function listarPessoas(tipoPessoa, pessoaId) {
         case 'voluntario':
             query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa`;
             break;
+        case 'voluntarioAtivo':
+            query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa AND vo.statusVoluntario = 1`;
+            break;
     }
 
     try {
@@ -171,6 +174,9 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
         case 'voluntario':
             query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.pessoaId = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
             break;
+        case 'voluntarioId':
+            query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.idVoluntario = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            break;
     }
 
     try {
@@ -267,6 +273,19 @@ async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
         
     try {
         const resultados = await executarQuery(query);
+
+        if(resultados){
+
+            query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`;
+
+            const voluntario = await executarQuery(query);
+            const destinatario = voluntario.emailPessoa;
+            const assunto = 'Alteração no status';
+            const corpo = statusVoluntario == 1 ? 'O seu status foi alterado para "ativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.' : 'O seu status foi alterado para "inativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.';
+            
+            enviarEmail(destinatario, assunto, corpo);
+        }
+
         return resultados;
     } catch (erro) {
         console.error('Erro:', erro);

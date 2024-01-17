@@ -100,16 +100,10 @@
                             const idProcurado = evento.ministerioId;
                             let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                             nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
-
+                            
                             const dataOld = evento.dataHoraEvento;
-                            let data = new Date(dataOld);
-
-                            if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
-                                const dataFormatada = data.toLocaleString(); // Obtém a representação local da data e hora
-                                data = dataFormatada;
-                            } else {
-                                data = dataOld;
-                            }
+                            const parsedDate = new Date(dataOld);
+                            const data = formatarDataHora(parsedDate);
 
                             tabela.row.add([
                                 evento.nomeEvento,
@@ -204,7 +198,7 @@
                     });
             });
         }
-    
+
     </script>
 
 </body>

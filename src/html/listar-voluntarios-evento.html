@@ -13,18 +13,18 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de filhos", "dashbordsubtitle":
-        'Filhos', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de voluntarios do evento", "dashbordsubtitle":
+        'Voluntarios', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
                 <div class="btns-dist">
                     <div class="left">
-                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="editar-pastor">Voltar</a>
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="editar-evento">Voltar</a>
                     </div>
                     <div class="right">
-                        <a class="btn btn-info btn-wave waves-effect waves-light" href="cadastrar-filho">Cadastrar</a>
+                        <a class="btn btn-info btn-wave waves-effect waves-light" href="cadastrar-voluntario-evento">Cadastrar</a>
                     </div>
                 </div>
                 <div class="card custom-card">
@@ -38,6 +38,7 @@
                                             <th class="all" scope="col">Nome</th>
                                             <th class="min-tablet" scope="col">E-mail</th>
                                             <th class="min-tablet" scope="col">Telefone</th>
+                                            <th class="min-tablet" scope="col">Categoria</th>
                                             <th class="min-tablet" scope="col">Ações</th>
                                         </tr>
                                     </thead>
@@ -79,12 +80,13 @@
 
     <script>
         window.addEventListener("load", function() {
-            ListarPessoas();
+            ListarVoluntarioEvento();
         });
 
-        function ListarPessoas(){
+        function ListarVoluntarioEvento(){
 
-            const pessoaId = sessionStorage.getItem('pessoa');
+            const eventoId = sessionStorage.getItem('evento');
+            const formData = { eventoId : eventoId}
 
             IniLoader();
 
@@ -104,19 +106,19 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'filho',  pessoaId : pessoaId}
-
-            $.post('api/listarPessoas', formData)
+            $.post('api/listarVoluntariosEvento', formData)
                 .done(function (data) {
+                    console.log(data);
                     data.forEach(function(pessoa) {
                         tabela.row.add([
                             `<img class="w-50 rounded-circle" src="../assets/uploads/${pessoa.fotoPessoa}">`,
                             pessoa.nomePessoa,
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
+                            pessoa.categoria,
                             `<div class="btns-actions">
-                                <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
-                                <button class="btn btn-danger btn-sm mr-1" id="${pessoa.idPessoa}" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
+                                <button class="btn btn-success btn-sm mr-1" onClick="EditarVoluntarioEvento(${pessoa.idvoluntariosEvento})">Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1" onClick="DeletarVoluntarioEvento(${pessoa.idvoluntariosEvento})">Deletar</button>
                             </div>`
                         ]).draw();
                     });
@@ -136,9 +138,9 @@
                 });
         }
 
-        function DeletarPessoa(pessoaId){
+        function DeletarVoluntarioEvento(idvoluntariosEvento){
 
-            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'filho' };
+            const dataApi = { idVoluntarioEvento: idvoluntariosEvento};
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -150,7 +152,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     IniLoader();
-                    $.post('/api/deletarPessoa', dataApi)
+                    $.post('/api/deletarVoluntarioEvento', dataApi)
                         .done(function (data) {
                             Swal.fire({
                                 position: 'center',
@@ -160,7 +162,7 @@
                                 timer: 2500
                             });
 
-                            ListarPessoas();
+                            ListarVoluntarioEvento();
                         })
                         .fail(function (error) {
                             console.error('Erro na requisição:', error);
@@ -177,9 +179,9 @@
 
         }
 
-        function EditarPessoa(pessoaId){
-            sessionStorage.setItem('pessoaFilho', pessoaId);
-            window.location.href = "editar-filho";
+        function EditarVoluntarioEvento(idvoluntariosEvento){
+            sessionStorage.setItem('voluntarioEvento', idvoluntariosEvento);
+            window.location.href = "editar-voluntario-evento";
         }
     </script>
 

@@ -1,4 +1,5 @@
 const executarQuery = require('./consulta');
+const { formatarDataHora } = require('./formata-data');
 
 async function listarEventos() {
     
@@ -13,11 +14,13 @@ async function listarEventos() {
     }
 }
 
-async function cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento) {
+async function cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
     
+    let dataHora = formatarDataHora(dataHoraEvento);
+
     const query = `
-    INSERT INTO eventos (nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento) 
-    VALUES ('${nomeEvento}', '${dataHoraEvento}', '${localEvento}', '${ministerioId}', '${observacoesEvento}')`;
+    INSERT INTO eventos (nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) 
+    VALUES ('${nomeEvento}', '${dataHora}', '${localEvento}', '${ministerioId}', '${observacoesEvento}', '${categoriaEventoId}')`;
 
     try {
         const resultado = await executarQuery(query);
@@ -54,9 +57,11 @@ async function carregarEvento(idEvento) {
     }
 }
 
-async function atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento) {
+async function atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
     
-    let query = `UPDATE eventos SET nomeEvento = '${nomeEvento}', dataHoraEvento = '${dataHoraEvento}', localEvento = '${localEvento}', ministerioId = '${ministerioId}', observacoesEvento = '${observacoesEvento}' WHERE idEvento = ${idEvento};`;
+    let dataHora = formatarDataHora(dataHoraEvento);
+
+    let query = `UPDATE eventos SET nomeEvento = '${nomeEvento}', dataHoraEvento = '${dataHora}', localEvento = '${localEvento}', ministerioId = '${ministerioId}', observacoesEvento = '${observacoesEvento}', categoriaEventoId = '${categoriaEventoId}' WHERE idEvento = ${idEvento};`;
         
     try {
         const resultados = await executarQuery(query);

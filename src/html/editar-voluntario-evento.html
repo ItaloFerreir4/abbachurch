@@ -1,0 +1,276 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Voluntario do Evento", "dashbordsubtitle":
+        'Evento', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="btns-dist">
+                    <div class="left">
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="listar-voluntarios-evento">Voltar</a>
+                    </div>
+                </div>
+                <form id="form-pessoa" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Voluntario</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <label for="voluntarioId" class="mb-2 text-muted">Voluntario*</label>
+                                    <select type="text" class="form-control mb-2" id="voluntarioId" name="voluntarioId"></select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="categoria" class="mb-2 text-muted">Habilidade*</label>
+                                    <select type="text" class="form-control mb-2" id="categoria" name="categoria"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="submitBtn"  class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+        
+        window.addEventListener("load", function() {
+            ListarVoluntarios().then(() => {
+                CarregarVoluntarioPessoa();
+            });
+
+            const selectVoluntario = document.getElementById("voluntarioId");
+
+            selectVoluntario.addEventListener("change", function() {
+                ListarCategorias(this.value);
+            });
+        });
+
+        function CarregarVoluntarioPessoa(){
+            const idVoluntarioEvento = sessionStorage.getItem('voluntarioEvento');
+            const formData = { idVoluntarioEvento : idVoluntarioEvento }
+
+            $.post('api/carregarVoluntarioEvento', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(pessoa) {
+                        for (const propriedade in pessoa) {
+                            const valor = pessoa[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if (propriedade === 'voluntarioId') {
+                                    ListarCategorias(valor).then(() => {
+                                        campo.value = valor;
+                                    });
+                                } 
+                                else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarPessoa() {
+
+            const eventoId = sessionStorage.getItem('evento');
+            const idVoluntarioEvento = sessionStorage.getItem('voluntarioEvento');
+            let formData = $('#form-pessoa').serializeArray();
+
+            formData.push({ name: 'idVoluntarioEvento', value: idVoluntarioEvento});
+            formData.push({ name: 'eventoId', value: eventoId });
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarVoluntarioEvento', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    
+        function ListarVoluntarios(){
+
+            return new Promise((resolve, reject) => {
+                const formData = { tipoPessoa : 'voluntarioAtivo' }
+                const selectVo = $("#voluntarioId");
+
+                selectVo.empty();
+
+                IniLoader();
+
+                selectVo.append('<option value="">Selecione uma opção</option>');
+
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        data.forEach(function(pessoa) {
+
+                            selectVo.append('<option value="' + pessoa.idVoluntario + '">' + pessoa.nomePessoa + '</option>');
+
+                        });
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .always(function () {
+                        resolve();
+                    });
+            });
+        }
+
+        function ListarCategorias(idVoluntario){
+            return new Promise((resolve, reject) => {
+
+                console.log(idVoluntario);
+                const formData = { idPessoa : idVoluntario, tipoPessoa : 'voluntarioId' }
+                const selectCat = $("#categoria");
+
+                selectCat.empty();
+
+                $.post('api/carregarPessoa', formData)
+                    .done(function (data) {
+
+                        let categorias = '';
+
+                        data.forEach(function(pessoa) {
+                            categorias = pessoa.categoriasVoluntario;
+                        });
+
+                        categorias = categorias.split(',');
+                        
+                        categorias.forEach(function(cat){
+                            selectCat.append(`<option value="${cat}">${cat}</option>`);
+                        });
+
+                    })
+                    .fail(function (error) {
+
+                        console.error('Erro na requisição:', error);
+
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao carregar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                    })
+                    .always(function () {
+                        resolve();
+                    });
+            });
+        }
+    
+    </script>
+
+</body>
+
+</html>

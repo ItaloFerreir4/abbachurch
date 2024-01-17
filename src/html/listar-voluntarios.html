@@ -26,11 +26,12 @@
                                 <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Nome</th>
-                                            <th scope="col">E-mail</th>
-                                            <th scope="col">Telefone</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Ações</th>
+                                            <th class="all" scope="col">Foto</th>
+                                            <th class="all" scope="col">Nome</th>
+                                            <th class="min-tablet" scope="col">E-mail</th>
+                                            <th class="min-tablet" scope="col">Telefone</th>
+                                            <th class="min-tablet" scope="col">Status</th>
+                                            <th class="min-tablet" scope="col">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="body-table">
@@ -115,6 +116,7 @@
                         }
 
                         tabela.row.add([
+                            `<img class="w-50 rounded-circle" src="../assets/uploads/${pessoa.fotoPessoa}">`,
                             pessoa.nomePessoa,
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,

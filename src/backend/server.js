@@ -9,6 +9,8 @@ const { listarNomePaises } = require('./paises');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
+const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
+const { listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
 const e = require('express');
 const app = express();
@@ -495,10 +497,10 @@ app.post('/api/listarEventos', async (req, res) => {
 
 app.post('/api/cadastrarEvento', async (req, res) => {
 
-    const { nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento } = req.body;
+    const { nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId } = req.body;
     
     try {
-        const resultado = await cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento);
+        const resultado = await cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
         
         if (resultado) {
             res.json({ message: 'Cadastrado com sucesso' });
@@ -513,10 +515,10 @@ app.post('/api/cadastrarEvento', async (req, res) => {
 
 app.post('/api/atualizarEvento', async (req, res) => {
 
-    const { idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento} = req.body;
+    const { idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId} = req.body;
     
     try {
-        const resultado = await atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento);
+        const resultado = await atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
         
         if (resultado) {
             res.json({ message: 'Atualizado com sucesso' });
@@ -554,6 +556,192 @@ app.post('/api/carregarEvento', async (req, res) => {
 
     try {
         const resultado = await carregarEvento(idEvento);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarCategoriasEventos', async (req, res) => {
+
+    try {
+        const lista = await listarCategoriasEventos();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarCategoriaEvento', async (req, res) => {
+
+    const { nomeCategoriaEvento } = req.body;
+    
+    try {
+        const resultado = await cadastrarCategoriaEvento(nomeCategoriaEvento);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarCategoriaEvento', async (req, res) => {
+
+    const { idCategoriaEvento, nomeCategoriaEvento } = req.body;
+    
+    try {
+        const resultado = await atualizarCategoriaEvento(idCategoriaEvento, nomeCategoriaEvento);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarCategoriaEvento', async (req, res) => {
+
+    const { idCategoriaEvento } = req.body;
+
+    try {
+        const resultado = await deletarCategoriaEvento(idCategoriaEvento);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarCategoriaEvento', async (req, res) => {
+
+    const { idCategoriaEvento } = req.body;
+
+    try {
+        const resultado = await carregarCategoriaEvento(idCategoriaEvento);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarVoluntariosEvento', async (req, res) => {
+
+    const { eventoId } = req.body;
+
+    try {
+        const lista = await listarVoluntariosEvento(eventoId);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarVoluntarioEvento', async (req, res) => {
+
+    const { voluntarioId, eventoId, categoria } = req.body;
+    
+    try {
+        const resultado = await cadastrarVoluntarioEvento(voluntarioId, eventoId, categoria);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarVoluntarioEvento', async (req, res) => {
+
+    const { idVoluntarioEvento, voluntarioId, eventoId, categoria } = req.body;
+    
+    try {
+        const resultado = await atualizarVoluntarioEvento(idVoluntarioEvento, voluntarioId, eventoId, categoria);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarVoluntarioEvento', async (req, res) => {
+
+    const { idVoluntarioEvento } = req.body;
+
+    try {
+        const resultado = await deletarVoluntarioEvento(idVoluntarioEvento);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarVoluntarioEvento', async (req, res) => {
+
+    const { idVoluntarioEvento } = req.body;
+
+    try {
+        const resultado = await carregarVoluntarioEvento(idVoluntarioEvento);
 
         if (resultado) {
             res.json(resultado);

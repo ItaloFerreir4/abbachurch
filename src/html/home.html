@@ -18,7 +18,68 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
+                <div class="row row-cols-xl-4 row-cols-md-2">
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted">Total de Pastores</p>
+                                        <h3 class="mb-0" id="qtdPastores"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted">Total de Lideres</p>
+                                        <h3 class="mb-0" id="qtdLideres"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted">Total de Voluntarios</p>
+                                        <h3 class="mb-0" id="qtdVoluntarios"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted">Total de Eventos</p>
+                                        <h3 class="mb-0" id="qtdEventos"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card custom-card">
+                    <div class="card-header align-center">
+                        <h5 class="fw-medium mb-0 text-muted">Filtros</h5>
+                        <div class="d-flex">
+                            <button class="btn btn-outline-primary btn-wave waves-effect waves-light ms-3" type="button" onClick="CalendarioFull()">Todos</button>
+                            <button class="btn btn-outline-primary btn-wave waves-effect waves-light ms-2" type="button" onClick="CalendarioNiver()">Aniversários</button>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div id="calendario"></div>
                     </div>
@@ -46,7 +107,11 @@
 
     <script>
         window.addEventListener("load", function() {
-            CalendarioFull();        
+            QtdPastores();
+            QtdLideres();
+            QtdVoluntarios();
+            QtdEventos();
+            CalendarioFull();      
         });
         
         function CalendarioFull(){
@@ -69,9 +134,6 @@
                     textColor: '#fff',
                     events: dataPessoas
                 }
-
-                console.log(dataCalendarEvents);
-                console.log(dataCalendarBirthday);
 
                 const calendarEl = document.getElementById('calendario');
                 let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -104,6 +166,58 @@
 
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: [dataCalendarBirthday, dataCalendarEvents,],
+
+                });
+                calendar.render();
+
+                FinLoader();
+            });
+        }
+        
+        function CalendarioNiver(){
+            IniLoader();
+
+            Promise.all([ListarPessoas()]).then(function ([dataPessoas]) {
+
+                const dataCalendarBirthday = {
+                    id: 1,
+                    backgroundColor: 'rgba(var(--teal-rgb), 0.4)',
+                    borderColor: 'rgba(var(--teal-rgb), 1)',
+                    textColor: '#fff',
+                    events: dataPessoas
+                }
+
+                const calendarEl = document.getElementById('calendario');
+                let calendar = new FullCalendar.Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    },
+                    defaultView: 'month',
+                    navLinks: true, // can click day/week names to navigate views
+                    businessHours: true, // display business hours
+                    editable: false,
+                    selectable: false,
+                    selectMirror: false,
+                    droppable: false, // this allows things to be dropped onto the calendar
+
+                    eventClick: function (arg) {
+                        console.log('arg.event:', arg.event);
+                        const description = arg.event.extendedProps.description;
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'info',
+                            title: arg.event.title,
+                            html:
+                            'Data: ' + arg.event.start +
+                            '<br> Descrição: ' + description,
+                            showConfirmButton: true,
+                        });
+                    },
+
+                    dayMaxEvents: true, // allow "more" link when too many events
+                    eventSources: [dataCalendarBirthday,],
 
                 });
                 calendar.render();
@@ -229,6 +343,102 @@
                     });
             });
         }
+    
+        function QtdPastores(){
+            const formData = { tipoPessoa : 'pastor' }
+            const elementh3 = document.getElementById("qtdPastores");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+        function QtdLideres(){
+            const formData = { tipoPessoa : 'lider' }
+            const elementh3 = document.getElementById("qtdLideres");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdVoluntarios(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("qtdVoluntarios");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdEventos(){
+            const elementh3 = document.getElementById("qtdEventos");
+            
+            $.post('api/listarEventos')
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
     </script>
 
 </body>

@@ -36,18 +36,26 @@
                                             <label for="localEvento" class="mb-2 text-muted">Local*</label>
                                             <input type="text" class="form-control" id="localEvento" name="localEvento">
                                         </div>
-                                        <div class="col-12 col-lg-6">
+                                        <div class="col-12 col-lg-4">
                                             <label for="dataHoraEvento" class="mb-2 text-muted">Data e Hora do Evento*</label>
                                             <input type="text" class="form-control mb-2 datetime" id="dataHoraEvento" name="dataHoraEvento">
                                         </div>
-                                        <div class="col-12 col-lg-6 mb-2">
+                                        <div class="col-12 col-lg-4 mb-2">
                                             <label for="ministerioId" class="mb-2 text-muted">Ministerio Responsavel*</label>
                                             <select class="form-select" id="ministerioId" name="ministerioId">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-4 mb-2">
+                                            <label for="categoriaEventoId" class="mb-2 text-muted">Categoria*</label>
+                                            <select class="form-select" id="categoriaEventoId" name="categoriaEventoId">
                                             </select>
                                         </div>
                                         <div class="col-12 mb-2">
                                             <label for="observacoesEvento" class="mb-2 text-muted">Observações</label>
                                             <textarea class="form-control" id="observacoesEvento" name="observacoesEvento" rows="8"></textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <a class="mt-4 btn btn-outline-light btn-wave waves-effect waves-light" href="listar-voluntarios-evento">Ver voluntarios</a>
                                         </div>
                                     </div>
                                 </div>
@@ -82,17 +90,8 @@
 
         window.addEventListener("load", function() {
             ListaMinisterios();
+            ListaCategorias();
             CarregarEvento();
-        });
-
-        window.addEventListener('beforeunload', function() {
-            // Obtém o valor atual do sessionStorage
-            var evento = sessionStorage.getItem('evento');
-
-            // Se o valor existir, remove o item do sessionStorage
-            if (evento) {
-                sessionStorage.removeItem('evento');
-            }
         });
 
         function CarregarEvento(){
@@ -112,12 +111,9 @@
                             if (campo) {
                                 console.log(valor);
                                 if (propriedade === 'dataHoraEvento') {
-                                    let valorComoData = new Date(valor);
-                                    let formattedDate = valorComoData.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                                    campo.value = formattedDate;
-                                    console.log(valorComoData);
-                                    console.log(formattedDate);
-
+                                    const parsedDate = new Date(valor);
+                                    const data = formatarDataHora(parsedDate);
+                                    campo.value = data;
                                 }
                                 else{
                                     campo.value = valor;
@@ -217,6 +213,34 @@
                 .done(function (data) {
                     data.forEach(function(ministerio) {
                         selectLider.append('<option value="' + ministerio.idMinisterio + '">' + ministerio.nomeMinisterio + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
+        function ListaCategorias(){
+            const selectLider = $("#categoriaEventoId");
+
+            selectLider.empty();
+
+            IniLoader();
+
+            $.post('api/listarCategoriasEventos')
+                .done(function (data) {
+                    data.forEach(function(categoria) {
+                        selectLider.append('<option value="' + categoria.idCategoriaEvento + '">' + categoria.nomeCategoriaEvento + '</option>');
                     });
                 })
                 .fail(function (error) {

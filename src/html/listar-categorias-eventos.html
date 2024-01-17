@@ -13,32 +13,21 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de filhos", "dashbordsubtitle":
-        'Filhos', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Categorias", "dashbordsubtitle":
+        'Categorias', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <div class="btns-dist">
-                    <div class="left">
-                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="editar-pastor">Voltar</a>
-                    </div>
-                    <div class="right">
-                        <a class="btn btn-info btn-wave waves-effect waves-light" href="cadastrar-filho">Cadastrar</a>
-                    </div>
-                </div>
                 <div class="card custom-card">
-                    <div class="card-body" id="form-pessoa">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-12">
                                 <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th class="all" scope="col">Foto</th>
-                                            <th class="all" scope="col">Nome</th>
-                                            <th class="min-tablet" scope="col">E-mail</th>
-                                            <th class="min-tablet" scope="col">Telefone</th>
-                                            <th class="min-tablet" scope="col">Ações</th>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="body-table">
@@ -79,12 +68,10 @@
 
     <script>
         window.addEventListener("load", function() {
-            ListarPessoas();
+            ListarCategorias();
         });
 
-        function ListarPessoas(){
-
-            const pessoaId = sessionStorage.getItem('pessoa');
+        function ListarCategorias(){
 
             IniLoader();
 
@@ -104,19 +91,14 @@
 
             tabela.clear().draw();
 
-            const formData = { tipoPessoa : 'filho',  pessoaId : pessoaId}
-
-            $.post('api/listarPessoas', formData)
+            $.post('api/listarCategoriasEventos')
                 .done(function (data) {
-                    data.forEach(function(pessoa) {
+                    data.forEach(function(categoria) {
                         tabela.row.add([
-                            `<img class="w-50 rounded-circle" src="../assets/uploads/${pessoa.fotoPessoa}">`,
-                            pessoa.nomePessoa,
-                            pessoa.emailPessoa,
-                            pessoa.telefonePessoa,
+                            categoria.nomeCategoriaEvento,
                             `<div class="btns-actions">
-                                <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
-                                <button class="btn btn-danger btn-sm mr-1" id="${pessoa.idPessoa}" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
+                                <button class="btn btn-success btn-sm mr-1" onClick="EditarCategoria(${categoria.idCategoriaEvento})">Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1" onClick="DeletarCategoria(${categoria.idCategoriaEvento})">Deletar</button>
                             </div>`
                         ]).draw();
                     });
@@ -136,9 +118,9 @@
                 });
         }
 
-        function DeletarPessoa(pessoaId){
+        function DeletarCategoria(idCategoria){
 
-            const dataApi = { pessoaId: pessoaId, tipoPessoa : 'filho' };
+            const dataApi = { idCategoriaEvento: idCategoria };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -150,7 +132,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     IniLoader();
-                    $.post('/api/deletarPessoa', dataApi)
+                    $.post('/api/deletarCategoriaEvento', dataApi)
                         .done(function (data) {
                             Swal.fire({
                                 position: 'center',
@@ -160,7 +142,7 @@
                                 timer: 2500
                             });
 
-                            ListarPessoas();
+                            ListarCategorias();
                         })
                         .fail(function (error) {
                             console.error('Erro na requisição:', error);
@@ -177,9 +159,9 @@
 
         }
 
-        function EditarPessoa(pessoaId){
-            sessionStorage.setItem('pessoaFilho', pessoaId);
-            window.location.href = "editar-filho";
+        function EditarCategoria(idCategoria){
+            sessionStorage.setItem('categoria-evento', idCategoria);
+            window.location.href = "editar-categoria-evento";
         }
     </script>
 
