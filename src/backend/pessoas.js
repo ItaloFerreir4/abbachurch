@@ -345,7 +345,7 @@ async function cadastrarFilho(pessoaId, pastorId) {
     }
 }
 
-async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa) {
+async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario) {
     
     const query = `INSERT INTO voluntarios (pessoaId, pastorId, categoriasVoluntario, statusVoluntario) VALUES (${pessoaId}, ${pastorId}, '${categoriasVoluntario}', 0)`;
 
@@ -353,11 +353,11 @@ async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, ema
         
         const resultados = await executarQuery(query);
 
-        token = gerarTokenConfirmacao(pessoaId, emailPessoa);
+        token = gerarTokenConfirmacao(pessoaId, emailPessoa, senhaUsuario);
 
         const destinatario = emailPessoa;
         const assunto = 'Confirmação de cadastro';
-        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:3000/confirmar-cadastro/${token}`;
+        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:3000/confirmar-email?t=${token}`;
 
         enviarEmail(destinatario, assunto, corpo)
 

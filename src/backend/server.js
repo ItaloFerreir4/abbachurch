@@ -3,7 +3,9 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const { autenticarUsuario } = require('./auth');
+const { cadastrarUsuario, recNovaSenha } = require('./usuarios');
+const { verificarTokenConfirmacao } = require('./global');
+const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarNomePaises } = require('./paises');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
@@ -31,7 +33,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/'].includes(req.url)) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -42,12 +44,102 @@ const authenticateMiddleware = (req, res, next) => {
 
 app.use(authenticateMiddleware);
 
+app.post('/nova-senha', async (req, res) => {
+    const { senha, token } = req.body;
+
+    try {
+
+        result = await recNovaSenha(token, senha);
+
+        if (result) {
+            res.json({ sts: 1, message: 'Senha alterada com sucesso' });
+        } else {
+            res.json({ sts: 0, message: 'Erro ao alterar senha' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500);
+    }
+        
+});
+
+app.post('/esqueci-minha-senha', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const resultado = await enviarRecEmail(email);
+
+        if (resultado == 1) {
+            res.json({ sts: 'success', message: 'E-mail de recuperação enviado com sucesso' });
+        } else if (resultado == 0) {
+            res.json({ sts: 'error', message: 'E-mail não cadastrado' });
+        } else {
+            res.status(401);
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500);
+    }
+});
+
+app.get('/esqueci-minha-senha', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'send-new-password.html');
+    res.sendFile(filePath);
+})
+
 app.get('/voluntariar', (req, res) => { 
     const filePath = path.join(__dirname, '../html', 'voluntariar.html');
     res.sendFile(filePath);
 })
 
-app.get('/reset-password', (req, res) => {
+app.get('/confirmar-email', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'confirmar-email.html');
+    res.sendFile(filePath);
+});
+
+app.post('/confirmar-email', async (req, res) => {
+    const { token } = req.body;
+
+    try {
+        const resultado = await confirmarEmail(token);
+
+        if (resultado) {
+
+            await cadastrarUsuario(resultado.pessoaId, resultado.senhaUsuario, 'voluntario');
+
+            res.json({ message: 'E-mail verificado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao verificar. Tente novamente mais tarde.' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor'+erro });
+    }
+});
+
+app.post('/recuperar-senha', async (req, res) => {
+    const { token } = req.body;
+
+    try {
+        
+        const payload = verificarTokenConfirmacao(token);
+    
+        if (payload) {
+            return res.json({ sts: 1, message: 'Token válido' });
+        } else{
+            return res.json({ sts: 0, message: 'Token inválido' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor'+erro });
+    }
+});
+
+app.get('/recuperar-senha', (req, res) => {
     const filePath = path.join(__dirname, '../html', 'reset-password.html');
     res.sendFile(filePath);
 })
@@ -152,7 +244,7 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
                     await cadastrarFilho(pessoa.insertId, pastorId);
                 break;
                 case 'voluntario':
-                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa);
+                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario);
                 break;
             }
         }
