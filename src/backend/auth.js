@@ -17,27 +17,27 @@ async function autenticarUsuario(email, senha) {
             var usuario = resultados[0];
 
             if (usuario.statusUsuario == 0) {
-                status = 0; //email não confirmado
+                status = 0;
                 return { status };
             }
 
             if (usuario.statusUsuario == 2) {
-                status = 4; //usuario desativado
+                status = 4;
                 return { status };
             }
 
             const senhaCorreta = await bcrypt.compare(senha, usuario.senhaUsuario);
 
             if (senhaCorreta) {
-                status = 1; //senha ok
+                status = 1;
                 return { status, usuario };
 
             } else {
-                status = 2; //senha incorreta
+                status = 2;
                 return { status };
             }
         } else {
-            status = 3; //email não cadastrado
+            status = 3;
             return { status };
         }
     } catch (erro) {
