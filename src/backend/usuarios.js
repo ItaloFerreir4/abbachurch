@@ -8,18 +8,23 @@ async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
     switch(tipoPessoa) {
         case 'admin':
             tipoPessoa = 0;
+            statusUsuario = 1;
             break;
         case 'pastor':
             tipoPessoa = 1;
+            statusUsuario = 1;
             break;
         case 'lider':
             tipoPessoa = 2;
+            statusUsuario = 1;
             break;
         case 'ministerio':
             tipoPessoa = 3;
+            statusUsuario = 1;
             break;
         case 'voluntario':
             tipoPessoa = 4;
+            statusUsuario = 0;
             break;
     }
 
@@ -28,7 +33,7 @@ async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
         let salt = await bcrypt.genSalt(saltRounds);
         let hashSenha = await bcrypt.hash(senhaUsuario, salt);
 
-        let query = `INSERT INTO usuarios (pessoaId, senhaUsuario, tipoUsuario) VALUES ('${pessoaId}', '${hashSenha}', '${tipoPessoa}')`;
+        let query = `INSERT INTO usuarios (pessoaId, senhaUsuario, tipoUsuario, statusUsuario) VALUES ('${pessoaId}', '${hashSenha}', '${tipoPessoa}', '${statusUsuario}')`;
 
         let resultados = await executarQuery(query);
         return resultados;
