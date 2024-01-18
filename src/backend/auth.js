@@ -4,25 +4,41 @@ const { verificarTokenConfirmacao, gerarTokenConfirmacao } = require('./global')
 const { enviarEmail } = require('./send-email');
 
 async function autenticarUsuario(email, senha) {
-    const query = `
+    var status = 0;
+    var query = `
         SELECT * FROM pessoas p, usuarios u
         WHERE p.idPessoa = u.pessoaId AND p.emailPessoa = '${email}'`;
 
     try {
-        const resultados = await executarQuery(query);
+        var resultados = await executarQuery(query);
 
         if (resultados.length > 0) {
 
-            const usuario = resultados[0];
+            var usuario = resultados[0];
+
+            if (usuario.statusUsuario == 0) {
+                status = 0; //email não confirmado
+                return { status };
+            }
+
+            if (usuario.statusUsuario == 2) {
+                status = 4; //usuario desativado
+                return { status };
+            }
+
             const senhaCorreta = await bcrypt.compare(senha, usuario.senhaUsuario);
 
             if (senhaCorreta) {
-                return usuario;
+                status = 1; //senha ok
+                return { status, usuario };
+
             } else {
-                return null;
+                status = 2; //senha incorreta
+                return { status };
             }
         } else {
-            return null;
+            status = 3; //email não cadastrado
+            return { status };
         }
     } catch (erro) {
         throw erro;

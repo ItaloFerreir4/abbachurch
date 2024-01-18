@@ -162,13 +162,16 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-        const usuario = await autenticarUsuario(email, senha); //return resultados.length > 0 ? resultados[0] : null;
+        var result = await autenticarUsuario(email, senha);
+        var sts = result.status;
 
-        if (usuario) {
+        if (sts == 1) {
 
             if (remember) {
                 req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 dias
             }
+
+            var usuario = result.usuario;
 
             req.session.authenticated = true;
             req.session.email = email;
@@ -176,9 +179,25 @@ app.post('/login', async (req, res) => {
             req.session.foto = usuario.fotoPessoa;
             req.session.idPessoa = usuario.idPessoa;
             req.session.tipoUsuario = usuario.tipoUsuario;
-            res.json({ message: 'Login bem-sucedido', usuario });
-        } else {
-            res.status(401).json({ message: 'Credenciais inválidas' });
+
+            res.json({ sts: sts, message: 'Login bem-sucedido', usuario });
+
+        } else if (sts == 0) {
+
+            res.json({ sts: sts, message: 'E-mail não confirmado' });
+
+        } else if (sts == 2) {
+
+            res.json({ sts: sts, message: 'Credenciais inválidas' });
+
+        } else if (sts == 3) {
+
+            res.json({ sts: sts, message: 'Usuário não cadastrado' });
+
+        } else if (sts == 4) {
+
+            res.json({ sts: sts, message: 'Usuário desativado' });
+            
         }
     } catch (erro) {
         console.error('Erro:', erro);
