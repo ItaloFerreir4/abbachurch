@@ -103,7 +103,7 @@
 
                         let status = '';
 
-                        switch(pessoa.statusVoluntario){
+                        switch(pessoa.statusUsuario){
                             case 0:
                                 status = '<div class="status" status="0">Aguardando</div>';
                                 break;
@@ -123,9 +123,9 @@
                             status,
                             `<div class="btns-actions">
                                 <select class="btn btn-outline-light btn-wave waves-effect waves-light btn-sm mr-1" onChange="AlterarStatus(${pessoa.idPessoa}, this.value)">
-                                    <option value="0" ${pessoa.statusVoluntario === 0 ? 'selected' : ''}>Selecionar</option>
-                                    <option value="1" ${pessoa.statusVoluntario === 1 ? 'selected' : ''}>Ativo</option>
-                                    <option value="2" ${pessoa.statusVoluntario === 2 ? 'selected' : ''}>Inativo</option>
+                                    <option value="0" ${pessoa.statusUsuario === 0 ? 'selected' : ''}>Selecionar</option>
+                                    <option value="1" ${pessoa.statusUsuario === 1 ? 'selected' : ''}>Ativo</option>
+                                    <option value="2" ${pessoa.statusUsuario === 2 ? 'selected' : ''}>Inativo</option>
                                 </select>
                                 <button class="btn btn-success btn-sm mr-1" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
                                 <button class="btn btn-danger btn-sm mr-1" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>

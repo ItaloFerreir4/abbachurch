@@ -51,8 +51,8 @@ async function confirmarEmail(token) {
     
     if (payload) {
         const query = `
-            UPDATE voluntarios
-            SET statusVoluntario = 1
+            UPDATE usuarios
+            SET statusUsuario = 1
             WHERE pessoaId = ${payload.pessoaId}`;
 
         try {

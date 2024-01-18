@@ -18,16 +18,16 @@ async function listarPessoas(tipoPessoa, pessoaId) {
             query = 'SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa';
             break;
         case 'pastor':
-            query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
+            query = 'SELECT * FROM pastores pa, pessoas pe, usuarios us WHERE pa.pessoaId = pe.idPessoa AND us.pessoaId = pe.idPessoa';
             break;
         case 'lider':
-            query = 'SELECT * FROM lideres li, pessoas pe WHERE li.pessoaId = pe.idPessoa';
+            query = 'SELECT * FROM lideres li, pessoas pe, usuarios us WHERE li.pessoaId = pe.idPessoa AND us.pessoaId = pe.idPessoa';
             break;
         case 'filho':
             query = `SELECT * FROM filhos fi, pessoas pe WHERE fi.pastorId = ${pessoaId} AND fi.pessoaId = pe.idPessoa`;
             break;
         case 'voluntario':
-            query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa`;
+            query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa and us.pessoaId = pe.idPessoa`;
             break;
         case 'voluntarioAtivo':
             query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa AND vo.statusVoluntario = 1`;
@@ -44,23 +44,30 @@ async function listarPessoas(tipoPessoa, pessoaId) {
 }
 
 async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
+
+    //verificar se o email já existe
+    let queryVerify = `SELECT * FROM pessoas WHERE emailPessoa = '${emailPessoa}'`;
+    if(await executarQuery(queryVerify)){
+        return null;
+    }
+
     
     let date = new Date();
     date = format(date, 'yyyy-MM-dd');
 
-    const query = `
+    let query = `
     INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, dataEntradaPessoa) 
     VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${nacionalidadePessoa}', '${date}')`;
 
     try {
-        const pessoa = await executarQuery(query);
+        let pessoa = await executarQuery(query);
 
-        const pessoaId = pessoa.insertId;
+        let pessoaId = pessoa.insertId;
 
         switch(tipoPessoa){
             case 'pastor':
-                const pastor = await cadastrarPastor(pessoaId, igrejaId);
-                const esposa = await cadastrarPessoa('esposa', '', '', '', '', '', '', '', '', '', '');
+                let pastor = await cadastrarPastor(pessoaId, igrejaId);
+                let esposa = await cadastrarPessoa('esposa', '', '', '', '', '', '', '', '', '', '');
                 await cadastrarEsposa(esposa.insertId, pastor.insertId);
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
@@ -286,8 +293,8 @@ async function atualizarVoluntario(pessoaId, pastorId, categoriasVoluntario) {
 async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
     
     let query = `
-        UPDATE voluntarios
-        SET statusVoluntario = '${statusVoluntario}'
+        UPDATE usuarios
+        SET statusUsuario = '${statusVoluntario}'
         WHERE pessoaId = ${pessoaId};
         `;
         
@@ -366,19 +373,21 @@ async function cadastrarFilho(pessoaId, pastorId) {
 
 async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario) {
     
-    const query = `INSERT INTO voluntarios (pessoaId, pastorId, categoriasVoluntario, statusVoluntario) VALUES (${pessoaId}, ${pastorId}, '${categoriasVoluntario}', 0)`;
+    const query = `INSERT INTO voluntarios (pessoaId, pastorId, categoriasVoluntario) VALUES (${pessoaId}, ${pastorId}, '${categoriasVoluntario}')`;
 
     try {
+
+        await cadastrarUsuario(pessoaId, senhaUsuario, 'voluntario');
         
         const resultados = await executarQuery(query);
 
-        token = gerarTokenConfirmacao(pessoaId, emailPessoa, senhaUsuario);
+        token = gerarTokenConfirmacao(pessoaId, emailPessoa);
 
         const destinatario = emailPessoa;
         const assunto = 'Confirmação de cadastro';
         const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:1111/confirmar-email?t=${token}`;
 
-        enviarEmail(destinatario, assunto, corpo)
+        enviarEmail(destinatario, assunto, corpo);
 
         return resultados;
     } catch (erro) {

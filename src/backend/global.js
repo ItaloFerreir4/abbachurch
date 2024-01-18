@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 const segredo = 's3Cr3T4BbA';
 
-function gerarTokenConfirmacao(pessoaId, email, senhaUsuario='') {
+function gerarTokenConfirmacao(pessoaId, email) {
     const payload = {
         pessoaId: pessoaId,
         email: email,
-        senhaUsuario: senhaUsuario,
         exp: Math.floor(Date.now() / 1000) + (6 * 60 * 60), // O token expirará em 1 dia
     };
   

@@ -199,10 +199,12 @@
 
                     console.error('Erro na requisição:', error);
 
+                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao cadastrar!',
+                        title: message,
                         showConfirmButton: false,
                         timer: 1500
                     });

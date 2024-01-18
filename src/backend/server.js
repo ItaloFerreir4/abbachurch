@@ -3,7 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const { cadastrarUsuario, recNovaSenha } = require('./usuarios');
+const { recNovaSenha } = require('./usuarios');
 const { verificarTokenConfirmacao } = require('./global');
 const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
 const { saveImage } = require('./upload-imagem');
@@ -109,11 +109,12 @@ app.post('/confirmar-email', async (req, res) => {
 
         if (resultado) {
 
-            await cadastrarUsuario(resultado.pessoaId, resultado.senhaUsuario, 'voluntario');
-
             res.json({ message: 'E-mail verificado com sucesso' });
+
         } else {
+
             res.status(401).json({ message: 'Erro ao verificar. Tente novamente mais tarde.' });
+
         }
 
     } catch (erro) {
@@ -260,21 +261,30 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
         const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
-        if(pastorId){
-            switch(tipoPessoa){
-                case 'filho':
-                    await cadastrarFilho(pessoa.insertId, pastorId);
-                break;
-                case 'voluntario':
-                    await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario);
-                break;
-            }
-        }
 
         if (pessoa) {
+
+            if(pastorId){
+                switch(tipoPessoa){
+                    case 'filho':
+                        await cadastrarFilho(pessoa.insertId, pastorId);
+                    break;
+                    case 'voluntario':
+                        await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario);
+                    break;
+                }
+            }
+
             res.json({ message: 'Cadastrado com sucesso' });
+            
+        } else if (pessoa == null) {
+
+            res.status(401).json({ message: 'E-mail já cadastrado' });
+
         } else {
+
             res.status(401).json({ message: 'Erro ao cadastrar' });
+
         }
 
     } catch (erro) {

@@ -63,6 +63,7 @@
 <script>
 
     window.addEventListener("load", function() {
+        IniLoader();
         var url = window.location.href;
         var token = url.split("t=")[1];
         var xhr = new XMLHttpRequest();
@@ -70,6 +71,7 @@
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
+                FinLoader();
                 if (xhr.status === 200) {
                 
                     var response = JSON.parse(xhr.responseText);
