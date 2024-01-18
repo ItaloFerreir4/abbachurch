@@ -1,0 +1,143 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Requisição", "dashbordsubtitle":
+        'Requisições', "dashbordsubtitle2": 'Cadastrar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <form id="form-requisicao" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Requisição</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-2">
+                                    <label for="classificacaoRequisicao" class="mb-2 text-muted">Classificação*</label>
+                                    <select class="form-select" id="classificacaoRequisicao" name="classificacaoRequisicao">
+                                        <option>Selecione uma opção</option>
+                                        <option>Evento</option>
+                                        <option>Voluntario</option>
+                                        <option>Pastor</option>
+                                        <option>Lider</option>
+                                        <option>Ministerio</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label for="informacoesRequisicao" class="mb-2 text-muted">Informações*</label>
+                                    <textarea class="form-control" id="informacoesRequisicao" name="informacoesRequisicao" rows="10"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarRequisicao()">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['pessoaId', 'tipoUsuario', 'status'];
+
+        window.addEventListener("load", function() {
+        });
+        
+        function CadastrarRequisicao() {
+            const pessoaId = sessionStorage.getItem('perfil');
+            const tipoUsuario = sessionStorage.getItem('tipoUser');
+            let formData = $('#form-requisicao').serializeArray();
+
+            formData.push({ name: 'pessoaId', value: pessoaId });
+            formData.push({ name: 'tipoUsuario', value: tipoUsuario });
+            formData.push({ name: 'status', value: 0 });
+
+            console.log(formData);
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/cadastrarRequisicao', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

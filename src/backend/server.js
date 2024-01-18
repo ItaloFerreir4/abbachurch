@@ -12,6 +12,7 @@ const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizar
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
+const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
@@ -34,7 +35,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/', '/cadastrar-admin'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -92,6 +93,11 @@ app.get('/esqueci-minha-senha', (req, res) => {
 
 app.get('/voluntariar', (req, res) => { 
     const filePath = path.join(__dirname, '../html', 'voluntariar.html');
+    res.sendFile(filePath);
+})
+
+app.get('/cadastrar-admin', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'cadastrar-admin.html');
     res.sendFile(filePath);
 })
 
@@ -954,6 +960,116 @@ app.post('/api/carregarIgreja', async (req, res) => {
             res.status(401).json({ message: 'Erro ao Carregar' });
         }
 
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarRequisicoes', async (req, res) => {
+
+    try {
+        const lista = await listarRequisicoes();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarRequisicao', async (req, res) => {
+
+    const { pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao } = req.body;
+    
+    try {
+        const resultado = await cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarRequisicao', async (req, res) => {
+
+    const { idRequisicao, classificacaoRequisicao, informacoesRequisicao } = req.body;
+    
+    try {
+        const resultado = await atualizarRequisicao(idRequisicao, classificacaoRequisicao, informacoesRequisicao);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarRequisicao', async (req, res) => {
+
+    const { idRequisicao } = req.body;
+
+    try {
+        const resultado = await deletarRequisicao(idRequisicao);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarRequisicao', async (req, res) => {
+
+    const { idRequisicao } = req.body;
+
+    try {
+        const resultado = await carregarRequisicao(idRequisicao);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarStatusRequisicao', async (req, res) => {
+
+    const { idRequisicao, statusRequisicao } = req.body;
+    
+    try {
+        const resultado = await atualizarStatusRequisicao(idRequisicao, statusRequisicao);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
     } catch (erro) {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });
