@@ -1,0 +1,184 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Requisição", "dashbordsubtitle":
+        'Requisições', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-requisicao" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Requisição</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <label for="classificacaoRequisicao" class="mb-2 text-muted">Classificação*</label>
+                                            <select class="form-select" id="classificacaoRequisicao" name="classificacaoRequisicao">
+                                                <option>Selecione uma opção</option>
+                                                <option>Evento</option>
+                                                <option>Voluntario</option>
+                                                <option>Pastor</option>
+                                                <option>Lider</option>
+                                                <option>Ministerio</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label for="informacoesRequisicao" class="mb-2 text-muted">Informações*</label>
+                                            <textarea class="form-control" id="informacoesRequisicao" name="informacoesRequisicao" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarRequisicao()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            CarregarRequisicao();
+        });
+
+        function CarregarRequisicao(){
+            const idRequisicao = sessionStorage.getItem('requisicao');
+            const formData = { idRequisicao : idRequisicao}
+
+            IniLoader();
+
+            $.post('api/carregarRequisicao', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(requisicao) {
+                        for (const propriedade in requisicao) {
+                            const valor = requisicao[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                campo.value = valor;
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarRequisicao() {
+
+            const idRequisicao = sessionStorage.getItem('requisicao');
+            let formData = $('#form-requisicao').serializeArray();
+
+            formData.push({ name: 'idRequisicao', value: idRequisicao });
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarRequisicao', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
