@@ -15,6 +15,7 @@ async function enviarEmail(destinatario, assunto, corpo) {
       to: destinatario,
       subject: assunto,
       text: corpo,
+      html: '<img src="https://abbachurch.app/assets/images/bem-vindo-assinatura.png">',
     };
 
     const info = await transporter.sendMail(mailOptions);

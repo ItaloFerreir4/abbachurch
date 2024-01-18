@@ -1,9 +1,6 @@
 const executarQuery = require('./consulta');
 const { format } = require('date-fns');
 const { enviarEmail } = require('./send-email');
-const { gerarTokenConfirmacao } = require('./global');
-const bcrypt = require('bcrypt');
-const saltRounds = 12;
 
 async function listarRequisicoes() {
     
@@ -23,7 +20,7 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
     let dataRequisicao = new Date();
     dataRequisicao = format(dataRequisicao, 'yyyy-MM-dd');
 
-    const query = `
+    let query = `
     INSERT INTO requisicoes (pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao, dataRequisicao) 
     VALUES ('${pessoaId}', '${tipoUsuario}', '${classificacaoRequisicao}', '${informacoesRequisicao}', '${statusRequisicao}', '${dataRequisicao}')`;
 
@@ -33,8 +30,8 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
         if(resultado){
             query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
-            const assunto = 'Alteração no status na requisição!';
-            const corpo = statusVoluntario == 1 ? 'O status do sua requisição foi alterada para "ativo"! \n\n Qualquer dúvida entre em contato com a Abba Church.' : 'O status da sua requisição foi alterada para "inativo"! \n\n Qualquer dúvida entre em contato com a Abba Church.';
+            const assunto = 'Cadastro de requisição!';
+            const corpo = 'Uma requisição foi cadastrada! \n\n Qualquer dúvida entre em contato com a Abba Church.';
             admins.forEach(admin => {
                 const destinatario = admin.emailPessoa;
                 enviarEmail(destinatario, assunto, corpo);
@@ -99,7 +96,7 @@ async function atualizarStatusRequisicao(idRequisicao, statusRequisicao) {
         if(resultados){
             query = `SELECT * FROM requisicoes WHERE idRequisicao = ${idRequisicao}`;
             const reqPessoa = await executarQuery(query);
-            query = `SELECT * FROM pessoas WHERE idPessoa = ${reqPessoa.pessoaId}`; 
+            query = `SELECT * FROM pessoas WHERE idPessoa = ${reqPessoa[0].pessoaId}`; 
             const pessoa = await executarQuery(query);
             const destinatario = pessoa[0].emailPessoa;
             const assunto = 'Alteração no status na requisição!';

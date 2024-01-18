@@ -142,20 +142,9 @@
                                         <option value="1" ${requisicao.statusRequisicao === 1 ? 'selected' : ''}>Ativo</option>
                                         <option value="2" ${requisicao.statusRequisicao === 2 ? 'selected' : ''}>Inativo</option>
                                     </select>
+                                    <button class="btn btn-success btn-sm mr-1" onClick="EditarRequisicao(${requisicao.idRequisicao})">Editar</button>
+                                    <button class="btn btn-danger btn-sm mr-1" onClick="DeletarRequisicao(${requisicao.idRequisicao})">Deletar</button>
                                 </div>`;
-    
-                                if(requisicao.statusRequisicao == 0){
-                                    divBtns = `
-                                    <div class="btns-actions">
-                                        <select class="btn btn-outline-light btn-wave waves-effect waves-light btn-sm mr-1" onChange="AlterarStatus(${requisicao.idRequisicao}, this.value)">
-                                            <option value="0" ${requisicao.statusRequisicao === 0 ? 'selected' : ''}>Selecionar</option>
-                                            <option value="1" ${requisicao.statusRequisicao === 1 ? 'selected' : ''}>Ativo</option>
-                                            <option value="2" ${requisicao.statusRequisicao === 2 ? 'selected' : ''}>Inativo</option>
-                                        </select>
-                                        <button class="btn btn-success btn-sm mr-1" onClick="EditarRequisicao(${requisicao.idRequisicao})">Editar</button>
-                                        <button class="btn btn-danger btn-sm mr-1" onClick="DeletarRequisicao(${requisicao.idRequisicao})">Deletar</button>
-                                    </div>`;
-                                }
 
                             }
                             else{
@@ -165,6 +154,9 @@
                                             <button class="btn btn-success btn-sm mr-1" onClick="EditarRequisicao(${requisicao.idRequisicao})">Editar</button>
                                             <button class="btn btn-danger btn-sm mr-1" onClick="DeletarRequisicao(${requisicao.idRequisicao})">Deletar</button>
                                         </div>`;
+                                }
+                                else{
+                                    divBtns = 'Indisponivel!';
                                 }
                             }
 

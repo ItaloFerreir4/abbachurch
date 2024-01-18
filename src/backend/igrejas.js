@@ -15,7 +15,7 @@ async function listarIgrejas() {
 
 async function cadastrarIgreja(nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId) {
     
-    matrizId = matrizId ? matrizId : 0;
+    matrizId = tipoIgreja == 0 ? matrizId = 0 : matrizId;
 
     const query = `
     INSERT INTO igrejas (nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId) 
@@ -58,7 +58,7 @@ async function carregarIgreja(idIgreja) {
 
 async function atualizarIgreja(idIgreja, nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId) {
     
-    matrizId = matrizId ? matrizId : 0;
+    matrizId = tipoIgreja == 0 ? matrizId = 0 : matrizId;
     
     let query = `
         UPDATE igrejas SET nomeIgreja = '${nomeIgreja}', paisIgreja = '${paisIgreja}', estadoIgreja = '${estadoIgreja}', enderecoIgreja = '${enderecoIgreja}', cepIgreja = '${cepIgreja}', telefoneIgreja = '${telefoneIgreja}', emailIgreja = '${emailIgreja}', tipoIgreja = ${tipoIgreja}, matrizId = ${matrizId} WHERE idIgreja = ${idIgreja};`;
