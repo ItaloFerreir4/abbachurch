@@ -35,7 +35,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/', '/cadastrar-admin'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -93,11 +93,6 @@ app.get('/esqueci-minha-senha', (req, res) => {
 
 app.get('/voluntariar', (req, res) => { 
     const filePath = path.join(__dirname, '../html', 'voluntariar.html');
-    res.sendFile(filePath);
-})
-
-app.get('/cadastrar-admin', (req, res) => { 
-    const filePath = path.join(__dirname, '../html', 'cadastrar-admin.html');
     res.sendFile(filePath);
 })
 
