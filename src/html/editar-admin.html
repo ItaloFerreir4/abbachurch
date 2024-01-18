@@ -1,0 +1,406 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Admin", "dashbordsubtitle":
+        'Admins', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <form id="form-pessoa" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Admin</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto*</label>
+                                    <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
+                                    <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
+                                    <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil*</label>
+                                    <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
+                                        <option>Solteiro(a)</option>
+                                        <option>Casado(a)</option>
+                                        <option>Separado(a)</option>
+                                        <option>Divorciado(a)</option>
+                                        <option>Viúvo(a)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
+                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="profissaoPessoa" class="mb-2 text-muted">Profissão*</label>
+                                    <input type="text" class="form-control mb-2" id="profissaoPessoa" name="profissaoPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade*</label>
+                                    <select class="form-select mb-2" id="escolaridadePessoa" name="escolaridadePessoa">
+                                        <option>Selecione uma opção</option>
+                                        <option>Analfabeto</option>
+                                        <option>Até 5º Ano Incompleto</option>
+                                        <option>5º Ano Completo</option>
+                                        <option>6º ao 9º Ano do Fundamental</option>
+                                        <option>Fundamental Completo</option>
+                                        <option>Médio Incompleto</option>
+                                        <option>Médio Completo</option>
+                                        <option>Superior Incompleto</option>
+                                        <option>Superior Completo</option>
+                                        <option>Mestrado</option>
+                                        <option>Doutorado</option>
+                                        <option>Prefiro não dizer</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="idiomaPessoa" class="mb-2 text-muted">Idiomas*</label>
+                                    <select class="form-select multiple-select" id="idiomaPessoa" name="idiomaPessoa" multiple="multiple">
+                                        <option>Português</option>
+                                        <option>Ingles</option>
+                                        <option>Espanhol</option>
+                                        <option>Outros</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
+                                    <select class="form-select single-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Redes Sociais</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label for="instagram" class="mb-2 text-muted">Instagram</label>
+                                    <input type="text" class="form-control mb-2" id="instagram" name="instagram">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="facebook" class="mb-2 text-muted">Facebook</label>
+                                    <input type="text" class="form-control mb-2" id="facebook" name="facebook">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="linkedin" class="mb-2 text-muted">Linkedin</label>
+                                    <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="optionAccess">Alterar dados de acesso</span>
+                    <div class="card custom-card" id="contentAccess" data-close="1">
+                        <div class="card-header">
+                            <div class="card-title">Acesso</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                </div>
+                                <div class="col-12 col-lg-4" style="position: relative;">
+                                    <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
+                                    <input disabled type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                </div>
+                                <input type="hidden" name="changeAccess" id="changeAccess" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="submitBtn" class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin'];
+        
+        window.addEventListener("load", function() {
+            ListaPaises();
+            CarregarPessoa();
+        });
+
+        document.getElementById('optionAccess').addEventListener('click', function() {
+
+            let contentAccess = document.getElementById('contentAccess');
+            let close = contentAccess.getAttribute('data-close');
+            let emailPessoa = document.getElementById('emailPessoa');
+            let senhaUsuario = document.getElementById('senhaUsuario');
+            let confirmeSenhaUsuario = document.getElementById('confirmeSenhaUsuario');
+            let optionAccess = document.getElementById('optionAccess');
+            let changeAccess = document.getElementById('changeAccess');
+
+            if (close === '1') {
+
+                contentAccess.setAttribute('data-close', '0');
+                emailPessoa.disabled = false;
+                senhaUsuario.disabled = false;
+                confirmeSenhaUsuario.disabled = false;
+                senhaUsuario.value = '';
+                confirmeSenhaUsuario.value = '';
+                optionAccess.innerHTML = 'Cancelar';
+                changeAccess.value = '1';
+                validarSenha();
+
+            } else {
+
+                contentAccess.setAttribute('data-close', '1');
+                emailPessoa.disabled = true;
+                senhaUsuario.disabled = true;
+                confirmeSenhaUsuario.disabled = true;
+                senhaUsuario.value = 'undefined';
+                confirmeSenhaUsuario.value = 'undefined';
+                optionAccess.innerHTML = 'Alterar dados de acesso';
+                changeAccess.value = '0';
+                validarSenha();
+
+            }
+        });
+
+        function CarregarPessoa(){
+            const idPessoa = sessionStorage.getItem('pessoa');
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'admin' }
+
+            IniLoader();
+
+            $.post('api/carregarPessoa', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(pessoa) {
+                        for (const propriedade in pessoa) {
+                            const valor = pessoa[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if (propriedade === 'dataNascimentoPessoa') {
+                                    const valorComoData = new Date(valor);
+
+                                    if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
+                                        const dataFormatada = valorComoData.toISOString().split('T')[0];
+                                        campo.value = dataFormatada;
+                                    } else {
+                                        campo.value = valor;
+                                    }
+                                } else if(propriedade === 'fotoPessoa') {
+                                    
+                                    if(valor){
+                                        const caminho = '../assets/uploads/' + valor;
+                                        InputComImagem(caminho);
+                                    }
+                                    else{
+                                        InputSemImagem();
+                                    }
+
+                                } else if (propriedade === 'senhaUsuario'){
+
+                                    campo.value = 'undefined';
+                                    document.getElementById('confirmeSenhaUsuario').value = 'undefined';
+
+                                } 
+                                else if (propriedade === 'idiomaPessoa'){
+
+                                    const idiomasArray = valor.split(',');
+                                    $('#idiomaPessoa').val(idiomasArray).trigger('change');
+
+                                }
+                                else if (propriedade === 'nacionalidadePessoa'){
+                                    campo.value = valor;
+                                    $('#nacionalidadePessoa').val(valor).trigger('change');
+                                }
+                                else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarPessoa() {
+
+            const idPessoa = sessionStorage.getItem('pessoa');
+            let formData = $('#form-pessoa').serializeArray();
+            let idiomasSelecionados = $('#idiomaPessoa').val();
+            let idiomasString = idiomasSelecionados.join(',');
+
+            // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
+            formData = formData.filter(function(item) {
+                return item.name !== 'idiomaPessoa';
+            });
+
+            formData.push({ name: 'idiomaPessoa', value: idiomasString });
+            formData.push({ name: 'idPessoa', value: idPessoa });
+            formData.push({ name: 'tipoPessoa', value: 'lider' });
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarPessoa', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function validarSenha() {
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            if (senha.value.length < 5) {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                submitBtn.disabled = true;
+            } else if (senha.value !== confirmaSenha.value) {
+                senha.classList.remove('border-green');
+                confirmaSenha.classList.remove('border-green');
+                senha.classList.add('border-red');
+                confirmaSenha.classList.add('border-red');
+                submitBtn.disabled = true;
+            } else {
+                senha.classList.remove('border-red');
+                confirmaSenha.classList.remove('border-red');
+                senha.classList.add('border-green');
+                confirmaSenha.classList.add('border-green');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    
+        function ListaPaises(){
+            const selectPaises = $("#nacionalidadePessoa");
+
+            selectPaises.empty();
+
+            $.post('api/listarNomePaises')
+                .done(function (data) {
+                    data.forEach(function(pais) {
+                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+    </script>
+
+</body>
+
+</html>

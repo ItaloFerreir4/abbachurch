@@ -14,6 +14,9 @@ async function listarPessoas(tipoPessoa, pessoaId) {
         case 'todos':
             query = 'SELECT * FROM pessoas';
             break;
+        case 'admin':
+            query = 'SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa';
+            break;
         case 'pastor':
             query = 'SELECT * FROM pastores pa, pessoas pe WHERE pa.pessoaId = pe.idPessoa';
             break;
@@ -63,6 +66,9 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
             break;
             case 'lider':
                 await cadastrarLider(pessoaId);
+                await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
+            break;
+            case 'admin':
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
         }

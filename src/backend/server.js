@@ -175,6 +175,7 @@ app.post('/login', async (req, res) => {
             req.session.nome = usuario.nomePessoa;
             req.session.foto = usuario.fotoPessoa;
             req.session.idPessoa = usuario.idPessoa;
+            req.session.tipoUsuario = usuario.tipoUsuario;
             res.json({ message: 'Login bem-sucedido', usuario });
         } else {
             res.status(401).json({ message: 'Credenciais inválidas' });
@@ -948,6 +949,7 @@ app.get('/api/data', (req, res) => {
         nomeUsuario: req.session.nome,
         emailUsuario: req.session.email,
         fotoUsuario: req.session.foto,
+        tipoUsuario: req.session.tipoUsuario,
      });
     } else {
       res.status(401).json({ error: 'Usuário não autenticado' });

@@ -254,7 +254,7 @@
       document.getElementById('userName').innerText = data.nomeUsuario;
       document.getElementById('userPhoto').src = '../assets/uploads/' + data.fotoUsuario;
       sessionStorage.setItem('perfil', data.idUsuario);
-      sessionStorage.setItem('tipoUser', 0);
+      sessionStorage.setItem('tipoUser', data.tipoUsuario);
     })
     .catch(error => {
       console.error(error);
