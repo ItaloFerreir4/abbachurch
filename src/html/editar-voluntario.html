@@ -269,6 +269,14 @@
                                     $('#categoriasVoluntario').val(idiomasArray).trigger('change');
 
                                 }
+                                else if (propriedade === 'nacionalidadePessoa'){
+                                    campo.value = valor;
+                                    $('#nacionalidadePessoa').val(valor).trigger('change');
+                                }
+                                else if (propriedade === 'pastorId'){
+                                    campo.value = valor;
+                                    $('#pastorId').val(valor).trigger('change');
+                                }
                                 else {
                                     campo.value = valor;
                                 }

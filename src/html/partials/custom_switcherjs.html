@@ -7,6 +7,11 @@
 
 
 <script>
+    window.addEventListener("load", function(){
+        const tipoUser = sessionStorage.getItem('tipoUser');
+        hideElementsBasedOnUserRole(tipoUser);
+    });
+
     $('.single-select').select2({
         dir: "ltr"
     });
@@ -48,5 +53,32 @@
         return novaDataFormatada;
     }
 
+    function hideElementsBasedOnUserRole(tipoUser) {
+        const elements = document.querySelectorAll('.restricao'); // Substitua 'your-target-elements' com o seletor CSS desejado para seus elementos
 
+        elements.forEach(element => {
+            const elementClasses = element.classList;
+
+            // Verifica se há pelo menos uma classe restrita ao tipo de usuário
+            let hideElement = true;
+
+            if (
+                (elementClasses.contains('admin') && tipoUser === '0') ||
+                (elementClasses.contains('pastor') && tipoUser === '1') ||
+                (elementClasses.contains('lider') && tipoUser === '2') ||
+                (elementClasses.contains('ministerios') && tipoUser === '3') ||
+                (elementClasses.contains('voluntarios') && tipoUser === '4')
+            ) {
+                hideElement = false;
+            }
+
+            // Se pelo menos uma classe corresponder, mantenha o elemento visível
+            if (!hideElement) {
+                element.style.display = 'block'; // Ou você pode definir como 'initial' para usar o estilo padrão
+            } else {
+                // Se nenhuma classe corresponder, oculte o elemento
+                element.style.display = 'none';
+            }
+        });
+    }
 </script>

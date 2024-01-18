@@ -147,6 +147,10 @@
                                     }
                                     campo.value = valor;
                                 } 
+                                else if (propriedade === 'matrizId'){
+                                    campo.value = valor;
+                                    $('#matrizId').val(valor).trigger('change');
+                                }
                                 else{
                                     campo.value = valor;
                                 }

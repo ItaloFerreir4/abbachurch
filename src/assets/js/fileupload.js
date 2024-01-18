@@ -41,17 +41,20 @@
 })();
 
 function InputSemImagem(){
-    FilePond.create(
+    const pond = FilePond.create(
         document.querySelector('.single-fileupload'),
         {
-            labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+            labelIdle: `Arraste e solte a imagem ou <span class="filepond--label-action">Escolha</span>`,
             imagePreviewHeight: 170,
             imageCropAspectRatio: '1:1',
-            imageResizeTargetWidth: 200,
-            imageResizeTargetHeight: 200,
+            imageResizeTargetWidth: 400,
+            imageResizeTargetHeight: 400,
             stylePanelLayout: 'compact circle',
             styleLoadIndicatorPosition: 'center bottom',
-            styleButtonRemoveItemPosition: 'center bottom'
+            styleButtonRemoveItemPosition: 'center bottom',
+            maxFileSize: '1MB',
+            labelMaxFileSizeExceeded: `Max 5MB permitido!`,
+            labelMaxFileSize: '!'
         }
     );
 }
@@ -63,11 +66,12 @@ function InputComImagem(imagePath){
             labelIdle: `Arraste e solte a imagem ou <span class="filepond--label-action">Escolha</span>`,
             imagePreviewHeight: 170,
             imageCropAspectRatio: '1:1',
-            imageResizeTargetWidth: 200,
-            imageResizeTargetHeight: 200,
+            imageResizeTargetWidth: 400,
+            imageResizeTargetHeight: 400,
             stylePanelLayout: 'compact circle',
             styleLoadIndicatorPosition: 'center bottom',
-            styleButtonRemoveItemPosition: 'center bottom'
+            styleButtonRemoveItemPosition: 'center bottom',
+            maxFileSize: '1MB'
         }
     );
 

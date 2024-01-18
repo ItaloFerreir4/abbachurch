@@ -28,7 +28,8 @@
                                         <tr>
                                             <th scope="col">Nome</th>
                                             <th scope="col">Ministerio</th>
-                                            <th scope="col">Data/Hora</th>
+                                            <th scope="col">Data/Hora Inicio</th>
+                                            <th scope="col">Data/Hora Fim</th>
                                             <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
@@ -101,14 +102,18 @@
                             let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                             nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
                             
-                            const dataOld = evento.dataHoraEvento;
-                            const parsedDate = new Date(dataOld);
-                            const data = formatarDataHora(parsedDate);
+                            let dataInicio = evento.dataHoraInicioEvento;
+                            let dataFim = evento.dataHoraFimEvento;
+                            dataInicio = new Date(dataInicio);
+                            dataInicio = formatarDataHora(dataInicio);
+                            dataFim = new Date(dataFim);
+                            dataFim = formatarDataHora(dataFim);
 
                             tabela.row.add([
                                 evento.nomeEvento,
                                 nomeMinisterio,
-                                data,
+                                dataInicio,
+                                dataFim,
                                 `<div class="btns-actions">
                                     <button class="btn btn-success btn-sm mr-1" onClick="EditarEvento(${evento.idEvento})">Editar</button>
                                     <button class="btn btn-danger btn-sm mr-1" onClick="DeletarEvento(${evento.idEvento})">Deletar</button>

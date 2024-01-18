@@ -14,13 +14,14 @@ async function listarEventos() {
     }
 }
 
-async function cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
+async function cadastrarEvento(nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
     
-    let dataHora = formatarDataHora(dataHoraEvento);
+    let dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
+    let dataHoraFim = formatarDataHora(dataHoraFimEvento);
 
     const query = `
-    INSERT INTO eventos (nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) 
-    VALUES ('${nomeEvento}', '${dataHora}', '${localEvento}', '${ministerioId}', '${observacoesEvento}', '${categoriaEventoId}')`;
+    INSERT INTO eventos (nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) 
+    VALUES ('${nomeEvento}', '${dataHoraInicio}', '${dataHoraFim}', '${localEvento}', '${ministerioId}', '${observacoesEvento}', '${categoriaEventoId}')`;
 
     try {
         const resultado = await executarQuery(query);
@@ -57,11 +58,12 @@ async function carregarEvento(idEvento) {
     }
 }
 
-async function atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
+async function atualizarEvento(idEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) {
     
-    let dataHora = formatarDataHora(dataHoraEvento);
+    let dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
+    let dataHoraFim = formatarDataHora(dataHoraFimEvento);
 
-    let query = `UPDATE eventos SET nomeEvento = '${nomeEvento}', dataHoraEvento = '${dataHora}', localEvento = '${localEvento}', ministerioId = '${ministerioId}', observacoesEvento = '${observacoesEvento}', categoriaEventoId = '${categoriaEventoId}' WHERE idEvento = ${idEvento};`;
+    let query = `UPDATE eventos SET nomeEvento = '${nomeEvento}', dataHoraInicioEvento = '${dataHoraInicio}', dataHoraFimEvento = '${dataHoraFim}', localEvento = '${localEvento}', ministerioId = '${ministerioId}', observacoesEvento = '${observacoesEvento}', categoriaEventoId = '${categoriaEventoId}' WHERE idEvento = ${idEvento};`;
         
     try {
         const resultados = await executarQuery(query);

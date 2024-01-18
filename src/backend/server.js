@@ -590,10 +590,10 @@ app.post('/api/listarEventos', async (req, res) => {
 
 app.post('/api/cadastrarEvento', async (req, res) => {
 
-    const { nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId } = req.body;
+    const { nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId } = req.body;
     
     try {
-        const resultado = await cadastrarEvento(nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
+        const resultado = await cadastrarEvento(nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
         
         if (resultado) {
             res.json({ message: 'Cadastrado com sucesso' });
@@ -608,10 +608,10 @@ app.post('/api/cadastrarEvento', async (req, res) => {
 
 app.post('/api/atualizarEvento', async (req, res) => {
 
-    const { idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId} = req.body;
+    const { idEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId} = req.body;
     
     try {
-        const resultado = await atualizarEvento(idEvento, nomeEvento, dataHoraEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
+        const resultado = await atualizarEvento(idEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId);
         
         if (resultado) {
             res.json({ message: 'Atualizado com sucesso' });

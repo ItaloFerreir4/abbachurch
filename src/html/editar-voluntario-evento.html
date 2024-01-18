@@ -98,8 +98,13 @@
                                 if (propriedade === 'voluntarioId') {
                                     ListarCategorias(valor).then(() => {
                                         campo.value = valor;
+                                        $('#voluntarioId').val(valor).trigger('change');
                                     });
                                 } 
+                                else if (propriedade === 'categoria'){
+                                    campo.value = valor;
+                                    $('#categoria').val(valor).trigger('change');
+                                }
                                 else {
                                     campo.value = valor;
                                 }

@@ -303,10 +303,13 @@
                                 let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                                 nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
 
-                                let dataEvento = evento.dataHoraEvento;
-                                if(categoriaEventoId == 2){
-                                    const parsedDate = new Date(dataEvento);
-                                    dataEvento = parsedDate.toISOString().split('T')[0];;
+                                let dataInicioEvento = evento.dataHoraInicioEvento;
+                                let dataFimEvento = evento.dataHoraFimEvento;
+                                if (categoriaEventoId == 2) {
+                                    dataInicioEvento = new Date(dataInicioEvento);
+                                    dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
+                                    dataFimEvento = new Date(dataInicioEvento);
+                                    dataFimEvento = dataFimEvento.toISOString().split('T')[0];
                                 }
 
                                 if (categoriaEventoId) {
@@ -325,8 +328,8 @@
 
                                     categoriasArrays[categoriaEventoId].events.push({
                                         id: countIdData,
-                                        start: dataEvento,
-                                        end: dataEvento,
+                                        start: dataInicioEvento,
+                                        end: dataFimEvento,
                                         title: evento.nomeEvento,
                                         description: evento.observacoesEvento
                                     });
@@ -368,10 +371,13 @@
                             const categoriaEventoId = evento.categoriaEventoId;
                             
                             if (categoriaEventoId == cat) {
-                                let dataEvento = evento.dataHoraEvento;
+                                let dataInicioEvento = evento.dataHoraInicioEvento;
+                                let dataFimEvento = evento.dataHoraFimEvento;
                                 if (categoriaEventoId == 2) {
-                                    const parsedDate = new Date(dataEvento);
-                                    dataEvento = parsedDate.toISOString().split('T')[0];
+                                    dataInicioEvento = new Date(dataInicioEvento);
+                                    dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
+                                    dataFimEvento = new Date(dataInicioEvento);
+                                    dataFimEvento = dataFimEvento.toISOString().split('T')[0];
                                 }
 
                                 if (!categoriasArrays[categoriaEventoId]) {
@@ -389,8 +395,8 @@
 
                                 categoriasArrays[categoriaEventoId].events.push({
                                     id: countIdData,
-                                    start: dataEvento,
-                                    end: dataEvento,
+                                    start: dataInicioEvento,
+                                    end: dataFimEvento,
                                     title: evento.nomeEvento,
                                     description: evento.observacoesEvento
                                 });
