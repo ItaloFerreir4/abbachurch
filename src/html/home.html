@@ -76,8 +76,9 @@
                     <div class="card-header align-center">
                         <h5 class="fw-medium mb-0 text-muted">Filtros</h5>
                         <div class="d-flex">
-                            <button class="btn btn-outline-primary btn-wave waves-effect waves-light ms-3" type="button" onClick="CalendarioFull()">Todos</button>
-                            <button class="btn btn-outline-primary btn-wave waves-effect waves-light ms-2" type="button" onClick="CalendarioNiver()">Aniversários</button>
+                            <button class="btn btn-filter btn-outline-primary btn-wave waves-effect waves-light ms-3" id="filter-todos" type="button" onClick="CalendarioFull(this)">Todos</button>
+                            <button class="btn btn-filter btn-outline-primary btn-wave waves-effect waves-light ms-2" type="button" onClick="CalendarioNiver(this)">Aniversários</button>
+                            <select class="btn btn-filter btn-outline-primary btn-wave waves-effect waves-light ms-2" id="filter-categoria" onChange="CalendarioCat(this)"></select>
                         </div>
                     </div>
                     <div class="card-body">
@@ -107,33 +108,35 @@
 
     <script>
         window.addEventListener("load", function() {
+            const buttonTodos = document.getElementById("filter-todos");
+            ListarCategorias();
             QtdPastores();
             QtdLideres();
             QtdVoluntarios();
             QtdEventos();
-            CalendarioFull();      
+            CalendarioFull(buttonTodos);      
         });
         
-        function CalendarioFull(){
+        function CalendarioFull(button){
+
+            TirarSelecaoBtn();
+            button.classList.add("active");
+
             IniLoader();
 
             Promise.all([ListarEventos(), ListarPessoas()]).then(function ([dataEventos, dataPessoas]) {
 
-                const dataCalendarEvents = {
-                    id: 1,
-                    backgroundColor: 'rgba(var(--primary-rgb), 0.4)',
-                    borderColor: 'rgba(var(--primary-rgb), 1)',
-                    textColor: '#fff',
-                    events: dataEventos
-                }
+                const idBirthday = dataEventos.length + 1;
 
                 const dataCalendarBirthday = {
-                    id: 2,
+                    id: idBirthday,
                     backgroundColor: 'rgba(var(--teal-rgb), 0.4)',
                     borderColor: 'rgba(var(--teal-rgb), 1)',
                     textColor: '#fff',
                     events: dataPessoas
                 }
+
+                dataEventos.push(dataCalendarBirthday);
 
                 const calendarEl = document.getElementById('calendario');
                 let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -165,7 +168,7 @@
                     },
 
                     dayMaxEvents: true, // allow "more" link when too many events
-                    eventSources: [dataCalendarBirthday, dataCalendarEvents,],
+                    eventSources: dataEventos,
 
                 });
                 calendar.render();
@@ -174,18 +177,25 @@
             });
         }
         
-        function CalendarioNiver(){
+        function CalendarioNiver(button){
+            TirarSelecaoBtn();
+            button.classList.add("active");
+            
             IniLoader();
 
-            Promise.all([ListarPessoas()]).then(function ([dataPessoas]) {
+            Promise.all([ListarEventosCat(2), ListarPessoas()]).then(function ([dataEventos, dataPessoas]) {
+
+                const idBirthday = dataEventos.length + 1;
 
                 const dataCalendarBirthday = {
-                    id: 1,
+                    id: idBirthday,
                     backgroundColor: 'rgba(var(--teal-rgb), 0.4)',
                     borderColor: 'rgba(var(--teal-rgb), 1)',
                     textColor: '#fff',
                     events: dataPessoas
                 }
+
+                dataEventos.push(dataCalendarBirthday);
 
                 const calendarEl = document.getElementById('calendario');
                 let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -217,7 +227,54 @@
                     },
 
                     dayMaxEvents: true, // allow "more" link when too many events
-                    eventSources: [dataCalendarBirthday,],
+                    eventSources: dataEventos,
+
+                });
+                calendar.render();
+
+                FinLoader();
+            });
+        }
+        
+        function CalendarioCat(button){
+            TirarSelecaoBtn();
+            button.classList.add("active");
+            
+            IniLoader();
+
+            Promise.all([ListarEventosCat(button.value)]).then(function ([dataEventos]) {
+
+                const calendarEl = document.getElementById('calendario');
+                let calendar = new FullCalendar.Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    },
+                    defaultView: 'month',
+                    navLinks: true, // can click day/week names to navigate views
+                    businessHours: true, // display business hours
+                    editable: false,
+                    selectable: false,
+                    selectMirror: false,
+                    droppable: false, // this allows things to be dropped onto the calendar
+
+                    eventClick: function (arg) {
+                        console.log('arg.event:', arg.event);
+                        const description = arg.event.extendedProps.description;
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'info',
+                            title: arg.event.title,
+                            html:
+                            'Data: ' + arg.event.start +
+                            '<br> Descrição: ' + description,
+                            showConfirmButton: true,
+                        });
+                    },
+
+                    dayMaxEvents: true, // allow "more" link when too many events
+                    eventSources: dataEventos,
 
                 });
                 calendar.render();
@@ -229,8 +286,11 @@
         function ListarEventos() {
             return new Promise(function (resolve, reject) {
 
-                let dataEvents = [];
-                let count = 1;
+                let categoriasArrays = {};
+                let countIdCat = 1;
+                let countIdData = 1;
+                let backgroundColor = '';
+                let borderColor = '';
 
                 // Usando uma Promise para esperar pela lista de líderes
                 ListaMinisterios().then(function (listaMinisterios) {
@@ -239,26 +299,44 @@
 
                             data.forEach(function (evento) {
                                 const idProcurado = evento.ministerioId;
+                                const categoriaEventoId = evento.categoriaEventoId;
                                 let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                                 nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
 
-                                const dataOld = evento.dataHoraEvento;
-                                let data = new Date(dataOld);
-
-                                if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
-                                    const dataFormatada = data.toISOString().split('T')[0]; 
-                                    // const dataFormatada = data.toLocaleString();
-                                    data = dataFormatada;
-                                } else {
-                                    data = dataOld;
+                                let dataEvento = evento.dataHoraEvento;
+                                if(categoriaEventoId == 2){
+                                    const parsedDate = new Date(dataEvento);
+                                    dataEvento = parsedDate.toISOString().split('T')[0];;
                                 }
 
-                                dataEvents.push({ id: count, start: data, end: data, title: evento.nomeEvento, description: evento.observacoesEvento });
+                                if (categoriaEventoId) {
+                                    if (!categoriasArrays[categoriaEventoId]) {
+                                        backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
+                                        borderColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 1)' : 'rgba(var(--primary-rgb), 1)';
+                                        categoriasArrays[categoriaEventoId] = {
+                                            id: countIdCat,
+                                            backgroundColor: backgroundColor,
+                                            borderColor: borderColor,
+                                            textColor: '#fff',
+                                            events: []
+                                        };
+                                        countIdCat++;
+                                    }
 
-                                count ++;
+                                    categoriasArrays[categoriaEventoId].events.push({
+                                        id: countIdData,
+                                        start: dataEvento,
+                                        end: dataEvento,
+                                        title: evento.nomeEvento,
+                                        description: evento.observacoesEvento
+                                    });
+
+                                    countIdData++;
+                                }
                             });
+                            const arraysCategorias = Object.values(categoriasArrays);
 
-                            resolve(dataEvents);
+                            resolve(arraysCategorias);
                         })
                         .fail(function (error) {
                             console.error('Erro na requisição:', error);
@@ -273,6 +351,68 @@
                         });
                 });
         
+            });
+        }
+
+        function ListarEventosCat(cat) {
+            return new Promise(function (resolve, reject) {
+                let categoriasArrays = {};
+                let countIdCat = 1;
+                let countIdData = 1;
+                let backgroundColor = '';
+                let borderColor = '';
+
+                $.post('api/listarEventos')
+                    .done(function (data) {
+                        data.forEach(function (evento) {
+                            const categoriaEventoId = evento.categoriaEventoId;
+                            
+                            if (categoriaEventoId == cat) {
+                                let dataEvento = evento.dataHoraEvento;
+                                if (categoriaEventoId == 2) {
+                                    const parsedDate = new Date(dataEvento);
+                                    dataEvento = parsedDate.toISOString().split('T')[0];
+                                }
+
+                                if (!categoriasArrays[categoriaEventoId]) {
+                                    backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
+                                    borderColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 1)' : 'rgba(var(--primary-rgb), 1)';
+                                    categoriasArrays[categoriaEventoId] = {
+                                        id: countIdCat,
+                                        backgroundColor: backgroundColor,
+                                        borderColor: borderColor,
+                                        textColor: '#fff',
+                                        events: []
+                                    };
+                                    countIdCat++;
+                                }
+
+                                categoriasArrays[categoriaEventoId].events.push({
+                                    id: countIdData,
+                                    start: dataEvento,
+                                    end: dataEvento,
+                                    title: evento.nomeEvento,
+                                    description: evento.observacoesEvento
+                                });
+
+                                countIdData++;
+                            }
+                        });
+
+                        const arraysCategorias = Object.values(categoriasArrays);
+                        resolve(arraysCategorias);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
             });
         }
 
@@ -344,6 +484,33 @@
             });
         }
     
+        function ListarCategorias(){
+
+            const selectCat = $("#filter-categoria");
+
+            selectCat.empty();
+            selectCat.append(`<option value="">Selecione uma opção</option>`);
+
+            $.post('api/listarCategoriasEventos')
+                .done(function (data) {
+                    data.forEach(function(categoria) {
+                        if(categoria.idCategoriaEvento != 2){
+                            selectCat.append(`<option value="${categoria.idCategoriaEvento}">${categoria.nomeCategoriaEvento}</option>`);
+                        }
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
         function QtdPastores(){
             const formData = { tipoPessoa : 'pastor' }
             const elementh3 = document.getElementById("qtdPastores");
@@ -439,6 +606,13 @@
                 });
         }
 
+        function TirarSelecaoBtn(){
+            const btns = document.querySelectorAll(".btn-filter");
+
+            btns.forEach(btn => {
+                btn.classList.remove("active");
+            });
+        }
     </script>
 
 </body>

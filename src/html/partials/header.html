@@ -65,14 +65,11 @@
             <!-- End::header-element -->
 
             <!-- Start::header-element -->
-            <div class="header-element notifications-dropdown ">
-                <!-- Start::header-link|dropdown-toggle -->
+            <!-- <div class="header-element notifications-dropdown ">
                 <a href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
                      <i class="bx bx-bell bx-flip-horizontal header-link-icon ionicon"></i>
                    <span class="badge bg-info rounded-pill header-icon-badge pulse pulse-secondary" id="notification-icon-badge">5</span>
                 </a>
-                <!-- End::header-link|dropdown-toggle -->
-                <!-- Start::main-header-dropdown -->
                 <div class="main-header-dropdown dropdown-menu  border-0 dropdown-menu-end" data-popper-placement="none">
                     <div class="p-3">
                         <div class="d-flex align-items-center justify-content-between">
@@ -186,8 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- End::main-header-dropdown -->
-            </div>
+            </div> -->
             <!-- End::header-element -->
 
             <!-- Start::header-element -->
@@ -205,7 +201,7 @@
                 </a>
                 <!-- End::header-link|dropdown-toggle -->
                 <ul class="dropdown-menu  border-0 main-header-dropdown  overflow-hidden header-profile-dropdown" aria-labelledby="mainHeaderProfile">
-                    <li><a class="dropdown-item" href="profile.html"><i class="fs-13 me-2 bx bx-user"></i>Perfil</a></li>
+                    <li><a class="dropdown-item" href="editar-perfil"><i class="fs-13 me-2 bx bx-user"></i>Perfil</a></li>
                     <!-- <li><a class="dropdown-item" href="mail.html"><i class="fs-13 me-2 bx bx-comment"></i>Message</a></li>
                     <li><a class="dropdown-item" href="mail-settings.html"><i class="fs-13 me-2 bx bx-cog"></i>Settings</a></li>
                     <li><a class="dropdown-item" href="faq's.html"><i class="fs-13 me-2 bx bx-help-circle"></i>Help</a></li> -->
@@ -257,6 +253,7 @@
     .then(data => {
       document.getElementById('userName').innerText = data.nomeUsuario;
       document.getElementById('userPhoto').src = '../assets/uploads/' + data.fotoUsuario;
+      sessionStorage.setItem('perfil', data.idUsuario);
     })
     .catch(error => {
       console.error(error);

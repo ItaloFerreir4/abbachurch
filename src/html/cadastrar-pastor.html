@@ -100,7 +100,12 @@
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
                                     <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
-                                    <select class="form-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    <select class="form-select single-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="igrejaId" class="mb-2 text-muted">Igreja*</label>
+                                    <select class="form-select mb-2 single-select" id="igrejaId" name="igrejaId">
                                     </select>
                                 </div>
                             </div>
@@ -156,6 +161,7 @@
         const excludedFields = ['instagram', 'facebook', 'linkedin'];
 
         window.addEventListener("load", function() {
+            ListarIgrejas()
             InputSemImagem();
             ListaPaises();
         });
@@ -288,6 +294,36 @@
                 });
         }
     
+        function ListarIgrejas(){
+            const selectIgreja = $("#igrejaId");
+
+            selectIgreja.empty();
+            selectIgreja.append('<option>Selecione uma opção</option>');
+
+            IniLoader();
+
+            $.post('api/listarIgrejas')
+                .done(function (data) {
+                    data.forEach(function(igreja) {
+                        selectIgreja.append('<option value="' + igreja.idIgreja + '">' + igreja.nomeIgreja + '</option>');
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    FinLoader();
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
     </script>
 
 </body>

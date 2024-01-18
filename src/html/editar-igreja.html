@@ -1,0 +1,276 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Igreja", "dashbordsubtitle":
+        'Igrejas', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-igreja" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Igreja</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-6">
+                                            <label for="nomeIgreja" class="mb-2 text-muted">Nome*</label>
+                                            <input type="text" class="form-control mb-2" id="nomeIgreja" name="nomeIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="paisIgreja" class="mb-2 text-muted">País*</label>
+                                            <input type="text" class="form-control mb-2" id="paisIgreja" name="paisIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="estadoIgreja" class="mb-2 text-muted">Estado*</label>
+                                            <input type="text" class="form-control mb-2" id="estadoIgreja" name="estadoIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="enderecoIgreja" class="mb-2 text-muted">Endereço*</label>
+                                            <input type="text" class="form-control mb-2" id="enderecoIgreja" name="enderecoIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="cepIgreja" class="mb-2 text-muted">CEP*</label>
+                                            <input type="text" class="form-control mb-2" id="cepIgreja" name="cepIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="telefoneIgreja" class="mb-2 text-muted">Telefone*</label>
+                                            <input type="text" class="form-control mb-2" id="telefoneIgreja" name="telefoneIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="emailIgreja" class="mb-2 text-muted">Email*</label>
+                                            <input type="text" class="form-control mb-2" id="emailIgreja" name="emailIgreja">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="tipoIgreja" class="mb-2 text-muted">Tipo*</label>
+                                            <select class="form-select mb-2" id="tipoIgreja" name="tipoIgreja">
+                                                <option>Selecione uma opção</option>
+                                                <option value="0">Matriz</option>
+                                                <option value="1">Filial</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6 d-none" id="div-matriz">
+                                            <label for="matrizId" class="mb-2 text-muted">Matriz*</label>
+                                            <select class="form-select mb-2 single-select" id="matrizId" name="matrizId">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarIgreja()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const divMatriz = document.getElementById("div-matriz");
+        let excludedFields = [];
+
+        window.addEventListener("load", function() {
+            Promise.all([ListarIgrejas()]).then(function () {
+                CarregarIgreja();
+            });
+
+            const tipoIgreja = document.getElementById("tipoIgreja");
+
+            tipoIgreja.addEventListener("change", function(){
+                if(this.value == 1){
+                    divMatriz.classList.remove("d-none");
+                    excludedFields = [''];
+                }
+                else{
+                    divMatriz.classList.add("d-none");
+                    excludedFields = ['matrizId'];
+                }
+            });
+            
+        });
+
+        function CarregarIgreja(){
+            const idIgreja = sessionStorage.getItem('igreja');
+            const formData = { idIgreja : idIgreja}
+
+            IniLoader();
+
+            $.post('api/carregarIgreja', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(igreja) {
+                        for (const propriedade in igreja) {
+                            const valor = igreja[propriedade];
+                            const campo = document.getElementById(propriedade);
+                            console.log(propriedade);
+                            if (campo) {
+                                if (propriedade === 'tipoIgreja') {
+                                    if(valor == 1){
+                                        divMatriz.classList.remove("d-none");
+                                        excludedFields = [''];
+                                    }
+                                    else{
+                                        divMatriz.classList.add("d-none");
+                                        excludedFields = ['matrizId'];
+                                    }
+                                    campo.value = valor;
+                                } 
+                                else{
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarIgreja() {
+
+            const idIgreja = sessionStorage.getItem('igreja');
+            let formData = $('#form-igreja').serializeArray();
+
+            formData.push({ name: 'idIgreja', value: idIgreja });
+
+            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Preencha todos os campos!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarIgreja', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function verificacaoCampos(excludedFields, field){
+            if(!excludedFields.includes(field.name)){
+                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
+            }
+            else{
+                return false;
+            }
+        }
+    
+        function ListarIgrejas(){
+            return new Promise(function (resolve, reject) {
+                const selectMatriz = $("#matrizId");
+
+                selectMatriz.empty();
+                selectMatriz.append('<option>Selecione uma opção</option>');
+
+                IniLoader();
+
+                $.post('api/listarIgrejas')
+                    .done(function (data) {
+                        data.forEach(function(igreja) {
+                            if(igreja.matrizId == 0){
+                                selectMatriz.append('<option value="' + igreja.idIgreja + '">' + igreja.nomeIgreja + '</option>');
+                            }
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        FinLoader();
+                    })
+                    .always(function () {
+                        reject(error);
+                    });
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

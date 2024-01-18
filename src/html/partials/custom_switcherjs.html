@@ -7,6 +7,10 @@
 
 
 <script>
+    $('.single-select').select2({
+        dir: "ltr"
+    });
+
     $('.multiple-select').select2({
         dir: "ltr"
     });
@@ -17,7 +21,32 @@
     });
 
     function formatarDataHora(data) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-        return new Intl.DateTimeFormat('en-US', options).format(data);
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        };
+
+        const formato = new Intl.DateTimeFormat('en-US', options).format(data);
+
+        // Dividir a string em partes usando uma expressão regular
+        const partes = formato.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{2}) ([APMapm]{2})/);
+
+        if (!partes) {
+            throw new Error('Formato de data inválido');
+        }
+
+        // Extrair componentes da data
+        const [, month, day, year, hour, minute, period] = partes;
+
+        // Formatar a data no novo formato
+        const novaDataFormatada = `${year}-${month}-${day} ${hour}:${minute} ${period.toUpperCase()}`;
+
+        return novaDataFormatada;
     }
+
+
 </script>

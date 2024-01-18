@@ -40,7 +40,7 @@ async function listarPessoas(tipoPessoa, pessoaId) {
     }
 }
 
-async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
     
     let date = new Date();
     date = format(date, 'yyyy-MM-dd');
@@ -56,7 +56,7 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
 
         switch(tipoPessoa){
             case 'pastor':
-                const pastor = await cadastrarPastor(pessoaId);
+                const pastor = await cadastrarPastor(pessoaId, igrejaId);
                 const esposa = await cadastrarPessoa('esposa', '', '', '', '', '', '', '', '', '', '');
                 await cadastrarEsposa(esposa.insertId, pastor.insertId);
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
@@ -159,6 +159,9 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     let query = '';
 
     switch(tipoPessoa){
+        case 'perfil':
+            query = `SELECT * FROM pessoas pe, redessociais re WHERE pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa;`;
+            break;
         case 'pastor':
             query = `SELECT * FROM pastores pa, pessoas pe, redessociais re, usuarios u WHERE pa.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa`;
             break;
@@ -189,7 +192,7 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
     
     let query = `
         UPDATE pessoas
@@ -232,6 +235,17 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
                 await executarQuery(query);
 
             }
+        }
+
+        switch(tipoPessoa){
+            case 'pastor':
+                query = `
+                UPDATE pastores
+                SET igrejaId = '${igrejaId}'
+                WHERE pessoaId = ${idPessoa};
+                `;
+                await executarQuery(query);
+                break;
         }
 
         if(resultados){
@@ -279,10 +293,9 @@ async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
             query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`;
 
             const voluntario = await executarQuery(query);
-            const destinatario = voluntario.emailPessoa;
-            const assunto = 'Alteração no status';
+            const destinatario = voluntario[0].emailPessoa;
+            const assunto = 'Alteração no status!';
             const corpo = statusVoluntario == 1 ? 'O seu status foi alterado para "ativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.' : 'O seu status foi alterado para "inativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.';
-            
             enviarEmail(destinatario, assunto, corpo);
         }
 
@@ -293,9 +306,9 @@ async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
     }
 }
 
-async function cadastrarPastor(pessoaId) {
+async function cadastrarPastor(pessoaId, igrejaId) {
     
-    const query = `INSERT INTO pastores (pessoaId) VALUES (${pessoaId})`;
+    const query = `INSERT INTO pastores (pessoaId, igrejaId) VALUES (${pessoaId}, ${igrejaId})`;
 
     try {
         const resultados = await executarQuery(query);
@@ -357,7 +370,7 @@ async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, ema
 
         const destinatario = emailPessoa;
         const assunto = 'Confirmação de cadastro';
-        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:3000/confirmar-email?t=${token}`;
+        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:1111/confirmar-email?t=${token}`;
 
         enviarEmail(destinatario, assunto, corpo)
 

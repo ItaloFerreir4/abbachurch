@@ -13,17 +13,14 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Voluntario", "dashbordsubtitle":
-        'Voluntarios', "dashbordsubtitle2": 'Editar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Meu Perfil", "dashbordsubtitle":
+        'Perfil', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
                 <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
-                        <div class="card-header">
-                            <div class="card-title">Voluntario</div>
-                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
@@ -56,9 +53,9 @@
                                     <label for="profissaoPessoa" class="mb-2 text-muted">Profissão*</label>
                                     <input type="text" class="form-control mb-2" id="profissaoPessoa" name="profissaoPessoa">
                                 </div>
-                                <div class="col-12 col-lg-6 mb-2">
+                                <div class="col-12 col-lg-6">
                                     <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade*</label>
-                                    <select class="form-select" id="escolaridadePessoa" name="escolaridadePessoa">
+                                    <select class="form-select mb-2" id="escolaridadePessoa" name="escolaridadePessoa">
                                         <option>Selecione uma opção</option>
                                         <option>Analfabeto</option>
                                         <option>Até 5º Ano Incompleto</option>
@@ -86,16 +83,6 @@
                                 <div class="col-12 col-lg-6 mb-2">
                                     <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
                                     <select class="form-select single-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="categoriasVoluntario" class="mb-2 text-muted">Habilidades*</label>
-                                    <select class="form-select multiple-select" id="categoriasVoluntario" name="categoriasVoluntario" multiple="multiple">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="pastorId" class="mb-2 text-muted">Pastor Responsavel*</label>
-                                    <select class="form-select single-select" id="pastorId" name="pastorId">
                                     </select>
                                 </div>
                             </div>
@@ -147,7 +134,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button id="submitBtn"  class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
+                            <button id="submitBtn" class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
                         </div>
                     </div>
                 </form>
@@ -175,8 +162,6 @@
         
         window.addEventListener("load", function() {
             ListaPaises();
-            ListaPastores();
-            ListaHabilidades();
             CarregarPessoa();
         });
 
@@ -218,8 +203,8 @@
         });
 
         function CarregarPessoa(){
-            const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa, tipoPessoa : 'voluntario' }
+            const idPessoa = sessionStorage.getItem('perfil');
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'perfil' }
 
             IniLoader();
 
@@ -263,12 +248,6 @@
                                     $('#idiomaPessoa').val(idiomasArray).trigger('change');
 
                                 }
-                                else if (propriedade === 'categoriasVoluntario'){
-
-                                    const idiomasArray = valor.split(',');
-                                    $('#categoriasVoluntario').val(idiomasArray).trigger('change');
-
-                                }
                                 else {
                                     campo.value = valor;
                                 }
@@ -298,24 +277,19 @@
 
         function EditarPessoa() {
 
-            const idPessoa = sessionStorage.getItem('pessoa');
+            const idPessoa = sessionStorage.getItem('perfil');
             let formData = $('#form-pessoa').serializeArray();
-            let habilidadesSelecionadas = $('#categoriasVoluntario').val();
             let idiomasSelecionados = $('#idiomaPessoa').val();
-            let habilidadesString = habilidadesSelecionadas.join(',');
             let idiomasString = idiomasSelecionados.join(',');
-
-            const itensParaRemover = ['idiomaPessoa', 'categoriasVoluntario'];
 
             // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
             formData = formData.filter(function(item) {
-                return !itensParaRemover.includes(item.name);
+                return item.name !== 'idiomaPessoa';
             });
 
-            formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
             formData.push({ name: 'idPessoa', value: idPessoa });
-            formData.push({ name: 'tipoPessoa', value: 'voluntario' });
+            formData.push({ name: 'tipoPessoa', value: 'perfil' });
 
             if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
 
@@ -395,54 +369,6 @@
             }
         }
     
-        function ListaPastores(){
-            const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
-            const selectPastor = $("#pastorId");
-
-            selectPastor.empty();
-
-            $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    data.forEach(function(pessoa) {
-                        selectPastor.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
-                    });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
-        }
-    
-        function ListaHabilidades(){
-
-            $.post('api/listarCategorias')
-                .done(function (data) {
-                    const categorias = data.map(function(categoria) {
-                        return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
-                    });
-
-                    $('#categoriasVoluntario').select2({
-                        data: categorias
-                    });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
-        }
-
         function ListaPaises(){
             const selectPaises = $("#nacionalidadePessoa");
 

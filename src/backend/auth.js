@@ -65,7 +65,7 @@ async function enviarRecEmail(email) {
             let token = gerarTokenConfirmacao(pessoa.idPessoa, email);
             let destinatario = email;
             let assunto = 'Recuperação de senha';
-            let corpo = `Olá, ${pessoa.nomePessoa}! Você solicitou a recuperação de senha. Clique no link abaixo para redefini-la: \n\n http://localhost:3000/recuperar-senha?t=${token}`;
+            let corpo = `Olá, ${pessoa.nomePessoa}! Você solicitou a recuperação de senha. Clique no link abaixo para redefini-la: \n\n http://localhost:1111/recuperar-senha?t=${token}`;
             enviarEmail(destinatario, assunto, corpo)
 
             return 1;

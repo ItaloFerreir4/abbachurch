@@ -85,7 +85,12 @@
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
                                     <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
-                                    <select class="form-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    <select class="form-select single-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="igrejaId" class="mb-2 text-muted">Igreja*</label>
+                                    <select class="form-select mb-2 single-select" id="igrejaId" name="igrejaId">
                                     </select>
                                 </div>
                                 <div class="col-12">
@@ -169,7 +174,9 @@
         
         window.addEventListener("load", function() {
             ListaPaises();
-            CarregarPessoa();
+            Promise.all([ListarIgrejas()]).then(function () {
+                CarregarPessoa();
+            });
         });
 
         document.getElementById('estadoCivilPessoa').addEventListener('change', function() {
@@ -320,7 +327,8 @@
                     timer: 1500
                 });
 
-            } else {
+            } 
+            else {
                 IniLoader();
                 $.post('api/atualizarPessoa', formData)
                 .done(function (data) {
@@ -428,6 +436,39 @@
                 });
         }
     
+        function ListarIgrejas(){
+            return new Promise(function (resolve, reject) {
+                const selectIgreja = $("#igrejaId");
+
+                selectIgreja.empty();
+                selectIgreja.append('<option>Selecione uma opção</option>');
+
+                IniLoader();
+
+                $.post('api/listarIgrejas')
+                    .done(function (data) {
+                        data.forEach(function(igreja) {
+                            selectIgreja.append('<option value="' + igreja.idIgreja + '">' + igreja.nomeIgreja + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        FinLoader();
+                    })
+                    .always(function () {
+                        reject(error);
+                    });
+            });
+        }
+
     </script>
 
 </body>

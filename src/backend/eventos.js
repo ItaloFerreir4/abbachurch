@@ -3,7 +3,7 @@ const { formatarDataHora } = require('./formata-data');
 
 async function listarEventos() {
     
-    let query = 'SELECT * FROM eventos';
+    let query = 'SELECT * FROM eventos ORDER BY categoriaEventoId ASC';
 
     try {
         const resultados = await executarQuery(query);

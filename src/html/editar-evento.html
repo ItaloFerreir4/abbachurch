@@ -42,12 +42,12 @@
                                         </div>
                                         <div class="col-12 col-lg-4 mb-2">
                                             <label for="ministerioId" class="mb-2 text-muted">Ministerio Responsavel*</label>
-                                            <select class="form-select" id="ministerioId" name="ministerioId">
+                                            <select class="form-select single-select" id="ministerioId" name="ministerioId">
                                             </select>
                                         </div>
                                         <div class="col-12 col-lg-4 mb-2">
                                             <label for="categoriaEventoId" class="mb-2 text-muted">Categoria*</label>
-                                            <select class="form-select" id="categoriaEventoId" name="categoriaEventoId">
+                                            <select class="form-select single-select" id="categoriaEventoId" name="categoriaEventoId">
                                             </select>
                                         </div>
                                         <div class="col-12 mb-2">
@@ -109,7 +109,6 @@
                             const campo = document.getElementById(propriedade);
     
                             if (campo) {
-                                console.log(valor);
                                 if (propriedade === 'dataHoraEvento') {
                                     const parsedDate = new Date(valor);
                                     const data = formatarDataHora(parsedDate);

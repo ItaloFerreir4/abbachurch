@@ -8,6 +8,7 @@ const { verificarTokenConfirmacao } = require('./global');
 const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { listarNomePaises } = require('./paises');
+const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
@@ -231,13 +232,13 @@ app.post('/api/listarPessoas', async (req, res) => {
 
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario } = req.body;
+    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
     
     try {
 
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
-        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa);
+        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
         if(pastorId){
             switch(tipoPessoa){
                 case 'filho':
@@ -301,11 +302,11 @@ app.post('/api/carregarPessoa', async (req, res) => {
 
 app.post('/api/atualizarPessoa', async (req, res) => {
 
-    const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario } = req.body;
+    const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
 
     try {
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
-        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa);
+        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
 
         switch(tipoPessoa){
             case 'voluntario':
@@ -847,10 +848,103 @@ app.post('/api/carregarVoluntarioEvento', async (req, res) => {
     }
 });
 
+app.post('/api/listarIgrejas', async (req, res) => {
+
+    try {
+        const lista = await listarIgrejas();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarIgreja', async (req, res) => {
+
+    const { nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId } = req.body;
+    
+    try {
+        const resultado = await cadastrarIgreja(nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarIgreja', async (req, res) => {
+
+    const { idIgreja, nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId } = req.body;
+    
+    try {
+        const resultado = await atualizarIgreja(idIgreja, nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarIgreja', async (req, res) => {
+
+    const { idIgreja } = req.body;
+
+    try {
+        const resultado = await deletarIgreja(idIgreja);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarIgreja', async (req, res) => {
+
+    const { idIgreja } = req.body;
+
+    try {
+        const resultado = await carregarIgreja(idIgreja);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
 // Rota para tratar solicitações de dados
 app.get('/api/data', (req, res) => {
     if (req.session.authenticated) {
       res.json({ 
+        idUsuario: req.session.idPessoa,
         nomeUsuario: req.session.nome,
         emailUsuario: req.session.email,
         fotoUsuario: req.session.foto,

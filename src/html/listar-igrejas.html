@@ -13,8 +13,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Categorias", "dashbordsubtitle":
-        'Categorias', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Igrejas", "dashbordsubtitle":
+        'Igrejas', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -27,6 +27,9 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Nome</th>
+                                            <th scope="col">Telefone</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Tipo</th>
                                             <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
@@ -68,10 +71,10 @@
 
     <script>
         window.addEventListener("load", function() {
-            ListarCategorias();
+            ListarIgrejas();
         });
 
-        function ListarCategorias(){
+        function ListarIgrejas(){
 
             IniLoader();
 
@@ -91,14 +94,26 @@
 
             tabela.clear().draw();
 
-            $.post('api/listarCategoriasEventos')
+            $.post('api/listarIgrejas')
                 .done(function (data) {
-                    data.forEach(function(categoria) {
+                    data.forEach(function(igreja) {
+
+                        let tipoIgreja = '';
+                        if(igreja.tipoIgreja == 1){
+                            tipoIgreja = 'Filial';
+                        }
+                        else{
+                            tipoIgreja = 'Matriz';
+                        }
+
                         tabela.row.add([
-                            categoria.nomeCategoriaEvento,
+                            igreja.nomeIgreja,
+                            igreja.telefoneIgreja,
+                            igreja.emailIgreja,
+                            tipoIgreja,
                             `<div class="btns-actions">
-                                <button class="btn btn-success btn-sm mr-1" onClick="EditarCategoria(${categoria.idCategoriaEvento})">Editar</button>
-                                ${categoria.idCategoriaEvento !== 2 ? `<button class="btn btn-danger btn-sm mr-1" onClick="DeletarCategoria(${categoria.idCategoriaEvento})">Deletar</button>` : ''}
+                                <button class="btn btn-success btn-sm mr-1" onClick="EditarIgreja(${igreja.idIgreja})">Editar</button>
+                                <button class="btn btn-danger btn-sm mr-1" onClick="DeletarIgreja(${igreja.idIgreja})">Deletar</button>
                             </div>`
                         ]).draw();
                     });
@@ -118,9 +133,9 @@
                 });
         }
 
-        function DeletarCategoria(idCategoria){
+        function DeletarIgreja(idIgreja){
 
-            const dataApi = { idCategoriaEvento: idCategoria };
+            const dataApi = { idIgreja: idIgreja };
 
             Swal.fire({
             title: "Quer realmente deletar?",
@@ -132,7 +147,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     IniLoader();
-                    $.post('/api/deletarCategoriaEvento', dataApi)
+                    $.post('/api/deletarIgreja', dataApi)
                         .done(function (data) {
                             Swal.fire({
                                 position: 'center',
@@ -142,7 +157,7 @@
                                 timer: 2500
                             });
 
-                            ListarCategorias();
+                            ListarIgrejas();
                         })
                         .fail(function (error) {
                             console.error('Erro na requisição:', error);
@@ -159,9 +174,9 @@
 
         }
 
-        function EditarCategoria(idCategoria){
-            sessionStorage.setItem('categoria-evento', idCategoria);
-            window.location.href = "editar-categoria-evento";
+        function EditarIgreja(idIgreja){
+            sessionStorage.setItem('igreja', idIgreja);
+            window.location.href = "editar-igreja";
         }
     </script>
 
