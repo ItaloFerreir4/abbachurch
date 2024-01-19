@@ -98,6 +98,7 @@
                     .done(function (data) {
                         data.forEach(function (ministerio) {
                             const idProcurado = ministerio.liderId;
+                            let divBtns = '';
                             let nomeLider = listaLideres.find(lider => lider.idPessoa === idProcurado)?.nomePessoa;
                             nomeLider = nomeLider ? nomeLider : 'Lider não encontrado!';
 
@@ -111,14 +112,22 @@
                                 data = dataOld;
                             }
 
+                            if(sessionStorage.getItem('tipoUser') == 0){
+                                divBtns = `
+                                <div class="btns-actions">
+                                    <button class="btn btn-success btn-sm mr-1" onClick="EditarMinisterio(${ministerio.idMinisterio})">Editar</button>
+                                    <button class="btn btn-danger btn-sm mr-1" onClick="DeletarMinisterio(${ministerio.idMinisterio})">Deletar</button>
+                                </div>`;
+                            }
+                            else{
+                                divBtns = 'Indisponível';
+                            }
+
                             tabela.row.add([
                                 ministerio.nomeMinisterio,
                                 nomeLider,
                                 data,
-                                `<div class="btns-actions">
-                                    <button class="btn btn-success btn-sm mr-1" onClick="EditarMinisterio(${ministerio.idMinisterio})">Editar</button>
-                                    <button class="btn btn-danger btn-sm mr-1" onClick="DeletarMinisterio(${ministerio.idMinisterio})">Deletar</button>
-                                </div>`
+                                
                             ]).draw();
                         });
                     })

@@ -979,8 +979,11 @@ app.post('/api/carregarIgreja', async (req, res) => {
 
 app.post('/api/listarRequisicoes', async (req, res) => {
 
+    const idUserLog = req.session.idPessoa;
+    const tipoUserLog = req.session.tipoUsuario;
+
     try {
-        const lista = await listarRequisicoes();
+        const lista = await listarRequisicoes(idUserLog, tipoUserLog);
 
         if (lista) {
             res.json(lista);
