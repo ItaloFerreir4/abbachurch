@@ -45,12 +45,12 @@ async function listarPessoas(tipoPessoa, pessoaId) {
 
 async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
 
-    //verificar se o email já existe
-    let queryVerify = `SELECT * FROM pessoas WHERE emailPessoa = '${emailPessoa}'`;
-    if(await executarQuery(queryVerify)){
+    let query_count = `SELECT * FROM pessoas WHERE emailPessoa = '${emailPessoa}'`;
+
+    let count = await executarQuery(query_count);
+    if(count.length > 0){
         return null;
     }
-
     
     let date = new Date();
     date = format(date, 'yyyy-MM-dd');
