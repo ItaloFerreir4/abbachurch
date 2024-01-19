@@ -2,9 +2,9 @@ const executarQuery = require('./consulta');
 const { format } = require('date-fns');
 const { enviarEmail } = require('./send-email');
 
-async function listarRequisicoes() {
+async function listarRequisicoes(idUserLog, tipoUserLog) {
     
-    let query = 'SELECT * FROM requisicoes';
+    let query = tipoUserLog == 0 ? 'SELECT * FROM requisicoes' : `SELECT * FROM requisicoes WHERE pessoaId = ${idUserLog}`;
 
     try {
         const resultados = await executarQuery(query);

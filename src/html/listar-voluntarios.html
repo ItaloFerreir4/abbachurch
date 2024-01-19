@@ -102,6 +102,7 @@
                     data.forEach(function(pessoa) {
 
                         let status = '';
+                        let divBtns = '';
 
                         switch(pessoa.statusUsuario){
                             case 0:
@@ -115,13 +116,9 @@
                                 break;
                         }
 
-                        tabela.row.add([
-                            `<img class="w-50 rounded-circle" src="../assets/uploads/${pessoa.fotoPessoa}">`,
-                            pessoa.nomePessoa,
-                            pessoa.emailPessoa,
-                            pessoa.telefonePessoa,
-                            status,
-                            `<div class="btns-actions">
+                        if(sessionStorage.getItem('tipoUser') == 0){
+                            divBtns = `
+                            <div class="btns-actions">
                                 <select class="btn btn-outline-light btn-wave waves-effect waves-light btn-sm mr-1" onChange="AlterarStatus(${pessoa.idPessoa}, this.value)">
                                     <option value="0" ${pessoa.statusUsuario === 0 ? 'selected' : ''}>Selecionar</option>
                                     <option value="1" ${pessoa.statusUsuario === 1 ? 'selected' : ''}>Ativo</option>
@@ -129,7 +126,19 @@
                                 </select>
                                 <button class="btn btn-success btn-sm mr-1" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
                                 <button class="btn btn-danger btn-sm mr-1" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
-                            </div>`
+                            </div>`;
+                        }
+                        else{
+                            divBtns = 'Indisponível';
+                        }
+
+                        tabela.row.add([
+                            `<img class="w-50 rounded-circle" src="../assets/uploads/${pessoa.fotoPessoa}">`,
+                            pessoa.nomePessoa,
+                            pessoa.emailPessoa,
+                            pessoa.telefonePessoa,
+                            status,
+                            divBtns
                         ]).draw();
                     });
                 })
