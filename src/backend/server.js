@@ -369,8 +369,14 @@ app.post('/api/atualizarPessoa', async (req, res) => {
 
             res.json(newData);
 
+        } else if (resultado == null) {
+            
+            res.status(401).json({ message: 'E-mail já cadastrado' });  
+        
         } else {
+                
             res.status(401).json({ message: 'Erro ao atualizar' });
+            
         }
 
     } catch (erro) {

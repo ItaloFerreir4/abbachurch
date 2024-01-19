@@ -169,10 +169,12 @@
 
                     console.error('Erro na requisição:', error);
 
+                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao atualizar!';
+
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao atualizar!',
+                        title: message,
                         showConfirmButton: false,
                         timer: 1500
                     });
