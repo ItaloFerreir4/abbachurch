@@ -13,8 +13,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Ministerios", "dashbordsubtitle":
-        'Ministerios', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Eventos", "dashbordsubtitle":
+        'Eventos', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -26,10 +26,13 @@
                                 <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Nome</th>
-                                            <th scope="col">Lider</th>
-                                            <th scope="col">Data</th>
-                                            <th scope="col">Ações</th>
+                                            <th class="all" scope="col">Nome</th>
+                                            <th class="all" scope="col">Data inicio</th>
+                                            <th class="min-tablet" scope="col">Data Fim</th>
+                                            <th class="min-tablet" scope="col">Local</th>
+                                            <th class="min-tablet" scope="col">Ministerio</th>
+                                            <th class="min-tablet" scope="col">Categoria</th>
+                                            <th class="min-tablet" scope="col">Observações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="body-table">
@@ -70,10 +73,11 @@
 
     <script>
         window.addEventListener("load", function() {
-            ListarMinisterios();
+            ListarVoluntarioEvento();
         });
 
-        function ListarMinisterios() {
+        function ListarVoluntarioEvento(){
+
             IniLoader();
 
             // Verifica se a tabela já existe e a destrói se necessário
@@ -92,42 +96,33 @@
 
             tabela.clear().draw();
 
-            // Usando uma Promise para esperar pela lista de líderes
-            ListaLideres().then(function (listaLideres) {
-                $.post('api/listarMinisterios')
+            Promise.all([ListaMinisterios(), ListarCategorias()]).then(function ([listaMinisterios, listaCategorias]) {
+                $.post('api/listarEventos')
                     .done(function (data) {
-                        data.forEach(function (ministerio) {
-                            const idProcurado = ministerio.liderId;
-                            let divBtns = '';
-                            let nomeLider = listaLideres.find(lider => lider.idPessoa === idProcurado)?.nomePessoa;
-                            nomeLider = nomeLider ? nomeLider : 'Lider não encontrado!';
+                        data.forEach(function (evento) {
+                            const idMinisterio = evento.ministerioId;
+                            let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idMinisterio)?.nomeMinisterio;
+                            nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
 
-                            const dataOld = ministerio.dataEntradaMinisterio;
-                            let data = new Date(dataOld);
-
-                            if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
-                                const dataFormatada = data.toISOString().split('T')[0];
-                                data = dataFormatada;
-                            } else {
-                                data = dataOld;
-                            }
-
-                            if(sessionStorage.getItem('tipoUser') == 0){
-                                divBtns = `
-                                <div class="btns-actions">
-                                    <button class="btn btn-success btn-sm mr-1" onClick="EditarMinisterio(${ministerio.idMinisterio})">Editar</button>
-                                    <button class="btn btn-danger btn-sm mr-1" onClick="DeletarMinisterio(${ministerio.idMinisterio})">Deletar</button>
-                                </div>`;
-                            }
-                            else{
-                                divBtns = 'Indisponível';
-                            }
+                            const idCategoria = evento.categoriaEventoId;
+                            let nomeCategoriaEvento = listaCategorias.find(categoria => categoria.idCategoriaEvento === idCategoria)?.nomeCategoriaEvento;
+                            nomeCategoriaEvento = nomeCategoriaEvento ? nomeCategoriaEvento : 'Categoria não encontrada!';
+                            
+                            let dataInicio = evento.dataHoraInicioEvento;
+                            let dataFim = evento.dataHoraFimEvento;
+                            dataInicio = new Date(dataInicio);
+                            dataInicio = formatarDataHora(dataInicio);
+                            dataFim = new Date(dataFim);
+                            dataFim = formatarDataHora(dataFim);
 
                             tabela.row.add([
-                                ministerio.nomeMinisterio,
-                                nomeLider,
-                                data,
-                                divBtns
+                                evento.nomeEvento,
+                                dataInicio,
+                                dataFim,
+                                evento.localEvento,
+                                nomeMinisterio,
+                                nomeCategoriaEvento,
+                                evento.observacoesEvento,
                             ]).draw();
                         });
                     })
@@ -147,57 +142,9 @@
             });
         }
 
-        function DeletarMinisterio(idMinisterio){
-
-            const dataApi = { idMinisterio: idMinisterio };
-
-            Swal.fire({
-            title: "Quer realmente deletar?",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Deletar",
-            cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    IniLoader();
-                    $.post('/api/deletarMinisterio', dataApi)
-                        .done(function (data) {
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                title: 'Deletado com sucesso!',
-                                showConfirmButton: false,
-                                timer: 2500
-                            });
-
-                            ListarMinisterios();
-                        })
-                        .fail(function (error) {
-                            console.error('Erro na requisição:', error);
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'error',
-                                title: 'Erro ao deletar!',
-                                showConfirmButton: false,
-                                timer: 2500
-                            });
-                        });
-                }
-            });
-
-        }
-
-        function EditarMinisterio(idMinisterio){
-            sessionStorage.setItem('ministerio', idMinisterio);
-            window.location.href = "editar-ministerio";
-        }
-    
-        function ListaLideres() {
+        function ListaMinisterios() {
             return new Promise(function (resolve, reject) {
-                const formData = { tipoPessoa: 'lider' };
-
-                $.post('api/listarPessoas', formData)
+                $.post('api/listarMinisterios')
                     .done(function (data) {
                         resolve(data);
                     })
@@ -214,6 +161,29 @@
                     });
             });
         }
+
+        function ListarCategorias(){
+            return new Promise(function (resolve, reject) {
+                $.post('api/listarCategoriasEventos')
+                    .done(function (data) {
+                        resolve(data);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .always(function () {
+                        FinLoader();
+                    });
+            });
+        }
+
     </script>
 
 </body>

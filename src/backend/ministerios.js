@@ -1,8 +1,12 @@
 const executarQuery = require('./consulta');
 
-async function listarMinisterios() {
-    
-    let query = 'SELECT * FROM ministerios';
+async function listarMinisterios(idUserLog, tipoUserLog, evento) {
+
+    let query = tipoUserLog == 0 ? 'SELECT * FROM ministerios' : `SELECT * FROM ministerios WHERE liderId = ${idUserLog}`;
+
+    if(evento == 1){
+        query = 'SELECT * FROM ministerios';
+    }
 
     try {
         const resultados = await executarQuery(query);

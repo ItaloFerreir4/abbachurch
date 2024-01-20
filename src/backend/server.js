@@ -234,10 +234,12 @@ app.get('/assets/:file', (req, res) => {
 
 app.post('/api/listarPessoas', async (req, res) => {
 
+    const idUserLog = req.session.idPessoa;
+    const tipoUserLog = req.session.tipoUsuario;
     const { tipoPessoa, pessoaId } = req.body;
 
     try {
-        const lista = await listarPessoas(tipoPessoa, pessoaId);
+        const lista = await listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId);
 
         if (lista) {
             res.json(lista);
@@ -517,8 +519,32 @@ app.post('/api/listarNomePaises', async (req, res) => {
 
 app.post('/api/listarMinisterios', async (req, res) => {
 
+    const idUserLog = req.session.idPessoa;
+    const tipoUserLog = req.session.tipoUsuario;
+
     try {
-        const lista = await listarMinisterios();
+        const lista = await listarMinisterios(idUserLog, tipoUserLog, 0);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/listarMinisteriosEventos', async (req, res) => {
+
+    const idUserLog = req.session.idPessoa;
+    const tipoUserLog = req.session.tipoUsuario;
+
+    try {
+        const lista = await listarMinisterios(idUserLog, tipoUserLog, 1);
 
         if (lista) {
             res.json(lista);

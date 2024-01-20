@@ -155,7 +155,7 @@
 
             IniLoader();
 
-            $.post('api/listarMinisterios')
+            $.post('api/listarMinisteriosEventos')
                 .done(function (data) {
                     data.forEach(function(ministerio) {
                         selectLider.append('<option value="' + ministerio.idMinisterio + '">' + ministerio.nomeMinisterio + '</option>');
