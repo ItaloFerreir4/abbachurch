@@ -31,7 +31,8 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
             query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
             const assunto = 'Cadastro de requisição!';
-            const corpo = 'Uma requisição foi cadastrada! \n\n Qualquer dúvida entre em contato com a Abba Church.';
+            const corpo = `<p>Uma requisição foi cadastrada!</p>
+            <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
             admins.forEach(admin => {
                 const destinatario = admin.emailPessoa;
                 enviarEmail(destinatario, assunto, corpo);
@@ -100,7 +101,9 @@ async function atualizarStatusRequisicao(idRequisicao, statusRequisicao) {
             const pessoa = await executarQuery(query);
             const destinatario = pessoa[0].emailPessoa;
             const assunto = 'Alteração no status na requisição!';
-            const corpo = statusVoluntario == 1 ? 'O status do sua requisição foi alterada para "ativo"! \n\n Qualquer dúvida entre em contato com a Abba Church.' : 'O status da sua requisição foi alterada para "inativo"! \n\n Qualquer dúvida entre em contato com a Abba Church.';
+            let status = statusVoluntario == 1 ? 'ativo' : 'inativo';
+            let corpo = `<p>O status do sua requisição foi alterada para <b>${status}</b>!</p>
+            <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
             enviarEmail(destinatario, assunto, corpo);
         }
 

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const executarQuery = require('./consulta');
 const { cadastrarUsuario } = require('./usuarios');
 const { format } = require('date-fns');
@@ -322,7 +323,9 @@ async function atualizarStatusVoluntario(pessoaId, statusVoluntario) {
             const voluntario = await executarQuery(query);
             const destinatario = voluntario[0].emailPessoa;
             const assunto = 'Alteração no status!';
-            const corpo = statusVoluntario == 1 ? 'O seu status foi alterado para "ativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.' : 'O seu status foi alterado para "inativo"! \n\n Qualquer dúvida entre em contato com a igreja Abba Church.';
+            let status = statusVoluntario == 1 ? 'ativo' : 'inativo';
+            let corpo = `<p>O seu status foi alterado para <b>${status}</b>!</p>
+            <p>Qualquer dúvida entre em contato com a igreja Abba Church.</p>`;
             enviarEmail(destinatario, assunto, corpo);
         }
 
@@ -396,10 +399,14 @@ async function cadastrarVoluntario(pessoaId, pastorId, categoriasVoluntario, ema
         const resultados = await executarQuery(query);
 
         token = gerarTokenConfirmacao(pessoaId, emailPessoa);
+        let baseUrl = process.env.BASE_URL;
 
         const destinatario = emailPessoa;
         const assunto = 'Confirmação de cadastro';
-        const corpo = `Olá, ${nomePessoa}! \n\nVocê foi cadastrado no sistema Abba Church. \n\nPara confirmar seu cadastro, clique no link abaixo: \n\nhttp://localhost:1111/confirmar-email?t=${token}`;
+        const corpo = `<p>Olá, <b>${nomePessoa}</b>!</p>
+        <p>Você foi cadastrado no sistema Abba Church.</p>
+        <p>Para <b>confirmar seu cadastro</b>, clique no link abaixo:</p> 
+        <p><a href="${baseUrl}/confirmar-email?t=${token}">${baseUrl}/confirmar-email?t=${token}</a></p>`;
 
         enviarEmail(destinatario, assunto, corpo);
 
