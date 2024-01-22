@@ -1,3 +1,4 @@
+require('dotenv').config();
 const executarQuery = require('./consulta');
 const bcrypt = require('bcrypt');
 const { verificarTokenConfirmacao, gerarTokenConfirmacao } = require('./global');
@@ -74,6 +75,7 @@ async function enviarRecEmail(email) {
 
     try {
         let resultados = await executarQuery(query);
+        let baseUrl = process.env.BASE_URL;
 
         if (resultados.length > 0) {
             
@@ -81,7 +83,10 @@ async function enviarRecEmail(email) {
             let token = gerarTokenConfirmacao(pessoa.idPessoa, email);
             let destinatario = email;
             let assunto = 'Recuperação de senha';
-            let corpo = `Olá, ${pessoa.nomePessoa}! Você solicitou a recuperação de senha. Clique no link abaixo para redefini-la: \n\n http://localhost:1111/recuperar-senha?t=${token}`;
+            let corpo = `<p>Olá, <b>${pessoa.nomePessoa}</b>!</p> 
+            <p>Você solicitou a <b>recuperação de senha</b>.</p>
+            <p>Clique no link abaixo para redefini-la:</p>
+            <p>${baseUrl}/recuperar-senha?t=${token}</p>`;
             enviarEmail(destinatario, assunto, corpo)
 
             return 1;
