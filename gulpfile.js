@@ -42,8 +42,8 @@ function browsersyncFn(callback) {
         proxy: 'http://localhost:3000',
         port: 1111,
         https: {
-            key: 'self',
-            cert: 'self',
+            key: path.resolve('./server.key'),
+            cert: path.resolve('./server.crt'),
         },
     });
     callback();
