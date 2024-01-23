@@ -271,7 +271,7 @@
             } 
             else {
                 IniLoader();
-                $.post('api/cadastrarPessoa', formData)
+                $.post('/api/cadastrarPessoa', formData)
                 .done(function (data) { console.log(data);
                     
                     Swal.fire({
@@ -281,6 +281,10 @@
                         showConfirmButton: false,
                         timer: 2500
                     });
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2500);
 
                 })
                 .fail(function (error) {
@@ -300,9 +304,6 @@
                 })
                 .always(function () {
                     FinLoader();
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2500);
                 });
             }
             
