@@ -123,6 +123,9 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
         query = `DELETE FROM redessociais WHERE pessoaId = ${pessoaId};`;
         await executarQuery(query);
 
+        query = `DELETE FROM usuarios WHERE pessoaId = ${pessoaId};`;
+        await executarQuery(query);
+
         if(resultados){
             switch(tipoPessoa){
                 case 'pastor':
