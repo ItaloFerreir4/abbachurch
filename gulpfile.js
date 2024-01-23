@@ -41,7 +41,10 @@ function browsersyncFn(callback) {
     browsersync$.init({
         proxy: 'http://localhost:3000',
         port: 1111,
-        https: true,
+        https: {
+            key: "../../../etc/letsencrypt/live/abbachurch.app/privkey.pem",
+            cert: "../../../etc/letsencrypt/live/abbachurch.app/fullchain.pem"
+        }
     });
     callback();
 };
