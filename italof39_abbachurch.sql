@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 22/01/2024 às 14:47
+-- Tempo de geração: 23/01/2024 às 07:24
 -- Versão do servidor: 5.7.23-23
 -- Versão do PHP: 8.1.26
 
@@ -108,7 +108,8 @@ INSERT INTO `eventos` (`idEvento`, `nomeEvento`, `dataHoraInicioEvento`, `dataHo
 (23, 'Evento 1', '2024-01-16 13:00:00', '2024-01-30 13:00:00', 'Rio de Janeiro', 4, 'teste', 3),
 (24, 'Evento 2', '2024-01-18 13:00:00', '2024-01-30 13:00:00', 'Rio de Janeiro', 4, 'teste', 3),
 (25, 'Evento 3', '2024-01-18 13:00:00', '2024-01-30 13:00:00', 'Rio de Janeiro', 4, 'teste', 4),
-(26, 'Evento 4', '2024-01-15 12:00:00', '2024-01-08 12:00:00', 'Rio de Janeiro', 5, 'Evento 4', 2);
+(26, 'Evento 4', '2024-01-15 12:00:00', '2024-01-08 12:00:00', 'Rio de Janeiro', 5, 'Evento 4', 2),
+(27, 'Evento aniversario', '2024-01-17 12:00:00', '2024-01-16 12:00:00', 'Rio de Janeiro', 5, 'teste', 2);
 
 -- --------------------------------------------------------
 
@@ -225,7 +226,6 @@ CREATE TABLE `pessoas` (
   `profissaoPessoa` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `escolaridadePessoa` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `idiomaPessoa` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `redeSocialId` int(11) NOT NULL,
   `nacionalidadePessoa` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dataEntradaPessoa` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -234,18 +234,23 @@ CREATE TABLE `pessoas` (
 -- Despejando dados para a tabela `pessoas`
 --
 
-INSERT INTO `pessoas` (`idPessoa`, `fotoPessoa`, `nomePessoa`, `emailPessoa`, `telefonePessoa`, `estadoCivilPessoa`, `dataNascimentoPessoa`, `profissaoPessoa`, `escolaridadePessoa`, `idiomaPessoa`, `redeSocialId`, `nacionalidadePessoa`, `dataEntradaPessoa`) VALUES
-(72, 'semfoto.png', 'admin', 'admin@email.com', '999999999', 'Solteiro(a)', '2024-01-24', 'ad', 'Prefiro não dizer', 'Ingles', 0, 'Albania', '2024-01-18'),
-(73, 'image_1705793436121.png', '@Pastor', 'pastor@email.com', '999999999', 'Casado(a)', '2024-01-11', 'Teste', '6º ao 9º Ano do Fundamental', 'Ingles', 0, 'Afghanistan', '2024-01-18'),
-(74, 'semfoto.png', 'esposa teste', '', '999999999', 'undefined', '1899-11-30', 'undefined', 'Doutorado', 'Ingles', 0, 'Anguilla', '2024-01-18'),
-(75, 'semfoto.png', 'Italo', 'italo.s.ferreira@hotmail.com', '9999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Superior Completo', 'Ingles,Espanhol', 0, 'Afghanistan', '2024-01-18'),
-(79, 'semfoto.png', 'Lider', 'lider@email.com', '999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Prefiro não dizer', 'Espanhol', 0, 'Albania', '2024-01-19'),
-(80, 'semfoto.png', 'Voluntario', 'voluntario@email.com', '9999999999', 'Solteiro(a)', '2024-01-25', 'Dev', 'Mestrado', 'Ingles', 0, 'Anguilla', '2024-01-19'),
-(84, 'semfoto.png', 'Voluntario2', 'voluntario1@email.com', '111111111', 'Solteiro(a)', '1111-11-11', 'dev', 'Doutorado', 'Português', 0, 'Aruba', '2024-01-19'),
-(85, 'image_1705696690414.png', 'Pastor 2', 'pastor2@email.com', '999999999', 'Solteiro(a)', '2024-01-09', 'Dev', 'Superior Incompleto', 'Espanhol', 0, 'Antigua and Barbuda', '2024-01-19'),
-(86, '', '', '', '', '', '0000-00-00', 'undefined', 'undefined', 'undefined', 0, 'undefined', '2024-01-19'),
-(87, 'image_1705696903623.png', 'Lider2', 'lider2@email.com', '111111111', 'Solteiro(a)', '1111-11-11', 'dev', 'Médio Completo', 'Espanhol,Outros', 0, 'Bulgaria', '2024-01-19'),
-(88, 'semfoto.png', 'voluntario', 'voluntario2@email.com', '999999999', 'Solteiro(a)', '2024-01-01', 'voluntario', '6º ao 9º Ano do Fundamental', 'Ingles,Outros', 0, 'Belgium', '2024-01-20');
+INSERT INTO `pessoas` (`idPessoa`, `fotoPessoa`, `nomePessoa`, `emailPessoa`, `telefonePessoa`, `estadoCivilPessoa`, `dataNascimentoPessoa`, `profissaoPessoa`, `escolaridadePessoa`, `idiomaPessoa`, `nacionalidadePessoa`, `dataEntradaPessoa`) VALUES
+(72, 'semfoto.png', 'admin', 'admin@email.com', '999999999', 'Solteiro(a)', '2024-01-24', 'ad', 'Prefiro não dizer', 'Ingles', 'Albania', '2024-01-18'),
+(73, 'image_1705985193728.png', '@Pastor 1', 'pastor@email.com', '999999999', 'Casado(a)', '2024-01-11', 'Teste', '6º ao 9º Ano do Fundamental', 'Ingles,Espanhol', 'Brazil', '2024-01-18'),
+(74, 'semfoto.png', 'esposa teste', '', '999999999', 'undefined', '1899-11-30', 'undefined', 'Doutorado', 'Ingles', 'Anguilla', '2024-01-18'),
+(75, 'semfoto.png', 'Italo', 'italo.s.ferreira@hotmail.com', '9999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Superior Completo', 'Ingles,Espanhol', 'Afghanistan', '2024-01-18'),
+(79, 'semfoto.png', 'Lider', 'lider@email.com', '999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Prefiro não dizer', 'Espanhol', 'Albania', '2024-01-19'),
+(80, 'semfoto.png', 'Voluntario', 'voluntario@email.com', '9999999999', 'Solteiro(a)', '2024-01-25', 'Dev', 'Mestrado', 'Ingles', 'Anguilla', '2024-01-19'),
+(84, 'semfoto.png', 'Voluntario2', 'voluntario1@email.com', '111111111', 'Solteiro(a)', '1111-11-11', 'dev', 'Doutorado', 'Português', 'Aruba', '2024-01-19'),
+(85, 'image_1705985115145.png', '@Pastor 2', 'pastor2@email.com', '111111111111', 'Solteiro(a)', '2024-01-09', 'Dev', 'Superior Incompleto', 'Espanhol', 'Antigua and Barbuda', '2024-01-19'),
+(86, '', '', '', '', '', '0000-00-00', 'undefined', 'undefined', 'undefined', 'undefined', '2024-01-19'),
+(87, 'image_1705696903623.png', 'Lider2', 'lider2@email.com', '111111111', 'Solteiro(a)', '1111-11-11', 'dev', 'Médio Completo', 'Espanhol,Outros', 'Bulgaria', '2024-01-19'),
+(88, 'semfoto.png', 'voluntario', 'voluntario2@email.com', '999999999', 'Solteiro(a)', '2024-01-01', 'voluntario', '6º ao 9º Ano do Fundamental', 'Ingles,Outros', 'Belgium', '2024-01-20'),
+(89, 'semfoto.png', 'Luan Junio Cicareli', 'luancicarelli3@gmail.com', '+5517997462585', 'Solteiro(a)', '1995-08-08', 'Dev', 'Superior Completo', 'Português', 'Brazil', '2024-01-22'),
+(91, 'semfoto.png', 'Luan Voluntario', 'luancicareli@gmail.com', '+5517997462585', 'Solteiro(a)', '1995-01-01', 'dev', 'Superior Incompleto', 'Ingles', 'Austria', '2024-01-22'),
+(92, 'semfoto.png', 'teste', 'voluntario3@email.com', '9999999999', 'Solteiro(a)', '2024-02-07', 'Dev', 'Doutorado', 'Outros', 'Andorra', '2024-01-22'),
+(93, 'semfoto.png', 'teste', 'voluntario4@email.com', '999999999', 'Solteiro(a)', '2024-01-08', 'voluntario', '6º ao 9º Ano do Fundamental', 'Ingles', 'Andorra', '2024-01-22'),
+(94, 'semfoto.png', 'voluntario', 'voluntario5@email.com', '9999999999', 'Solteiro(a)', '2024-01-23', 'voluntario', '5º Ano Completo', 'Ingles', 'Barbados', '2024-01-22');
 
 -- --------------------------------------------------------
 
@@ -269,7 +274,7 @@ INSERT INTO `redessociais` (`idRedeSocial`, `pessoaId`, `instagram`, `facebook`,
 (52, 71, '', '', ''),
 (53, 72, '', '', ''),
 (54, 74, '', '', ''),
-(55, 73, '', '', ''),
+(55, 73, '1', '1', '1'),
 (56, 75, '', '', ''),
 (57, 76, '', '', ''),
 (58, 77, '', '', ''),
@@ -282,7 +287,13 @@ INSERT INTO `redessociais` (`idRedeSocial`, `pessoaId`, `instagram`, `facebook`,
 (65, 86, '', '', ''),
 (66, 85, '', '', ''),
 (67, 87, '', '', ''),
-(68, 88, '', '', '');
+(68, 88, '', '', ''),
+(69, 89, '', '', ''),
+(70, 90, '', '', ''),
+(71, 91, '', '', ''),
+(72, 92, '', '', ''),
+(73, 93, '', '', ''),
+(74, 94, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -305,16 +316,19 @@ CREATE TABLE `requisicoes` (
 --
 
 INSERT INTO `requisicoes` (`idRequisicao`, `pessoaId`, `tipoUsuario`, `classificacaoRequisicao`, `informacoesRequisicao`, `statusRequisicao`, `dataRequisicao`) VALUES
-(3, 73, 1, 'Evento', 'teste', 1, '2024-01-18'),
+(3, 73, 1, 'Evento', 'teste', 2, '2024-01-18'),
 (5, 73, 1, 'Lider', 'teste', 0, '2024-01-18'),
 (6, 73, 1, 'Evento', 'eve', 2, '2024-01-18'),
-(7, 73, 1, 'Evento', 'Lorem ipsum dolor sit amet. Id recusandae commodi ab laboriosam repellendus cum maiores architecto rem sunt reiciendis eum fugiat consequuntur qui sunt rerum. Ut accusantium dignissimos et dolores facilis et perferendis quaerat et fuga inventore est quia modi ut repudiandae ullam id cumque facere. Sed quia nihil qui voluptas facilis non dolore unde a sint iusto? Ut voluptas voluptates sit galisum optio eos eaque atque et optio rerum a natus neque.\r\n\r\nEt harum dolorem qui incidunt molestiae sit galisum quidem ut voluptatum deserunt qui harum dolores. Et autem quod sit voluptate facilis id corrupti illo est consectetur amet aut Quis sint ab incidunt porro.', 0, '2024-01-18'),
+(7, 73, 1, 'Evento', 'Lorem ipsum dolor sit amet. Id recusandae commodi ab laboriosam repellendus cum maiores architecto rem sunt reiciendis eum fugiat consequuntur qui sunt rerum. Ut accusantium dignissimos et dolores facilis et perferendis quaerat et fuga inventore est quia modi ut repudiandae ullam id cumque facere. Sed quia nihil qui voluptas facilis non dolore unde a sint iusto? Ut voluptas voluptates sit galisum optio eos eaque atque et optio rerum a natus neque.\r\n\r\nEt harum dolorem qui incidunt molestiae sit galisum quidem ut voluptatum deserunt qui harum dolores. Et autem quod sit voluptate facilis id corrupti illo est consectetur amet aut Quis sint ab incidunt porro.', 2, '2024-01-18'),
 (8, 73, 1, 'Voluntario', 'teste', 0, '2024-01-18'),
 (9, 73, 1, 'Voluntario', 'teste', 0, '2024-01-18'),
-(10, 73, 1, 'Voluntario', 'teste', 0, '2024-01-18'),
+(10, 73, 1, 'Voluntario', 'teste', 1, '2024-01-18'),
 (11, 75, 0, 'Voluntario', 'teste', 0, '2024-01-18'),
 (12, 79, 2, 'Evento', 'teste lider', 0, '2024-01-19'),
-(13, 73, 1, 'Evento', 'Evento 123', 1, '2024-01-20');
+(13, 73, 1, 'Evento', 'Evento 123', 1, '2024-01-20'),
+(14, 72, 0, 'Evento', 'Teste', 1, '2024-01-22'),
+(15, 72, 0, 'Pastor', 'Teste de requisição', 0, '2024-01-22'),
+(16, 89, 0, 'Voluntario', 'testee', 1, '2024-01-22');
 
 -- --------------------------------------------------------
 
@@ -326,7 +340,7 @@ CREATE TABLE `usuarios` (
   `idUsuario` int(11) NOT NULL,
   `pessoaId` int(11) NOT NULL,
   `senhaUsuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `tipoUsuario` int(11) NOT NULL COMMENT '0 - Admin\r\n1 - Pastor\r\n2 - Lider\r\n3 - Ministerios\r\n4 - Voluntarios',
+  `tipoUsuario` int(11) NOT NULL COMMENT '0 - Admin\r\n1 - Pastor\r\n2 - Lider\r\n3 - Ministerios\r\n4 - Voluntarios\r\n5 - Pastor Admin',
   `statusUsuario` int(11) NOT NULL COMMENT '0 - Aguardando 1 -  Ativo 2 - Desativado'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -341,10 +355,16 @@ INSERT INTO `usuarios` (`idUsuario`, `pessoaId`, `senhaUsuario`, `tipoUsuario`, 
 (23, 76, '$2b$12$yGRa1yXG8lNJo4LV4aXLrOZA7KHDigsicDphZQOTPFHLPDV1lkEKy', 4, 1),
 (26, 79, '$2b$12$u0C0FGxXg1B2o1XFUq0Ek.tcbQGrZWwp3BfEiBUcOg0xMl22hQYCW', 2, 1),
 (27, 80, '$2b$12$piB1L6BYcntPaGp.6F3NvuCqDBBurPK0UBXW4gvMr5ywczNZ1Jf2a', 4, 1),
-(29, 84, '$2b$12$OFaeXEBuX7u8wD6vd5zEze4Me3PIKzup/ZYSGpAFhoJdd8aBYGxf2', 4, 1),
-(30, 85, '$2b$12$KbpDZzrWJrtCE26P1vG7W.hJFss3myU82i2EC2f953esLVPnNHXWO', 1, 1),
+(29, 84, '$2b$12$OFaeXEBuX7u8wD6vd5zEze4Me3PIKzup/ZYSGpAFhoJdd8aBYGxf2', 4, 2),
+(30, 85, '$2b$12$KbpDZzrWJrtCE26P1vG7W.hJFss3myU82i2EC2f953esLVPnNHXWO', 5, 1),
 (31, 87, '$2b$12$ZqXhNJ3tHlL59Y8pQ0QoSOFeiskhLNbLTsXX26PtdovE3pj2ryMJO', 2, 1),
-(32, 88, '$2b$12$V27I9Vl394YHOOAfgey09e.wBw3Pp1fvi3EgZHd04tu1hTpK.Io2i', 4, 0);
+(32, 88, '$2b$12$V27I9Vl394YHOOAfgey09e.wBw3Pp1fvi3EgZHd04tu1hTpK.Io2i', 4, 1),
+(33, 89, '$2b$12$BKwJ1RWNTv/U2Rt2n6xPeO.t2xckKUDX3D7uUr/HRNXtByZ3vZAXe', 0, 1),
+(34, 90, '$2b$12$c9D3mYCmB.qV/wmFtvnsU.yVyBNNpFEIsPgsZQ87I6dEMD.CN21vS', 4, 0),
+(35, 91, '$2b$12$SMnGD8S2Hp5qPvYUGS8XZuT1s9vsvleRqjbipiX4Qi/181acPaE06', 4, 0),
+(36, 92, '$2b$12$Hp0OrSszWa6B8lOpZ6JHoefj/RdXOCucjTyyWQpZifWdfbgWZ66vu', 4, 0),
+(37, 93, '$2b$12$2Lhz5t70NtCYQlJYSu0UYehhjUrmWBl4Bq./AzqXXtUX1huERKCk6', 4, 0),
+(38, 94, '$2b$12$aBoML0o4IMpkMuL05L7lLuOHTGKgU0rEfk9R1yRiFUHeL/TF13SJi', 4, 0);
 
 -- --------------------------------------------------------
 
@@ -366,7 +386,11 @@ CREATE TABLE `voluntarios` (
 INSERT INTO `voluntarios` (`idVoluntario`, `pessoaId`, `pastorId`, `categoriasVoluntario`) VALUES
 (18, 80, 73, 'habilidade 2'),
 (19, 84, 0, 'habilidade 2'),
-(20, 88, 0, 'habilidade 2');
+(20, 88, 0, 'habilidade 2'),
+(22, 91, 0, 'habilidade 2'),
+(23, 92, 0, 'habilidade 3'),
+(24, 93, 73, 'habilidade 2'),
+(25, 94, 0, 'habilidade 1');
 
 -- --------------------------------------------------------
 
@@ -501,7 +525,7 @@ ALTER TABLE `esposas`
 -- AUTO_INCREMENT de tabela `eventos`
 --
 ALTER TABLE `eventos`
-  MODIFY `idEvento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `idEvento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de tabela `filhos`
@@ -537,31 +561,31 @@ ALTER TABLE `pastores`
 -- AUTO_INCREMENT de tabela `pessoas`
 --
 ALTER TABLE `pessoas`
-  MODIFY `idPessoa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `idPessoa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT de tabela `redessociais`
 --
 ALTER TABLE `redessociais`
-  MODIFY `idRedeSocial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `idRedeSocial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT de tabela `requisicoes`
 --
 ALTER TABLE `requisicoes`
-  MODIFY `idRequisicao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idRequisicao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de tabela `voluntarios`
 --
 ALTER TABLE `voluntarios`
-  MODIFY `idVoluntario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `idVoluntario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de tabela `voluntariosEvento`
