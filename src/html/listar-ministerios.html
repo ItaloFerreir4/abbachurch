@@ -13,8 +13,8 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Ministerios", "dashbordsubtitle":
-        'Ministerios', "dashbordsubtitle2": 'Listar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Ministérios", "dashbordsubtitle":
+        'Ministérios', "dashbordsubtitle2": 'Listar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
@@ -27,7 +27,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Nome</th>
-                                            <th scope="col">Lider</th>
+                                            <th scope="col">Líder</th>
                                             <th scope="col">Data</th>
                                             <th scope="col">Ações</th>
                                         </tr>
@@ -100,7 +100,7 @@
                             const idProcurado = ministerio.liderId;
                             let divBtns = '';
                             let nomeLider = listaLideres.find(lider => lider.idPessoa === idProcurado)?.nomePessoa;
-                            nomeLider = nomeLider ? nomeLider : 'Lider não encontrado!';
+                            nomeLider = nomeLider ? nomeLider : 'Líder não encontrado!';
 
                             const dataOld = ministerio.dataEntradaMinisterio;
                             let data = new Date(dataOld);

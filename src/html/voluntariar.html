@@ -44,9 +44,9 @@
     @SPK@include("partials/switcher.html")
     @SPK@include("partials/loader.html")
 
-    <div class="row mx-0 authentication">
+    <div class="row mx-0 authentication mt-4">
         <div class="d-flex justify-content-center align-items-center d-lg-none">
-            <a href="./"> <img src="../assets/images/brand-logos/desktop-dark.png" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
+            <a href="./"> <img src="../assets/images/brand-logos/desktop-dark.png" height="90px" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
         </div>
         <div class="col-xxl-6 col-xl-7 col-lg-12">
             <div class="btns-dist mt-3">
@@ -57,7 +57,7 @@
             <form id="form-pessoa" enctype="multipart/form-data">
                 <div class="card custom-card">
                     <div class="card-header">
-                        <div class="card-title">Voluntario</div>
+                        <div class="card-title">Voluntário</div>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -287,12 +287,14 @@
 
                     console.error('Erro na requisição:', error);
 
+                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao cadastrar!',
+                        title: message,
                         showConfirmButton: false,
-                        timer: 2500
+                        timer: 1500
                     });
 
                 })

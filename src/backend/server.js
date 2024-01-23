@@ -16,7 +16,7 @@ const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinis
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
-const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario } = require('./pessoas');
+const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
 const e = require('express');
 const app = express();
 const port = 3000;
@@ -253,6 +253,26 @@ app.post('/api/listarPessoas', async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor' });
     }
 
+});
+
+app.post('/api/alterarAdminPastor', async (req, res) => {
+    
+    const { pessoaId, tipoUsuario } = req.body;
+
+    try {
+        const resultado = await alterarAdminPastor(pessoaId, tipoUsuario);
+
+        if (resultado) {
+            res.json({ message: 'Alterado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao alterar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor'+erro });
+    }
+    
 });
 
 app.post('/api/cadastrarPessoa', async (req, res) => {

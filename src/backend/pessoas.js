@@ -49,6 +49,22 @@ async function listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId) {
     }
 }
 
+async function alterarAdminPastor(pessoaId, tipoUsuario) {
+
+    let userType = tipoUsuario == 'adminpastor' ? 5 : 1;
+        
+    let query = `UPDATE usuarios SET tipoUsuario = ${userType} WHERE pessoaId = ${pessoaId};`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+    
+}
+
 async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
 
     if (tipoPessoa != 'esposa'){
@@ -430,4 +446,4 @@ async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario };
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor };
