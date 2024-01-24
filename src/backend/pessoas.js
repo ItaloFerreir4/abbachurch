@@ -220,6 +220,9 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
         case 'voluntarioId':
             query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.idVoluntario = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
             break;
+        case 'admin':
+            query = `SELECT * FROM usuarios us, pessoas pe, redessociais re WHERE us.pessoaId = ${idPessoa} AND us.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            break;
     }
 
     try {
