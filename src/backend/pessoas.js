@@ -36,7 +36,7 @@ async function listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId) {
             }
             break;
         case 'voluntarioAtivo':
-            query = `SELECT * FROM voluntarios vo, pessoas pe WHERE vo.pessoaId = pe.idPessoa AND vo.statusVoluntario = 1`;
+            query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa AND us.pessoaId = pe.idPessoa AND us.statusUsuario = 1`;
             break;
     }
 

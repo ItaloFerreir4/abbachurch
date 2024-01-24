@@ -3,6 +3,7 @@
 @SPK@include("partials/fileupload_link.html")
 
 <link rel="stylesheet" href="../assets/libs/fullcalendar/main.min.css">
+<link rel="stylesheet" href="../assets/libs/apexcharts/apexcharts.css">
 
 </head>
 
@@ -86,6 +87,28 @@
                         <div id="calendario"></div>
                     </div>
                 </div>
+                <div class="row row-cols-xl-2 row-cols-md-1">
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">Eventos do ano</div>
+                            </div>
+                            <div class="card-body">
+                                <div id="chart-events-year"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">Ações voluntarios</div>
+                            </div>
+                            <div class="card-body">
+                                <div id="chart-action-volun"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- End::app-content -->
@@ -104,6 +127,9 @@
     <script src="../assets/libs/fullcalendar/main.min.js"></script>
     <!-- <script src="../assets/js/fullcalendar.js"></script> -->
 
+    <!-- Apex Charts JS -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+
     <!-- Custom JS -->
     <script src="../assets/js/custom.js"></script>
 
@@ -115,7 +141,9 @@
             QtdLideres();
             QtdVoluntarios();
             QtdEventos();
-            CalendarioFull(buttonTodos);      
+            CalendarioFull(buttonTodos);
+            GraficoLinhaEvento();
+            GraficoBarraVoluntario();
         });
         
         function CalendarioFull(button){
@@ -351,11 +379,14 @@
 
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
                                 let dataFimEvento = evento.dataHoraFimEvento;
+                                let anoAtual = new Date().getFullYear();
                                 if (categoriaEventoId == 2) {
                                     dataInicioEvento = new Date(dataInicioEvento);
                                     dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
                                     dataFimEvento = new Date(dataInicioEvento);
                                     dataFimEvento = dataFimEvento.toISOString().split('T')[0];
+                                    dataInicioEvento = dataInicioEvento.replace(/^(\d{4})/, anoAtual);
+                                    dataFimEvento = dataFimEvento.replace(/^(\d{4})/, anoAtual);
                                 }
 
                                 if (categoriaEventoId) {
@@ -417,14 +448,9 @@
                             const categoriaEventoId = evento.categoriaEventoId;
                             
                             if (categoriaEventoId == cat) {
+
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
                                 let dataFimEvento = evento.dataHoraFimEvento;
-                                if (categoriaEventoId == 2) {
-                                    dataInicioEvento = new Date(dataInicioEvento);
-                                    dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
-                                    dataFimEvento = new Date(dataInicioEvento);
-                                    dataFimEvento = dataFimEvento.toISOString().split('T')[0];
-                                }
 
                                 if (!categoriasArrays[categoriaEventoId]) {
                                     backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
@@ -483,37 +509,33 @@
                             const ministerioId = evento.ministerioId;
                             
                             if (ministerioId == min) {
-                                let dataInicioEvento = evento.dataHoraInicioEvento;
-                                let dataFimEvento = evento.dataHoraFimEvento;
-                                if (categoriaEventoId == 2) {
-                                    dataInicioEvento = new Date(dataInicioEvento);
-                                    dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
-                                    dataFimEvento = new Date(dataInicioEvento);
-                                    dataFimEvento = dataFimEvento.toISOString().split('T')[0];
+                                if (categoriaEventoId != 2) {
+                                    let dataInicioEvento = evento.dataHoraInicioEvento;
+                                    let dataFimEvento = evento.dataHoraFimEvento;
+                                    if (!categoriasArrays[categoriaEventoId]) {
+                                        backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
+                                        borderColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 1)' : 'rgba(var(--primary-rgb), 1)';
+                                        categoriasArrays[categoriaEventoId] = {
+                                            id: countIdCat,
+                                            backgroundColor: backgroundColor,
+                                            borderColor: borderColor,
+                                            textColor: '#fff',
+                                            events: []
+                                        };
+                                        countIdCat++;
+                                    }
+    
+                                    categoriasArrays[categoriaEventoId].events.push({
+                                        id: countIdData,
+                                        start: dataInicioEvento,
+                                        end: dataFimEvento,
+                                        title: evento.nomeEvento,
+                                        description: evento.observacoesEvento
+                                    });
+    
+                                    countIdData++;
                                 }
 
-                                if (!categoriasArrays[categoriaEventoId]) {
-                                    backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
-                                    borderColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 1)' : 'rgba(var(--primary-rgb), 1)';
-                                    categoriasArrays[categoriaEventoId] = {
-                                        id: countIdCat,
-                                        backgroundColor: backgroundColor,
-                                        borderColor: borderColor,
-                                        textColor: '#fff',
-                                        events: []
-                                    };
-                                    countIdCat++;
-                                }
-
-                                categoriasArrays[categoriaEventoId].events.push({
-                                    id: countIdData,
-                                    start: dataInicioEvento,
-                                    end: dataFimEvento,
-                                    title: evento.nomeEvento,
-                                    description: evento.observacoesEvento
-                                });
-
-                                countIdData++;
                             }
                         });
 
@@ -579,6 +601,7 @@
                             const nome = 'Aniversário de ' + pessoa.nomePessoa;
                             const description = 'Hoje ' + pessoa.nomePessoa + ' está fazendo aniversário';
                             const dataOld = pessoa.dataNascimentoPessoa;
+                            let anoAtual = new Date().getFullYear();
                             let data = new Date(dataOld);
 
                             if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
@@ -588,6 +611,8 @@
                             } else {
                                 data = dataOld;
                             }
+
+                            data = data.replace(/^(\d{4})/, anoAtual);
 
                             dataEvents.push({ id: count, start: data, end: data, title: nome, description: description });
 
@@ -739,6 +764,190 @@
                 btn.classList.remove("active");
             });
         }
+    
+        function TodosEventos(){
+            return new Promise(function (resolve, reject) {
+
+                let eventosPorMes = Array.from({ length: 12 }, () => 0);
+
+                $.post('api/listarEventos')
+                    .done(function (data) {
+
+                        data.forEach(function (evento) {
+                            const categoriaEventoId = evento.categoriaEventoId;
+                            if (categoriaEventoId != 2) {
+                                let dataInicioEvento = evento.dataHoraInicioEvento;
+
+                                dataInicioEvento = new Date(dataInicioEvento);
+                                dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
+                                
+                                const mesEvento = new Date(dataInicioEvento).getMonth();
+                                
+                                eventosPorMes[mesEvento]++;
+                            }
+
+                        });
+                        resolve(eventosPorMes);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+
+        function TodasAcoesVoluntario() {
+            return $.post('api/listarTodasAcoes').then(function (data) {
+                const contagemAcoesPorVoluntario = data.reduce(function (acc, acao) {
+                    const voluntarioId = acao.voluntarioId;
+
+                    if (acc[voluntarioId]) {
+                        acc[voluntarioId].quantidade++;
+                    } else {
+                        acc[voluntarioId] = {
+                            nome: acao.nomePessoa,
+                            quantidade: 1
+                        };
+                    }
+
+                    return acc;
+                }, {});
+
+                const array = Object.values(contagemAcoesPorVoluntario);
+
+                return array;
+            });
+        }
+
+        function GraficoLinhaEvento(){
+            Promise.all([TodosEventos()]).then(function ([dataEventos]) {
+
+                const options = {
+                    series: [{
+                        name: "Eventos",
+                        data: dataEventos
+                    }],
+                    chart: {
+                        height: 320,
+                        type: 'line',
+                        zoom: {
+                            enabled: false
+                        }
+                    },
+                    colors: ['#8e54e9'],
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        curve: 'straight',
+                        width: 3,
+                    },
+                    grid: {
+                        borderColor: '#f2f5f7',
+                    },
+                    title: {
+                        text: 'Qtd de Eventos por mês',
+                        align: 'left',
+                        style: {
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#8c9097'
+                        },
+                    },
+                    xaxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Out', 'Nov', 'Dez'],
+                        labels: {
+                            show: true,
+                            style: {
+                                colors: "#8c9097",
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-xaxis-label',
+                            },
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            show: true,
+                            style: {
+                                colors: "#8c9097",
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-yaxis-label',
+                            },
+                        }
+                    }
+                };
+
+                let chart = new ApexCharts(document.querySelector("#chart-events-year"), options);
+                chart.render();
+            });
+        }
+
+        function GraficoBarraVoluntario(){
+            Promise.all([TodasAcoesVoluntario()]).then(function ([dataAcoes]) {
+                
+                const nomes = dataAcoes.map(item => item.nome);
+                const valores = dataAcoes.map(item => item.quantidade);
+
+                const options = {
+                    series: [{
+                        data: valores
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 320
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            horizontal: true,
+                        }
+                    },
+                    colors: ["#8e54e9"],
+                    grid: {
+                        borderColor: '#f2f5f7',
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    xaxis: {
+                        categories: nomes,
+                        labels: {
+                            show: true,
+                            style: {
+                                colors: "#8c9097",
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-xaxis-label',
+                            },
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            show: true,
+                            style: {
+                                colors: "#8c9097",
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cssClass: 'apexcharts-yaxis-label',
+                            },
+                        }
+                    }
+                };
+
+                let chart = new ApexCharts(document.querySelector("#chart-action-volun"), options);
+                chart.render();
+            });
+        }
+
     </script>
 
 </body>

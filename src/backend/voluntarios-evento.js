@@ -13,6 +13,19 @@ async function listarVoluntariosEvento(eventoId) {
     }
 }
 
+async function listarTodasAcoes() {
+    
+    let query = `SELECT * FROM voluntariosEvento ve, voluntarios vo, pessoas pe WHERE ve.voluntarioId = vo.idVoluntario AND vo.pessoaId = pe.idPessoa;`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
 async function cadastrarVoluntarioEvento(voluntarioId, eventoId, categoria) {
 
     const query = `
@@ -67,4 +80,4 @@ async function atualizarVoluntarioEvento(idVoluntarioEvento, voluntarioId, event
     }
 }
 
-module.exports = { listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento };
+module.exports = { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento };

@@ -71,9 +71,9 @@
         window.addEventListener("load", function() {
             ListarVoluntarios();
 
-            const selectVoluntario = document.getElementById("voluntarioId");
-
-            selectVoluntario.addEventListener("change", function() {
+            $('#voluntarioId').on('change', function () {
+                // 'this' dentro deste contexto se refere ao elemento select original
+                console.log('Valor selecionado:', this.value);
                 ListarCategorias(this.value);
             });
         });
@@ -176,7 +176,6 @@
 
         function ListarCategorias(idVoluntario){
 
-            console.log(idVoluntario);
             const formData = { idPessoa : idVoluntario, tipoPessoa : 'voluntarioId' }
             const selectCat = $("#categoria");
 
@@ -186,6 +185,8 @@
 
             $.post('api/carregarPessoa', formData)
                 .done(function (data) {
+
+                    console.log(data);
 
                     let categorias = '';
 

@@ -15,7 +15,7 @@ const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategori
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
-const { listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
+const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
 const e = require('express');
 const app = express();
@@ -836,6 +836,24 @@ app.post('/api/carregarCategoriaEvento', async (req, res) => {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });
     }
+});
+
+app.post('/api/listarTodasAcoes', async (req, res) => {
+
+    try {
+        const lista = await listarTodasAcoes();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
 });
 
 app.post('/api/listarVoluntariosEvento', async (req, res) => {
