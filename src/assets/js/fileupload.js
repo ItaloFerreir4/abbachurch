@@ -52,7 +52,7 @@ function InputSemImagem(){
             stylePanelLayout: 'compact circle',
             styleLoadIndicatorPosition: 'center bottom',
             styleButtonRemoveItemPosition: 'center bottom',
-            maxFileSize: '1MB',
+            maxFileSize: '5MB',
             labelMaxFileSizeExceeded: `Max 5MB permitido!`,
             labelMaxFileSize: '!'
         }
@@ -71,7 +71,7 @@ function InputComImagem(imagePath){
             stylePanelLayout: 'compact circle',
             styleLoadIndicatorPosition: 'center bottom',
             styleButtonRemoveItemPosition: 'center bottom',
-            maxFileSize: '1MB'
+            maxFileSize: '5MB'
         }
     );
 
