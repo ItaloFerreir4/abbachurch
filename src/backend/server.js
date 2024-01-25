@@ -281,7 +281,7 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
     
     try {
 
-        const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
+        const nomeFoto = fotoPessoa != null  && fotoPessoa != '' ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
         const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
 
