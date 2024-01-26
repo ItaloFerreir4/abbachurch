@@ -18,6 +18,11 @@
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-habilidades">Voltar</a>
+                </div>
+            </div>
             <div class="container-fluid">
                 <form id="form-categoria" enctype="multipart/form-data">
                     <div class="card custom-card">
@@ -80,6 +85,8 @@
                 IniLoader();
                 $.post('api/cadastrarCategoria', formData)
                 .done(function (data) {
+
+                    cleanform();
                     
                     Swal.fire({
                         position: 'center',
@@ -117,6 +124,10 @@
             else{
                 return false;
             }
+        }
+
+        function cleanform() {
+            document.getElementById('form-categoria').reset();
         }
     </script>
 

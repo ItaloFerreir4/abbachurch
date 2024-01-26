@@ -185,6 +185,8 @@
                 IniLoader();
                 $.post('api/cadastrarPessoa', formData)
                 .done(function (data) {
+
+                    cleanform();
                     
                     Swal.fire({
                         position: 'center',
@@ -252,6 +254,18 @@
                 .always(function () {
                     FinLoader();
                 });
+        }
+
+        function cleanform() {
+            document.getElementById('form-pessoa').reset();
+            InputSemImagem();
+            let select2 = document.querySelectorAll('.select2-selection__choice__remove');
+            if(select2.length > 0){
+                select2.forEach(function(item) {
+                    item.click();
+                });
+            }
+            document.getElementById('emailPessoa').focus();
         }
     
     </script>

@@ -81,13 +81,16 @@
                             <div class="col-12 col-lg-6" style="position: relative;">
                                 <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
                                 <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
+                                <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
                                     <i class="bi bi-eye-slash-fill"></i>
                                 </span>
                             </div>
-                            <div class="col-12 col-lg-6">
+                            <div class="col-12 col-lg-6" style="position: relative;">
                                 <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
                                 <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
+                                    <i class="bi bi-eye-slash-fill"></i>
+                                </span>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -346,15 +349,14 @@
             }
         }
 
-        function toggleVisibilidadeSenha() {
-            var senhaInput = document.getElementById('senhaUsuario');
-            var iconeOlho = document.getElementById('icon-eye');
+        function toggleVisibilidadeSenha(element, input) {
+            var senhaInput = document.getElementById(input);
             if (senhaInput.type === 'password') {
                 senhaInput.type = 'text';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
+                element.innerHTML = '<i class="bi bi-eye-fill"></i>';
             } else {
                 senhaInput.type = 'password';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+                element.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
             }
         }
 

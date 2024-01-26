@@ -18,6 +18,11 @@
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-admin">Voltar</a>
+                </div>
+            </div>
             <div class="container-fluid">
                 <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
@@ -112,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    <span id="optionAccess">Alterar dados de acesso</span>
+                    <span class="option-access" id="optionAccess">Alterar dados de acesso</span>
                     <div class="card custom-card" id="contentAccess" data-close="1">
                         <div class="card-header">
                             <div class="card-title">Acesso</div>
@@ -126,10 +131,16 @@
                                 <div class="col-12 col-lg-4" style="position: relative;">
                                     <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
                                     <input disabled type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
+                                    <span style="margin:10px;" class="icon-eye-edit" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                    </span>
                                 </div>
-                                <div class="col-12 col-lg-4">
+                                <div class="col-12 col-lg-4" style="position: relative;">
                                     <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
                                     <input disabled type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                    <span style="margin:10px;" class="icon-eye-edit" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                    </span>
                                 </div>
                                 <input type="hidden" name="changeAccess" id="changeAccess" value="0">
                             </div>
@@ -177,29 +188,47 @@
             let confirmeSenhaUsuario = document.getElementById('confirmeSenhaUsuario');
             let optionAccess = document.getElementById('optionAccess');
             let changeAccess = document.getElementById('changeAccess');
+            let iconEye = document.getElementsByClassName('icon-eye-edit');
 
             if (close === '1') {
 
                 contentAccess.setAttribute('data-close', '0');
+
                 emailPessoa.disabled = false;
+
                 senhaUsuario.disabled = false;
-                confirmeSenhaUsuario.disabled = false;
                 senhaUsuario.value = '';
+                confirmeSenhaUsuario.disabled = false;
                 confirmeSenhaUsuario.value = '';
+
                 optionAccess.innerHTML = 'Cancelar';
                 changeAccess.value = '1';
+
+                iconEye[0].style = 'pointer-events: auto; cursor: pointer; margin:10px;';
+                iconEye[1].style = 'pointer-events: auto; cursor: pointer; margin:10px;';
+
                 validarSenha();
 
             } else {
 
                 contentAccess.setAttribute('data-close', '1');
+
                 emailPessoa.disabled = true;
+
                 senhaUsuario.disabled = true;
-                confirmeSenhaUsuario.disabled = true;
                 senhaUsuario.value = 'undefined';
+                senhaUsuario.type = 'password';
+
+                confirmeSenhaUsuario.disabled = true;
                 confirmeSenhaUsuario.value = 'undefined';
+                confirmeSenhaUsuario.type = 'password';
+
                 optionAccess.innerHTML = 'Alterar dados de acesso';
                 changeAccess.value = '0';
+
+                iconEye[0].style = 'pointer-events: none; cursor: default; margin:10px;';
+                iconEye[1].style = 'pointer-events: none; cursor: default; margin:10px;';
+
                 validarSenha();
 
             }
@@ -399,6 +428,18 @@
                         timer: 1500
                     });
                 });
+        }
+
+
+        function toggleVisibilidadeSenha(element, input) {
+            var senhaInput = document.getElementById(input);
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                element.innerHTML = '<i class="bi bi-eye-fill"></i>';
+            } else {
+                senhaInput.type = 'password';
+                element.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+            }
         }
     
     </script>
