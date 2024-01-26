@@ -25,8 +25,8 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 app.use('/html', express.static(path.join(__dirname, '../html')));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(cookieParser());
 app.use(session({
@@ -281,7 +281,7 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
     
     try {
 
-        const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
+        const nomeFoto = fotoPessoa != null  && fotoPessoa != '' ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
         const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
 

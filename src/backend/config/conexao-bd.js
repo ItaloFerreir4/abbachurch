@@ -8,7 +8,6 @@ require('dotenv').config();
 //     database: "italof39_abbachurch",
 // };
 
-
 const config = {
     host: "localhost",
     user: "user_abbachurch",

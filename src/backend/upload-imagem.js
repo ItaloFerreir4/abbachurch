@@ -57,7 +57,6 @@ async function saveImage(fotoPessoa) {
   }
 }
 
-// Função para determinar a extensão do arquivo com base no tipo de imagem
 function getImageExtension(imageType) {
   // Use a biblioteca mime-types para obter a extensão com base no tipo de imagem
   const extension = mimeTypes.extension(imageType);
