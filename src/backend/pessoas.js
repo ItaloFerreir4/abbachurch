@@ -215,7 +215,7 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
             query = `SELECT * FROM filhos fi, pessoas pe, redessociais re WHERE fi.pessoaId = ${idPessoa} AND fi.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
             break;
         case 'voluntario':
-            query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.pessoaId = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re, usuarios u WHERE vo.pessoaId = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa;`;
             break;
         case 'voluntarioId':
             query = `SELECT * FROM voluntarios vo, pessoas pe, redessociais re WHERE vo.idVoluntario = ${idPessoa} AND vo.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;

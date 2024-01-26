@@ -99,7 +99,9 @@
                 IniLoader();
                 $.post('api/cadastrarVoluntarioEvento', formData)
                 .done(function (data) {
-                    
+                
+                    cleanform();
+
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
@@ -217,6 +219,10 @@
                 .always(function () {
                     FinLoader();
                 });
+        }
+
+        function cleanform() {
+            document.getElementById('form-voluntario').reset();
         }
     
     </script>

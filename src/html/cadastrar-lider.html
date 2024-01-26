@@ -18,6 +18,11 @@
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-lideres">Voltar</a>
+                </div>
+            </div>
             <div class="container-fluid">
                 <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
@@ -37,13 +42,16 @@
                                 <div class="col-12 col-lg-6" style="position: relative;">
                                     <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
                                     <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" id="icon-eye" onclick="toggleVisibilidadeSenha()">
+                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
                                         <i class="bi bi-eye-slash-fill"></i>
                                     </span>
                                 </div>
-                                <div class="col-12 col-lg-6">
+                                <div class="col-12 col-lg-6" style="position: relative;">
                                     <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
                                     <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
+                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                    </span>
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -189,6 +197,8 @@
                 IniLoader();
                 $.post('api/cadastrarPessoa', formData)
                 .done(function (data) {
+
+                    cleanform();
                     
                     Swal.fire({
                         position: 'center',
@@ -251,15 +261,14 @@
             }
         }
 
-        function toggleVisibilidadeSenha() {
-            var senhaInput = document.getElementById('senhaUsuario');
-            var iconeOlho = document.getElementById('icon-eye');
+        function toggleVisibilidadeSenha(element, input) {
+            var senhaInput = document.getElementById(input);
             if (senhaInput.type === 'password') {
                 senhaInput.type = 'text';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-fill"></i>';
+                element.innerHTML = '<i class="bi bi-eye-fill"></i>';
             } else {
                 senhaInput.type = 'password';
-                iconeOlho.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+                element.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
             }
         }
 
@@ -289,6 +298,18 @@
                 .always(function () {
                     FinLoader();
                 });
+        }
+
+        function cleanform() {
+            document.getElementById('form-pessoa').reset();
+            InputSemImagem();
+            let select2 = document.querySelectorAll('.select2-selection__choice__remove');
+            if(select2.length > 0){
+                select2.forEach(function(item) {
+                    item.click();
+                });
+            }
+            document.getElementById('emailPessoa').focus();
         }
     
     </script>

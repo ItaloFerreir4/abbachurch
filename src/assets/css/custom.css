@@ -27,7 +27,16 @@
     border: 1px solid green!important;
 }
 
-#icon-eye {
+.icon-eye-edit {
+    pointer-events: none;
+    cursor: default;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.icon-eye {
     cursor: pointer;
     position: absolute;
     right: 10px;
