@@ -77,9 +77,11 @@
                     <div class="card-header align-center" style="overflow: auto;">
                         <h5 class="fw-medium mb-0 text-muted">Filtros</h5>
                         <div class="d-flex">
-                            <button class="btn btn-filter btn-outline-ligth btn-wave waves-effect waves-light ms-3" id="filter-todos" type="button" onClick="CalendarioFull(this)">Todos</button>
-                            <button class="btn btn-filter btn-outline-ligth btn-wave waves-effect waves-light ms-2" type="button" onClick="CalendarioNiver(this)">Aniversários</button>
-                            <select class="form-select ms-2 single-select" id="filter-categoria" onChange="CalendarioCat(this)"></select>
+                            <button class="btn btn-outline-light btn-wave waves-effect waves-light ms-3" id="filter-todos" type="button" onClick="CalendarioFull(this)">Todos</button>
+                            <button class="btn btn-outline-light btn-wave waves-effect waves-light ms-2" type="button" onClick="CalendarioNiver(this)">Aniversários</button>
+                            <div class="ms-2">
+                                <select class="form-select single-select" id="filter-categoria" onChange="CalendarioCat(this)"></select>
+                            </div>
                             <select class="form-select ms-2 single-select" id="filter-ministerio" onChange="CalendarioMin(this)"></select>
                         </div>
                     </div>
