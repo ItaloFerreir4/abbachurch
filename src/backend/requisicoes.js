@@ -30,13 +30,25 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
         if(resultado){
             query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
+            query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
+            const quem = await executarQuery(query);
             const assunto = 'Cadastro de requisição!';
             const corpo = `<p>Uma requisição foi cadastrada!</p>
+            <p><strong>Quem cadastrou:</strong> ${quem[0].nomePessoa}<p>
+            <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
+            <p>Acesse <a href="abbachurch.app" title="Painel Abba Church">abbachurch.app</a><p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
-            admins.forEach(admin => {
-                const destinatario = admin.emailPessoa;
+
+            if(classificacaoRequisicao == 'Criativo'){
+                const destinatario = "creative@abbachurch.us";
                 enviarEmail(destinatario, assunto, corpo);
-            });
+            }
+            else{
+                admins.forEach(admin => {
+                    const destinatario = admin.emailPessoa;
+                    enviarEmail(destinatario, assunto, corpo);
+                });
+            }
         }
 
         return resultado;
@@ -72,13 +84,38 @@ async function carregarRequisicao(idRequisicao) {
     }
 }
 
-async function atualizarRequisicao(idRequisicao, classificacaoRequisicao, informacoesRequisicao) {
+async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisicao, informacoesRequisicao) {
     
     let query = `
         UPDATE requisicoes SET classificacaoRequisicao = '${classificacaoRequisicao}', informacoesRequisicao = '${informacoesRequisicao}' WHERE idRequisicao = ${idRequisicao};`;
         
     try {
         const resultados = await executarQuery(query);
+        
+        if(resultados){
+            query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
+            const admins = await executarQuery(query);
+            query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
+            const quem = await executarQuery(query);
+            const assunto = 'Cadastro de requisição!';
+            const corpo = `<p>Uma requisição foi atualizada!</p>
+            <p><strong>Quem atualizou:</strong> ${quem[0].nomePessoa}<p>
+            <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
+            <p>Acesse <a href="abbachurch.app" title="Painel Abba Church">abbachurch.app</a><p>
+            <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
+
+            if(classificacaoRequisicao == 'Criativo'){
+                const destinatario = "creative@abbachurch.us";
+                enviarEmail(destinatario, assunto, corpo);
+            }
+            else{
+                admins.forEach(admin => {
+                    const destinatario = admin.emailPessoa;
+                    enviarEmail(destinatario, assunto, corpo);
+                });
+            }
+        }
+
         return resultados ? true : false;
     } catch (erro) {
         console.error('Erro:', erro);

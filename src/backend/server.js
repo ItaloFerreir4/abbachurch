@@ -1084,9 +1084,10 @@ app.post('/api/cadastrarRequisicao', async (req, res) => {
 app.post('/api/atualizarRequisicao', async (req, res) => {
 
     const { idRequisicao, classificacaoRequisicao, informacoesRequisicao } = req.body;
+    const idPessoa = req.session.idPessoa;
     
     try {
-        const resultado = await atualizarRequisicao(idRequisicao, classificacaoRequisicao, informacoesRequisicao);
+        const resultado = await atualizarRequisicao(idPessoa, idRequisicao, classificacaoRequisicao, informacoesRequisicao);
         
         if (resultado) {
             res.json({ message: 'Atualizado com sucesso' });
