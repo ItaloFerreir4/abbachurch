@@ -28,7 +28,7 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
         const resultado = await executarQuery(query);
 
         if(resultado){
-            query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
+            query = `SELECT * FROM pessoas pe, usuarios us WHERE (us.tipoUsuario = 0 OR us.tipoUsuario = 5) AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
             query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
             const quem = await executarQuery(query);
@@ -93,7 +93,7 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
         const resultados = await executarQuery(query);
         
         if(resultados){
-            query = `SELECT * FROM pessoas pe, usuarios us WHERE us.tipoUsuario = 0 AND us.pessoaId = pe.idPessoa`; 
+            query = `SELECT * FROM pessoas pe, usuarios us WHERE (us.tipoUsuario = 0 OR us.tipoUsuario = 5) AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
             query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
             const quem = await executarQuery(query);
