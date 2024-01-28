@@ -97,7 +97,7 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
             const admins = await executarQuery(query);
             query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`; 
             const quem = await executarQuery(query);
-            const assunto = 'Cadastro de requisição!';
+            const assunto = 'Atualização de requisição!';
             const corpo = `<p>Uma requisição foi atualizada!</p>
             <p><strong>Quem atualizou:</strong> ${quem[0].nomePessoa}<p>
             <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
