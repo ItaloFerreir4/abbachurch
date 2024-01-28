@@ -78,18 +78,19 @@
         const excludedFields = [];
 
         window.addEventListener("load", function() {
-            ListaLideres();
-            CarregarMinisterio();
-        });
 
-        window.addEventListener('beforeunload', function() {
-            // Obtém o valor atual do sessionStorage
-            var ministerio = sessionStorage.getItem('ministerio');
+            IniLoader();
 
-            // Se o valor existir, remove o item do sessionStorage
-            if (ministerio) {
-                sessionStorage.removeItem('ministerio');
-            }
+            Promise.all([ListaLideres()])
+            .then(function () {
+                CarregarMinisterio();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
+            });
+            
         });
 
         function CarregarMinisterio(){
@@ -151,12 +152,17 @@
 
             formData.push({ name: 'idMinisterio', value: idMinisterio });
 
-            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -195,37 +201,33 @@
 
         }
 
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
-    
         function ListaLideres(){
-            const formData = { tipoPessoa : 'lider' };
-            const selectLider = $("#liderId");
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'lider' };
+                const selectLider = $("#liderId");
 
-            selectLider.empty();
+                selectLider.empty();
 
-            $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    data.forEach(function(pessoa) {
-                        selectLider.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        data.forEach(function(pessoa) {
+                            selectLider.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
+            });
+            
         }
     
     </script>

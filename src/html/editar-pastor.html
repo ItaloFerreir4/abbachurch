@@ -184,9 +184,17 @@
         const excludedFields = ['instagram', 'facebook', 'linkedin'];
         
         window.addEventListener("load", function() {
-            ListaPaises();
-            Promise.all([ListarIgrejas()]).then(function () {
+            
+            IniLoader();
+
+            Promise.all([ListaPaises(), ListarIgrejas()])
+            .then(function () {
                 CarregarPessoa();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
             });
         });
 
@@ -354,12 +362,17 @@
             formData.push({ name: 'idPessoa', value: idPessoa });
             formData.push({ name: 'tipoPessoa', value: 'pastor' });
 
-            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -443,38 +456,33 @@
             }
         }
     
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
-    
         function ListaPaises(){
-            const selectPaises = $("#nacionalidadePessoa");
+            return new Promise(function (resolve, reject) {
+                const selectPaises = $("#nacionalidadePessoa");
 
-            selectPaises.empty();
+                selectPaises.empty();
 
-            $.post('api/listarNomePaises')
-                .done(function (data) {
-                    data.forEach(function(pais) {
-                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                $.post('api/listarNomePaises')
+                    .done(function (data) {
+                        data.forEach(function(pais) {
+                            selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
+            });
         }
-    
+        
         function ListarIgrejas(){
             return new Promise(function (resolve, reject) {
                 const selectIgreja = $("#igrejaId");

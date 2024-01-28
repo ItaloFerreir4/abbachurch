@@ -30,13 +30,13 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
         if(resultado){
             query = `SELECT * FROM pessoas pe, usuarios us WHERE (us.tipoUsuario = 0 OR us.tipoUsuario = 5) AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
-            query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
+            query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`; 
             const quem = await executarQuery(query);
             const assunto = 'Cadastro de requisição!';
             const corpo = `<p>Uma requisição foi cadastrada!</p>
             <p><strong>Quem cadastrou:</strong> ${quem[0].nomePessoa}<p>
             <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
-            <p>Acesse <a href="abbachurch.app" title="Painel Abba Church">abbachurch.app</a><p>
+            <p>Acesse <a href="https://abbachurch.app/" title="Painel Abba Church">https://abbachurch.app/</a><p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
 
             if(classificacaoRequisicao == 'Criativo'){
@@ -95,13 +95,13 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
         if(resultados){
             query = `SELECT * FROM pessoas pe, usuarios us WHERE (us.tipoUsuario = 0 OR us.tipoUsuario = 5) AND us.pessoaId = pe.idPessoa`; 
             const admins = await executarQuery(query);
-            query = `SELECT * FROM pessoas WHERE pessoaId = ${pessoaId}`; 
+            query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`; 
             const quem = await executarQuery(query);
             const assunto = 'Cadastro de requisição!';
             const corpo = `<p>Uma requisição foi atualizada!</p>
             <p><strong>Quem atualizou:</strong> ${quem[0].nomePessoa}<p>
             <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
-            <p>Acesse <a href="abbachurch.app" title="Painel Abba Church">abbachurch.app</a><p>
+            <p>Acesse <a href="https://abbachurch.app/" title="Painel Abba Church">https://abbachurch.app/</a><p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
 
             if(classificacaoRequisicao == 'Criativo'){

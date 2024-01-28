@@ -82,4 +82,30 @@
             }
         });
     }
+
+    function verificacaoCampos(excludedFields, field) {
+        const campos = {
+            'nomePessoa': 'Nome',
+            'emailPessoa': 'Email',
+            'telefonePessoa': 'Telefone',
+            'estadoCivilPessoa': 'Estado Civil',
+            'dataNascimentoPessoa': 'Data de Nascimento',
+            'profissaoPessoa': 'Profissão',
+            'escolaridadePessoa': 'Escolaridade',
+            'idiomaPessoa': 'Idiomas',
+            'nacionalidadePessoa': 'Nacionalidade',
+            'pastorId': 'Pastor Responsável',
+            'categoriasVoluntario': 'Habilidades'
+        };
+
+        if (!excludedFields.includes(field.name)) {
+            if (field.value.trim() === '' || field.value.trim() === 'Selecione uma opção') {
+                return { fieldName: field.name, fieldLabel: campos[field.name] };
+            } else {
+                return null;  // Retorna null para campos não vazios
+            }
+        } else {
+            return null;  // Retorna null para campos excluídos
+        }
+    }
 </script>

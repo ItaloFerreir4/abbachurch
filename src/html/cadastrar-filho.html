@@ -171,12 +171,17 @@
             formData.push({ name: 'tipoPessoa', value: 'filho' });
             formData.push({ name: 'pastorId', value: pessoaId });
 
-            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -219,14 +224,7 @@
 
         }
 
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
+        
     
         function ListaPaises(){
             const selectPaises = $("#nacionalidadePessoa");

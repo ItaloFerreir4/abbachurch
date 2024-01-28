@@ -19,9 +19,9 @@
     <meta property="og:url" content="abbachurch.app">
     <meta property="og:type" content="system">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image" content="https://abbachurch.app/assets/images/img-seo.png">
-    <meta property="og:image:width" content="768"/>
-    <meta property="og:image:height" content="431"/>
+    <meta property="og:image" content="https://abbachurch.app/assets/images/img-seo_2.png">
+    <meta property="og:image:width" content="800"/>
+    <meta property="og:image:height" content="450"/>
     <meta property="og:image:alt" content="Painel de Agenda">
     
     @SPK@include("partials/fileupload_link.html")
@@ -271,12 +271,17 @@
 
             console.log(formData);
 
-            if (formData.some(field => verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -322,14 +327,7 @@
             
         });
 
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
+        
 
         function validarSenha() {
             let senha = document.getElementById('senhaUsuario');

@@ -72,16 +72,6 @@
             CarregarCategoria();
         });
 
-        window.addEventListener('beforeunload', function() {
-            // Obtém o valor atual do sessionStorage
-            var categoriaEvento = sessionStorage.getItem('categoria-evento');
-
-            // Se o valor existir, remove o item do sessionStorage
-            if (categoriaEvento) {
-                sessionStorage.removeItem('categoria-evento');
-            }
-        });
-
         function CarregarCategoria(){
             const idCategoria = sessionStorage.getItem('categoria-evento');
             const formData = { idCategoriaEvento : idCategoria}
@@ -129,12 +119,17 @@
 
             formData.push({ name: 'idCategoriaEvento', value: idCategoria });
 
-            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -173,14 +168,7 @@
 
         }
 
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
+        
     </script>
 
 </body>

@@ -185,10 +185,18 @@
         const excludedFields = ['instagram', 'facebook', 'linkedin'];
         
         window.addEventListener("load", function() {
-            ListaPaises();
-            ListaPastores();
-            ListaHabilidades();
-            CarregarPessoa();
+            
+            IniLoader();
+
+            Promise.all([ListaPaises(), ListaPastores(), ListaHabilidades()])
+            .then(function () {
+                CarregarPessoa();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
+            });
         });
 
         document.getElementById('optionAccess').addEventListener('click', function() {
@@ -249,8 +257,6 @@
         function CarregarPessoa(){
             const idPessoa = sessionStorage.getItem('pessoa');
             const formData = { idPessoa : idPessoa, tipoPessoa : 'voluntario' }
-
-            IniLoader();
 
             $.post('api/carregarPessoa', formData)
                 .done(function (data) { console.log(data);
@@ -354,12 +360,17 @@
             formData.push({ name: 'idPessoa', value: idPessoa });
             formData.push({ name: 'tipoPessoa', value: 'voluntario' });
 
-            if (formData.some(field =>  verificacaoCampos(excludedFields, field) )) {
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
 
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Preencha todos os campos!',
+                    title: errorMessage,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -424,29 +435,22 @@
                 submitBtn.disabled = false;
             }
         }
-
-        function verificacaoCampos(excludedFields, field){
-            if(!excludedFields.includes(field.name)){
-                return field.value.trim() === '' || field.value.trim() === 'Selecione uma opção';
-            }
-            else{
-                return false;
-            }
-        }
     
         function ListaPastores(){
-            const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
-            const selectPastor = $("#pastorId");
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
+                const selectPastor = $("#pastorId");
 
-            selectPastor.empty();
+                selectPastor.empty();
 
-            $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    data.forEach(function(pessoa) {
-                        selectPastor.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
-                    });
-                })
-                .fail(function (error) {
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        data.forEach(function(pessoa) {
+                            selectPastor.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
                     console.error('Erro na requisição:', error);
                     Swal.fire({
                         position: 'center',
@@ -455,22 +459,25 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    reject(error);
                 });
+            });
         }
     
         function ListaHabilidades(){
+            return new Promise(function (resolve, reject) {
+                $.post('api/listarCategorias')
+                    .done(function (data) {
+                        const categorias = data.map(function(categoria) {
+                            return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
+                        });
 
-            $.post('api/listarCategorias')
-                .done(function (data) {
-                    const categorias = data.map(function(categoria) {
-                        return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
-                    });
-
-                    $('#categoriasVoluntario').select2({
-                        data: categorias
-                    });
-                })
-                .fail(function (error) {
+                        $('#categoriasVoluntario').select2({
+                            data: categorias
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
                     console.error('Erro na requisição:', error);
                     Swal.fire({
                         position: 'center',
@@ -479,30 +486,36 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    reject(error);
                 });
+            });
         }
 
         function ListaPaises(){
-            const selectPaises = $("#nacionalidadePessoa");
+            return new Promise(function (resolve, reject) {
+                const selectPaises = $("#nacionalidadePessoa");
 
-            selectPaises.empty();
+                selectPaises.empty();
 
-            $.post('api/listarNomePaises')
-                .done(function (data) {
-                    data.forEach(function(pais) {
-                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                $.post('api/listarNomePaises')
+                    .done(function (data) {
+                        data.forEach(function(pais) {
+                            selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
+            });
         }
 
         function toggleVisibilidadeSenha(element, input) {
