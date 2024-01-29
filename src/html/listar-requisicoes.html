@@ -159,11 +159,14 @@
                                     divBtns = 'Indisponível!';
                                 }
                             }
+                            
+                            let dataRequisicao = new Date(requisicao.dataRequisicao);
+                            dataRequisicao = formatarDataHora(dataRequisicao);
 
                             tabela.row.add([
                                 nomePessoa,
                                 requisicao.classificacaoRequisicao,
-                                requisicao.dataRequisicao,
+                                dataRequisicao,
                                 status,
                                 divBtns
                             ]).draw();

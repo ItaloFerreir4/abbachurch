@@ -4,7 +4,7 @@ const { enviarEmail } = require('./send-email');
 
 async function listarRequisicoes(idUserLog, tipoUserLog) {
     
-    let query = tipoUserLog == 0 ? 'SELECT * FROM requisicoes' : `SELECT * FROM requisicoes WHERE pessoaId = ${idUserLog}`;
+    let query = tipoUserLog == 0 ? 'SELECT * FROM requisicoes ORDER BY idRequisicao DESC' : `SELECT * FROM requisicoes WHERE pessoaId = ${idUserLog}`;
 
     try {
         const resultados = await executarQuery(query);
