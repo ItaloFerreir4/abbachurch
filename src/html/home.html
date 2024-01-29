@@ -746,7 +746,10 @@
             $.post('api/listarEventos')
                 .done(function (data) {
                     if (Array.isArray(data)) {
-                        elementh3.innerHTML = data.length;
+                        const eventosNaoCategoria2 = data.filter(function (evento) {
+                            return evento.categoriaEventoId !== 2;
+                        });
+                        elementh3.innerHTML = eventosNaoCategoria2;
                     } else {
                         elementh3.innerHTML = 'Sem dados.';
                     }
