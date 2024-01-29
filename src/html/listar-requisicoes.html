@@ -27,8 +27,8 @@
                                     <thead>
                                         <tr>
                                             <th class="all" scope="col">Quem Requisitou</th>
-                                            <th class="min-desktop" scope="col">Tipo de Pessoa</th>
                                             <th class="min-desktop" scope="col">Classificação</th>
+                                            <th class="min-desktop" scope="col">Data</th>
                                             <th class="min-desktop" scope="col">Status</th>
                                             <th class="min-desktop" scope="col">Ações</th>
                                         </tr>
@@ -162,8 +162,8 @@
 
                             tabela.row.add([
                                 nomePessoa,
-                                tipoPessoa,
                                 requisicao.classificacaoRequisicao,
+                                requisicao.dataRequisicao,
                                 status,
                                 divBtns
                             ]).draw();
