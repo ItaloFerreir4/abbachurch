@@ -161,7 +161,7 @@
                             }
                             
                             let dataRequisicao = new Date(requisicao.dataRequisicao);
-                            dataRequisicao = formatarDataHora(dataRequisicao);
+                            dataRequisicao = dataRequisicao.toISOString().split('T')[0];
 
                             tabela.row.add([
                                 nomePessoa,
