@@ -602,25 +602,27 @@
 
                         data.forEach(function(pessoa) {
 
-                            const nome = 'Aniversário de ' + pessoa.nomePessoa;
-                            const description = 'Hoje ' + pessoa.nomePessoa + ' está fazendo aniversário';
-                            const dataOld = pessoa.dataNascimentoPessoa;
-                            let anoAtual = new Date().getFullYear();
-                            let data = new Date(dataOld);
-
-                            if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
-                                // const dataFormatada = data.toISOString().split('T')[0]; 
-                                const dataFormatada = data.toISOString().split('T')[0];
-                                data = dataFormatada;
-                            } else {
-                                data = dataOld;
-                            }
-
-                            data = data.replace(/^(\d{4})/, anoAtual);
-
-                            dataEvents.push({ id: count, start: data, end: data, title: nome, description: description });
-
-                            count ++;
+                            if(pessoa.nomePessoa != "" && pessoa.nomePessoa != null){
+                                const nome = 'Aniversário de ' + pessoa.nomePessoa;
+                                const description = 'Hoje ' + pessoa.nomePessoa + ' está fazendo aniversário';
+                                const dataOld = pessoa.dataNascimentoPessoa;
+                                let anoAtual = new Date().getFullYear();
+                                let data = new Date(dataOld);
+    
+                                if (Object.prototype.toString.call(data) === '[object Date]' && !isNaN(data)) {
+                                    // const dataFormatada = data.toISOString().split('T')[0]; 
+                                    const dataFormatada = data.toISOString().split('T')[0];
+                                    data = dataFormatada;
+                                } else {
+                                    data = dataOld;
+                                }
+    
+                                data = data.replace(/^(\d{4})/, anoAtual);
+    
+                                dataEvents.push({ id: count, start: data, end: data, title: nome, description: description });
+    
+                                count ++;
+                            } 
                         });
 
                         resolve(dataEvents);
