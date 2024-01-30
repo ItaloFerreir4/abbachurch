@@ -51,6 +51,14 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
+                                    <label for="generoPessoa" class="mb-2 text-muted">Gênero*</label>
+                                    <select class="form-select mb-2" id="generoPessoa" name="generoPessoa">
+                                        <option>Selecione uma opção</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="M">Masculino</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
                                     <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
                                     <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
                                 </div>
@@ -123,7 +131,7 @@
                             <div class="row">
                                 <div class="col-12 col-lg-4">
                                     <label for="emailPessoa" class="mb-2 text-muted">Email</label>
-                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
                                 </div>
                                 <div class="col-12 col-lg-4" style="position: relative;">
                                     <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
@@ -358,15 +366,39 @@
 
         }
 
-        function validarSenha() {
+        function validarEmail() {
+
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             let senha = document.getElementById('senhaUsuario');
             let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
+
+            if (emailRegex.test(email.value)) {
+                email.classList.remove('border-red');
+                email.classList.add('border-green');
+
+                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
+                    submitBtn.disabled = false;
+                }
+
+            } else {
+                email.classList.remove('border-green');
+                email.classList.add('border-red');
+                submitBtn.disabled = true;
+            }
+
+        }
+
+        function validarSenha() {
+
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
             if (senha.value.length < 5) {
-                senha.classList.remove('border-red');
-                confirmaSenha.classList.remove('border-red');
-                senha.classList.remove('border-green');
-                confirmaSenha.classList.remove('border-green');
                 submitBtn.disabled = true;
             } else if (senha.value !== confirmaSenha.value) {
                 senha.classList.remove('border-green');
@@ -379,8 +411,12 @@
                 confirmaSenha.classList.remove('border-red');
                 senha.classList.add('border-green');
                 confirmaSenha.classList.add('border-green');
-                submitBtn.disabled = false;
+                
+                if (emailRegex.test(email.value)) {
+                    submitBtn.disabled = false;
+                }
             }
+
         }
 
         function ListaPaises(){

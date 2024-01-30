@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const https = require('https');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -36,7 +37,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarPessoa', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -275,15 +276,92 @@ app.post('/api/alterarAdminPastor', async (req, res) => {
     
 });
 
+app.post('/api/cadastrarVoluntario', async (req, res) => {
+
+    const recaptchaToken = req.body.recaptchaToken;
+    const postData = `secret=6LfIkmApAAAAAKdUTiizCvzhHdPE1OZyhtlgVZGj&response=${recaptchaToken}`;
+    const options = {
+        hostname: 'www.google.com',
+        path: '/recaptcha/api/siteverify',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': postData.length,
+        },
+    };
+
+    const verificationRequest = https.request(options, (verificationResponse) => {
+        let responseData = '';
+
+        verificationResponse.on('data', (chunk) => {
+            responseData += chunk;
+        });
+
+        verificationResponse.on('end', async () => {
+            try {
+                const result = JSON.parse(responseData);
+                if (result.success) {
+                    
+                    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
+    
+                    try {
+
+                        const nomeFoto = fotoPessoa != null  && fotoPessoa != '' ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
+
+                        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
+
+                        if (pessoa) {
+
+                            if(pastorId){
+                                
+                                await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario);
+
+                            }
+
+                            res.json({ message: 'Cadastrado com sucesso' });
+                            
+                        } else if (pessoa == null) {
+
+                            res.status(401).json({ message: 'E-mail já cadastrado' });
+
+                        } else {
+
+                            res.status(401).json({ message: 'Erro ao cadastrar' });
+
+                        }
+
+                    } catch (erro) {
+                        console.error('Erro:', erro);
+                        res.status(500).json({ message: 'Erro no servidor' });
+                    }
+
+                } else {
+                    res.status(401).json({ message: 'Falha na verificação do reCAPTCHA.' });
+                }
+            } catch (error) {
+                res.status(401).json({ message: 'Erro interno.' });
+            }
+        });
+    });
+
+    verificationRequest.on('error', (error) => {
+        res.status(401).json({ message: 'Erro interno.' });
+    });
+
+    verificationRequest.write(postData);
+    verificationRequest.end();
+
+});
+
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
+    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
     
     try {
 
         const nomeFoto = fotoPessoa != null  && fotoPessoa != '' ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
 
-        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
+        const pessoa = await cadastrarPessoa(tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
 
         if (pessoa) {
 

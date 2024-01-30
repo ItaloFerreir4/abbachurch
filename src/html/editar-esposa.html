@@ -13,7 +13,7 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Esposa", "dashbordsubtitle":
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Cônjuge", "dashbordsubtitle":
         'Pastores', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
@@ -27,7 +27,7 @@
                         <form id="form-pessoa" enctype="multipart/form-data">
                             <div class="card custom-card">
                                 <div class="card-header">
-                                    <div class="card-title">Esposa</div>
+                                    <div class="card-title">Cônjuge</div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -51,6 +51,14 @@
                                                 <option>Separado(a)</option>
                                                 <option>Divorciado(a)</option>
                                                 <option>Viúvo(a)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="generoPessoa" class="mb-2 text-muted">Gênero*</label>
+                                            <select class="form-select mb-2" id="generoPessoa" name="generoPessoa">
+                                                <option>Selecione uma opção</option>
+                                                <option value="F">Feminino</option>
+                                                <option value="M">Masculino</option>
                                             </select>
                                         </div>
                                         <div class="col-12 col-lg-6">
@@ -164,17 +172,17 @@
 
         window.addEventListener('beforeunload', function() {
             // Obtém o valor atual do sessionStorage
-            var pessoaEsposa = sessionStorage.getItem('pessoaEsposa');
+            var pessoaConjuge = sessionStorage.getItem('pessoaConjuge');
 
             // Se o valor existir, remove o item do sessionStorage
-            if (pessoaEsposa) {
-                sessionStorage.removeItem('pessoaEsposa');
+            if (pessoaConjuge) {
+                sessionStorage.removeItem('pessoaConjuge');
             }
         });
 
         function CarregarPessoa(){
             const idPessoa = sessionStorage.getItem('pessoa');
-            const formData = { idPessoa : idPessoa, tipoPessoa : 'esposa' }
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'conjuge' }
 
             IniLoader();
 
@@ -187,7 +195,7 @@
                             const campo = document.getElementById(propriedade);
 
                             if (propriedade === 'idPessoa') {
-                                sessionStorage.setItem('pessoaEsposa', valor);
+                                sessionStorage.setItem('pessoaConjuge', valor);
                             }
     
                             if (campo) {
@@ -257,7 +265,7 @@
 
         function EditarPessoa() {
 
-            const idPessoa = sessionStorage.getItem('pessoaEsposa');
+            const idPessoa = sessionStorage.getItem('pessoaConjuge');
             let formData = $('#form-pessoa').serializeArray();
             let idiomasSelecionados = $('#idiomaPessoa').val();
             let idiomasString = idiomasSelecionados.join(',');
@@ -269,7 +277,7 @@
 
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
             formData.push({ name: 'idPessoa', value: idPessoa });
-            formData.push({ name: 'tipoPessoa', value: 'esposa' });
+            formData.push({ name: 'tipoPessoa', value: 'conjuge' });
 
             const firstEmptyField = formData
                 .map(field => verificacaoCampos(excludedFields, field))

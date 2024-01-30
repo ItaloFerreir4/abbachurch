@@ -66,20 +66,20 @@ INSERT INTO `categoriasEventos` (`idCategoriaEvento`, `nomeCategoriaEvento`) VAL
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `esposas`
+-- Estrutura para tabela `conjuge`
 --
 
-CREATE TABLE `esposas` (
-  `idEsposa` int(11) NOT NULL,
+CREATE TABLE `conjuge` (
+  `idConjuge` int(11) NOT NULL,
   `pessoaId` int(11) NOT NULL,
   `pastorId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Despejando dados para a tabela `esposas`
+-- Despejando dados para a tabela `conjuge`
 --
 
-INSERT INTO `esposas` (`idEsposa`, `pessoaId`, `pastorId`) VALUES
+INSERT INTO `conjuge` (`idConjuge`, `pessoaId`, `pastorId`) VALUES
 (6, 74, 27),
 (8, 86, 30);
 
@@ -237,7 +237,7 @@ CREATE TABLE `pessoas` (
 INSERT INTO `pessoas` (`idPessoa`, `fotoPessoa`, `nomePessoa`, `emailPessoa`, `telefonePessoa`, `estadoCivilPessoa`, `dataNascimentoPessoa`, `profissaoPessoa`, `escolaridadePessoa`, `idiomaPessoa`, `nacionalidadePessoa`, `dataEntradaPessoa`) VALUES
 (72, 'semfoto.png', 'admin', 'admin@email.com', '999999999', 'Solteiro(a)', '2024-01-24', 'ad', 'Prefiro não dizer', 'Ingles', 'Albania', '2024-01-18'),
 (73, 'image_1705985193728.png', '@Pastor 1', 'pastor@email.com', '999999999', 'Casado(a)', '2024-01-11', 'Teste', '6º ao 9º Ano do Fundamental', 'Ingles,Espanhol', 'Brazil', '2024-01-18'),
-(74, 'semfoto.png', 'esposa teste', '', '999999999', 'undefined', '1899-11-30', 'undefined', 'Doutorado', 'Ingles', 'Anguilla', '2024-01-18'),
+(74, 'semfoto.png', 'conjuge teste', '', '999999999', 'undefined', '1899-11-30', 'undefined', 'Doutorado', 'Ingles', 'Anguilla', '2024-01-18'),
 (75, 'semfoto.png', 'Italo', 'italo.s.ferreira@hotmail.com', '9999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Superior Completo', 'Ingles,Espanhol', 'Afghanistan', '2024-01-18'),
 (79, 'semfoto.png', 'Lider', 'lider@email.com', '999999999', 'Solteiro(a)', '2024-01-23', 'Dev', 'Prefiro não dizer', 'Espanhol', 'Albania', '2024-01-19'),
 (80, 'semfoto.png', 'Voluntario', 'voluntario@email.com', '9999999999', 'Solteiro(a)', '2024-01-25', 'Dev', 'Mestrado', 'Ingles', 'Anguilla', '2024-01-19'),
@@ -422,10 +422,10 @@ ALTER TABLE `categoriasEventos`
   ADD PRIMARY KEY (`idCategoriaEvento`);
 
 --
--- Índices de tabela `esposas`
+-- Índices de tabela `conjuge`
 --
-ALTER TABLE `esposas`
-  ADD PRIMARY KEY (`idEsposa`);
+ALTER TABLE `conjuge`
+  ADD PRIMARY KEY (`idConjuge`);
 
 --
 -- Índices de tabela `eventos`
@@ -516,10 +516,10 @@ ALTER TABLE `categoriasEventos`
   MODIFY `idCategoriaEvento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de tabela `esposas`
+-- AUTO_INCREMENT de tabela `conjuge`
 --
-ALTER TABLE `esposas`
-  MODIFY `idEsposa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `conjuge`
+  MODIFY `idConjuge` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `eventos`

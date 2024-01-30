@@ -26,6 +26,9 @@
     
     @SPK@include("partials/fileupload_link.html")
 
+    <!-- recaptcha -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/libs/sweetalert2/sweetalert2.min.css">
 
@@ -79,7 +82,7 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
-                                <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
                             </div>
                             <div class="col-12 col-lg-6" style="position: relative;">
                                 <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
@@ -111,6 +114,14 @@
                                     <option>Separado(a)</option>
                                     <option>Divorciado(a)</option>
                                     <option>Viúvo(a)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="generoPessoa" class="mb-2 text-muted">Gênero*</label>
+                                <select class="form-select mb-2" id="generoPessoa" name="generoPessoa">
+                                    <option>Selecione uma opção</option>
+                                    <option value="F">Feminino</option>
+                                    <option value="M">Masculino</option>
                                 </select>
                             </div>
                             <div class="col-12 col-lg-6">
@@ -251,88 +262,120 @@
         });
 
         document.getElementById('submitBtn').addEventListener('click', function(e) {
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', { action: 'submit_form' })
+                .then(function(token) {
+                    $('#form-pessoa').append('<input type="hidden" name="recaptchaToken" value="' + token + '">');
             
-            let formData = $('#form-pessoa').serializeArray();
-            let habilidadesSelecionadas = $('#categoriasVoluntario').val();
-            let idiomasSelecionados = $('#idiomaPessoa').val();
-            let habilidadesString = habilidadesSelecionadas.join(',');
-            let idiomasString = idiomasSelecionados.join(',');
+                    let formData = $('#form-pessoa').serializeArray();
+                    let habilidadesSelecionadas = $('#categoriasVoluntario').val();
+                    let idiomasSelecionados = $('#idiomaPessoa').val();
+                    let habilidadesString = habilidadesSelecionadas.join(',');
+                    let idiomasString = idiomasSelecionados.join(',');
 
-            const itensParaRemover = ['idiomaPessoa', 'categoriasVoluntario'];
+                    const itensParaRemover = ['idiomaPessoa', 'categoriasVoluntario'];
 
-            // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
-            formData = formData.filter(function(item) {
-                return !itensParaRemover.includes(item.name);
+                    // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
+                    formData = formData.filter(function(item) {
+                        return !itensParaRemover.includes(item.name);
+                    });
+
+                    formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
+                    formData.push({ name: 'idiomaPessoa', value: idiomasString });
+                    formData.push({ name: 'tipoPessoa', value: 'voluntario' });
+
+                    console.log(formData);
+
+                    const firstEmptyField = formData
+                        .map(field => verificacaoCampos(excludedFields, field))
+                        .find(result => result !== null);
+
+                    if (firstEmptyField) {
+                        const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: errorMessage,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                    } 
+                    else {
+                        IniLoader();
+                        $.post('/api/cadastrarPessoa', formData)
+                        .done(function (data) {
+                            
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Foi enviado um email de confirmação ao email cadastrado!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2500);
+
+                        })
+                        .fail(function (error) {
+
+                            console.error('Erro na requisição:', error);
+
+                            message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+
+                        })
+                        .always(function () {
+                            FinLoader();
+                        });
+                    }
+                });
             });
-
-            formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
-            formData.push({ name: 'idiomaPessoa', value: idiomasString });
-            formData.push({ name: 'tipoPessoa', value: 'voluntario' });
-
-            console.log(formData);
-
-            const firstEmptyField = formData
-                .map(field => verificacaoCampos(excludedFields, field))
-                .find(result => result !== null);
-
-            if (firstEmptyField) {
-                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
-
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: errorMessage,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-            } 
-            else {
-                IniLoader();
-                $.post('/api/cadastrarPessoa', formData)
-                .done(function (data) { console.log(data);
-                    
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Foi enviado um email de confirmação ao email cadastrado!',
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2500);
-
-                })
-                .fail(function (error) {
-
-                    console.error('Erro na requisição:', error);
-
-                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
-
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-
-                })
-                .always(function () {
-                    FinLoader();
-                });
-            }
-            
         });
 
-        
+        function validarEmail() {
 
-        function validarSenha() {
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             let senha = document.getElementById('senhaUsuario');
             let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
+
+            if (emailRegex.test(email.value)) {
+                email.classList.remove('border-red');
+                email.classList.add('border-green');
+
+                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
+                    submitBtn.disabled = false;
+                }
+
+            } else {
+                email.classList.remove('border-green');
+                email.classList.add('border-red');
+                submitBtn.disabled = true;
+            }
+            
+        }
+
+        function validarSenha() {
+
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
             if (senha.value.length < 5) {
                 submitBtn.disabled = true;
             } else if (senha.value !== confirmaSenha.value) {
@@ -346,8 +389,12 @@
                 confirmaSenha.classList.remove('border-red');
                 senha.classList.add('border-green');
                 confirmaSenha.classList.add('border-green');
-                submitBtn.disabled = false;
+                
+                if (emailRegex.test(email.value)) {
+                    submitBtn.disabled = false;
+                }
             }
+
         }
 
         function toggleVisibilidadeSenha(element, input) {

@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
-                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa">
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
                                 </div>
                                 <div class="col-12 col-lg-6" style="position: relative;">
                                     <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
@@ -69,6 +69,14 @@
                                         <option>Separado(a)</option>
                                         <option>Divorciado(a)</option>
                                         <option>Viúvo(a)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="generoPessoa" class="mb-2 text-muted">Gênero*</label>
+                                    <select class="form-select mb-2" id="generoPessoa" name="generoPessoa">
+                                        <option>Selecione uma opção</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="M">Masculino</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
@@ -238,10 +246,38 @@
 
         
 
-        function validarSenha() {
+        function validarEmail() {
+
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             let senha = document.getElementById('senhaUsuario');
             let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
+
+            if (emailRegex.test(email.value)) {
+                email.classList.remove('border-red');
+                email.classList.add('border-green');
+
+                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
+                    submitBtn.disabled = false;
+                }
+
+            } else {
+                email.classList.remove('border-green');
+                email.classList.add('border-red');
+                submitBtn.disabled = true;
+            }
+
+        }
+
+            function validarSenha() {
+
+            let senha = document.getElementById('senhaUsuario');
+            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
+            let submitBtn = document.getElementById('submitBtn');
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
             if (senha.value.length < 5) {
                 submitBtn.disabled = true;
             } else if (senha.value !== confirmaSenha.value) {
@@ -255,8 +291,12 @@
                 confirmaSenha.classList.remove('border-red');
                 senha.classList.add('border-green');
                 confirmaSenha.classList.add('border-green');
-                submitBtn.disabled = false;
+                
+                if (emailRegex.test(email.value)) {
+                    submitBtn.disabled = false;
+                }
             }
+
         }
 
         function toggleVisibilidadeSenha(element, input) {

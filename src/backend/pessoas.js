@@ -65,9 +65,9 @@ async function alterarAdminPastor(pessoaId, tipoUsuario) {
     
 }
 
-async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
+async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
 
-    if (tipoPessoa != 'esposa'){
+    if (tipoPessoa != 'conjuge'){
         let query_count = `SELECT * FROM pessoas WHERE emailPessoa = '${emailPessoa}'`;
 
         let count = await executarQuery(query_count);
@@ -80,8 +80,8 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
     date = format(date, 'yyyy-MM-dd');
 
     let query = `
-    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, dataEntradaPessoa) 
-    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${nacionalidadePessoa}', '${date}')`;
+    INSERT INTO pessoas (fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, dataEntradaPessoa) 
+    VALUES ('${fotoPessoa}', '${nomePessoa}', '${emailPessoa}', '${telefonePessoa}', '${estadoCivilPessoa}', '${generoPessoa}', '${dataNascimentoPessoa}', '${profissaoPessoa}', '${escolaridadePessoa}', '${idiomaPessoa}', '${nacionalidadePessoa}', '${date}')`;
 
     try {
         let pessoa = await executarQuery(query);
@@ -91,8 +91,8 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
         switch(tipoPessoa){
             case 'pastor':
                 let pastor = await cadastrarPastor(pessoaId, igrejaId);
-                let esposa = await cadastrarPessoa('esposa', '', '', '', '', '', '2000-01-01', '', '', '', '', '', '', '', '', '');
-                await cadastrarEsposa(esposa.insertId, pastor.insertId);
+                let conjuge = await cadastrarPessoa('conjuge', '', '', '', '', '', '2000-01-01', '', '', '', '', '', '', '', '', '');
+                await cadastrarConjuge(conjuge.insertId, pastor.insertId);
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
             case 'lider':
@@ -141,7 +141,7 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
 
                         if(await executarQuery(query)){
 
-                            query = `DELETE FROM esposas WHERE pastorId = ${idPastor};`;
+                            query = `DELETE FROM conjuge WHERE pastorId = ${idPastor};`;
                             await executarQuery(query);
 
                             query = `DELETE FROM filhos WHERE pastorId = ${idPastor};`;
@@ -208,8 +208,8 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
         case 'lider':
             query = `SELECT * FROM lideres li, pessoas pe, redessociais re, usuarios u WHERE li.pessoaId = pe.idPessoa AND pe.idPessoa = ${idPessoa} AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa`;
         break;
-        case 'esposa':
-            query = `SELECT es.*, pe.*, re.* FROM esposas es, pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = ${idPessoa} AND es.pessoaId = pe.idPessoa AND es.pastorId = pa.idPastor AND re.pessoaId = pe.idPessoa;`;
+        case 'conjuge':
+            query = `SELECT c.*, pe.*, re.* FROM conjuge c, pastores pa, pessoas pe, redessociais re WHERE pa.pessoaId = ${idPessoa} AND c.pessoaId = pe.idPessoa AND c.pastorId = pa.idPastor AND re.pessoaId = pe.idPessoa;`;
             break;
         case 'filho':
             query = `SELECT * FROM filhos fi, pessoas pe, redessociais re WHERE fi.pessoaId = ${idPessoa} AND fi.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
@@ -384,9 +384,9 @@ async function cadastrarLider(pessoaId) {
     }
 }
 
-async function cadastrarEsposa(pessoaId, pastorId) {
+async function cadastrarConjuge(pessoaId, pastorId) {
     
-    const query = `INSERT INTO esposas (pessoaId, pastorId) VALUES (${pessoaId}, ${pastorId})`;
+    const query = `INSERT INTO conjuge (pessoaId, pastorId) VALUES (${pessoaId}, ${pastorId})`;
 
     try {
         const resultados = await executarQuery(query);
