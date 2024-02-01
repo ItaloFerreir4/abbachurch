@@ -38,7 +38,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -458,8 +458,9 @@ app.post('/api/atualizarPessoa', async (req, res) => {
     const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
 
     try {
+
         const nomeFoto = fotoPessoa ? await saveImage(JSON.parse(fotoPessoa)) : 'semfoto.png';
-        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, generoPessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
+        const resultado = await atualizarPessoa(idPessoa, tipoPessoa, nomeFoto, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId);
 
         switch(tipoPessoa){
             case 'voluntario':

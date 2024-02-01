@@ -20,10 +20,13 @@
         dir: "ltr"
     });
 
-    flatpickr(".datetime", {
-        enableTime: true,
-        dateFormat: "Y-m-d h:i K",
-    });
+    if(document.querySelector(".datetime")){
+        flatpickr(".datetime", {
+            enableTime: true,
+            dateFormat: "Y-m-d h:i K",
+        });
+
+    }
 
     function IniLoader(){
         const loader = document.getElementById("loader");
@@ -31,11 +34,12 @@
     }
 
     function FinLoader(){
-
+        console.log('teste');
         Promise.all([TraduzirFront()])
         .then(function () {
             const loader = document.getElementById("loader");
             loader.classList.add('d-none');
+            console.log('teste2');
         })
         .catch(function (error) {
             console.error('Erro:', error);
@@ -115,7 +119,34 @@
             'idiomaPessoa': 'Idiomas',
             'nacionalidadePessoa': 'Nacionalidade',
             'pastorId': 'Pastor Responsável',
-            'categoriasVoluntario': 'Habilidades'
+            'generoPessoa': 'Gênero',
+            'categoriasVoluntario': 'Habilidades',
+            'nomeCategoriaEvento': 'Nome',
+            'nomeEvento': 'Nome',
+            'localEvento': 'Local',
+            'dataHoraInicioEvento': 'Data/Hora Inicio',
+            'dataHoraFimEvento': 'Data/Hora Fim',
+            'categoriaEventoId': 'Categoria',
+            'ministerioId': 'Ministério',
+            'observacoesEvento': 'Observações',
+            'nomeCategoria': 'Categoria',
+            'nomeIgreja': 'Nome',
+            'paisIgreja': 'País',
+            'estadoIgreja': 'Estado',
+            'enderecoIgreja': 'Endereço',
+            'cepIgreja': 'CEP',
+            'telefoneIgreja': 'Telefone',
+            'emailIgreja': 'Email',
+            'tipoIgreja': 'Tipo',
+            'matrizId': 'Matriz',
+            'nomeMinisterio': 'Nome',
+            'liderId': 'Líder',
+            'dataEntradaMinisterio': 'Data',
+            'igrejaId': 'Igreja',
+            'classificacaoRequisicao': 'Classificação',
+            'informacoesRequisicao': 'Informações',
+            'voluntarioId': 'Voluntário',
+            'categoria': 'Habilidade',
         };
 
         if (!excludedFields.includes(field.name)) {
@@ -133,48 +164,54 @@
         return new Promise(function (resolve, reject) {
 
             const elementosParaTraduzir = document.querySelectorAll(".translate");
-            const formData = [];
-            formData.push({ name: 'idiomaOrigem', value: 'pt' });
-            formData.push({ name: 'idiomaDestino', value: 'en' });
-            formData.push({ name: 'textoOriginal', value: '' });
-
-            elementosParaTraduzir.forEach(async (elemento) => {
-
-                
-                const textoOriginal = elemento.innerText;
-                console.log(textoOriginal);
-                
-                const indexTextoOriginal = formData.findIndex(item => item.name === 'textoOriginal');
-                formData[indexTextoOriginal].value = textoOriginal;
-
+            
+            if(elementosParaTraduzir.length){
+                const formData = [];
+                formData.push({ name: 'idiomaOrigem', value: 'pt' });
+                formData.push({ name: 'idiomaDestino', value: 'en' });
+                formData.push({ name: 'textoOriginal', value: '' });
+    
+                elementosParaTraduzir.forEach(async (elemento) => {
+    
+                    
+                    const textoOriginal = elemento.innerText;
+                    console.log(textoOriginal);
+                    
+                    const indexTextoOriginal = formData.findIndex(item => item.name === 'textoOriginal');
+                    formData[indexTextoOriginal].value = textoOriginal;
+    
+                    resolve(true);
+    
+                    // $.post('api/traduzirElemetos', formData)
+                    //     .done(function (data) {
+                            
+                    //         elemento.innerText = data;
+    
+                    //         resolve(true);
+    
+                    //     })
+                    //     .fail(function (error) {
+    
+                    //         console.error('Erro na requisição:', error);
+    
+                    //         message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+    
+                    //         Swal.fire({
+                    //             position: 'center',
+                    //             icon: 'error',
+                    //             title: message,
+                    //             showConfirmButton: false,
+                    //             timer: 1500
+                    //         });
+    
+                    //         reject(error);
+    
+                    //     });
+                });
+            }
+            else{
                 resolve(true);
-
-                // $.post('api/traduzirElemetos', formData)
-                //     .done(function (data) {
-                        
-                //         elemento.innerText = data;
-
-                //         resolve(true);
-
-                //     })
-                //     .fail(function (error) {
-
-                //         console.error('Erro na requisição:', error);
-
-                //         message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
-
-                //         Swal.fire({
-                //             position: 'center',
-                //             icon: 'error',
-                //             title: message,
-                //             showConfirmButton: false,
-                //             timer: 1500
-                //         });
-
-                //         reject(error);
-
-                //     });
-            });
+            }
 
         });
     }
