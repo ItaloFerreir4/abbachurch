@@ -235,7 +235,7 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
     }
 }
 
-async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
+async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, igrejaId) {
 
     //verificar se o email já existe
     let query_count = `SELECT * FROM pessoas WHERE emailPessoa = '${emailPessoa}' AND idPessoa != ${idPessoa}`;
@@ -246,7 +246,7 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
     
     let query = `
         UPDATE pessoas
-        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}', profissaoPessoa = '${profissaoPessoa}', escolaridadePessoa = '${escolaridadePessoa}', idiomaPessoa = '${idiomaPessoa}', nacionalidadePessoa = '${nacionalidadePessoa}'
+        SET fotoPessoa = '${fotoPessoa}', nomePessoa = '${nomePessoa}', telefonePessoa = '${telefonePessoa}', estadoCivilPessoa = '${estadoCivilPessoa}', generoPessoa = '${generoPessoa}', dataNascimentoPessoa = '${dataNascimentoPessoa}', profissaoPessoa = '${profissaoPessoa}', escolaridadePessoa = '${escolaridadePessoa}', idiomaPessoa = '${idiomaPessoa}', nacionalidadePessoa = '${nacionalidadePessoa}'
         WHERE idPessoa = ${idPessoa};
         `;
         
