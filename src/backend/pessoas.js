@@ -91,7 +91,7 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
         switch(tipoPessoa){
             case 'pastor':
                 let pastor = await cadastrarPastor(pessoaId, igrejaId);
-                let conjuge = await cadastrarPessoa('conjuge', '', '', '', '', '', '2000-01-01', '', '', '', '', '', '', '', '', '');
+                let conjuge = await cadastrarPessoa('conjuge', '', '', '', '', '', '', '2000-01-01', '', '', '', '', '', '', '', '', '');
                 await cadastrarConjuge(conjuge.insertId, pastor.insertId);
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
