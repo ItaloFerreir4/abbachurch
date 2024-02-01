@@ -25,6 +25,26 @@
         dateFormat: "Y-m-d h:i K",
     });
 
+    function IniLoader(){
+        const loader = document.getElementById("loader");
+        loader.classList.remove('d-none');
+    }
+
+    function FinLoader(){
+
+        Promise.all([TraduzirFront()])
+        .then(function () {
+            const loader = document.getElementById("loader");
+            loader.classList.add('d-none');
+        })
+        .catch(function (error) {
+            console.error('Erro:', error);
+            const loader = document.getElementById("loader");
+            loader.classList.add('d-none');
+        });       
+
+    }
+
     function formatarDataHora(data) {
         const options = {
             year: 'numeric',
@@ -108,4 +128,55 @@
             return null;  // Retorna null para campos excluídos
         }
     }
+
+    function TraduzirFront(){
+        return new Promise(function (resolve, reject) {
+
+            const elementosParaTraduzir = document.querySelectorAll(".translate");
+            const formData = [];
+            formData.push({ name: 'idiomaOrigem', value: 'pt' });
+            formData.push({ name: 'idiomaDestino', value: 'en' });
+            formData.push({ name: 'textoOriginal', value: '' });
+
+            elementosParaTraduzir.forEach(async (elemento) => {
+
+                
+                const textoOriginal = elemento.innerText;
+                console.log(textoOriginal);
+                
+                const indexTextoOriginal = formData.findIndex(item => item.name === 'textoOriginal');
+                formData[indexTextoOriginal].value = textoOriginal;
+
+                resolve(true);
+
+                // $.post('api/traduzirElemetos', formData)
+                //     .done(function (data) {
+                        
+                //         elemento.innerText = data;
+
+                //         resolve(true);
+
+                //     })
+                //     .fail(function (error) {
+
+                //         console.error('Erro na requisição:', error);
+
+                //         message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+
+                //         Swal.fire({
+                //             position: 'center',
+                //             icon: 'error',
+                //             title: message,
+                //             showConfirmButton: false,
+                //             timer: 1500
+                //         });
+
+                //         reject(error);
+
+                //     });
+            });
+
+        });
+    }
+
 </script>

@@ -9,6 +9,7 @@ const { recNovaSenha } = require('./usuarios');
 const { verificarTokenConfirmacao } = require('./global');
 const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
 const { saveImage } = require('./upload-imagem');
+const { translateElements } = require('./translate');
 const { listarNomePaises } = require('./paises');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
@@ -232,6 +233,26 @@ app.get('/assets/:file', (req, res) => {
     const { file } = req.params;
     const filePath = path.join(__dirname, '../assets', file);
     res.sendFile(filePath);
+});
+
+app.post('/api/traduzirElemetos', async (req, res) => {
+
+    const { textoOriginal, idiomaOrigem, idiomaDestino } = req.body;
+
+    try {
+        const resposta = await translateElements(textoOriginal, idiomaOrigem, idiomaDestino);
+
+        if (resposta) {
+            res.json(resposta);
+        } else {
+            res.status(401).json({ message: 'Erro ao traduzir' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
 });
 
 app.post('/api/listarPessoas', async (req, res) => {
