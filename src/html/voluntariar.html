@@ -288,7 +288,7 @@
 
                     } 
                     else {
-                        // IniLoader();
+                        IniLoader();
                         $.post('/api/cadastrarPessoa', formData)
                         .done(function (data) {
                             
@@ -394,7 +394,7 @@
 
         function ListaHabilidades(){
 
-            // IniLoader();
+            IniLoader();
 
             $.post('api/listarCategorias')
                 .done(function (data) {
@@ -426,7 +426,7 @@
 
             selectPaises.empty();
 
-            // IniLoader();
+            IniLoader();
 
             $.post('api/listarNomePaises')
                 .done(function (data) {

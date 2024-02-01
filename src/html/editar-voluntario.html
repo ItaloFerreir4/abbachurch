@@ -320,6 +320,14 @@
                                     campo.value = valor;
                                     $('#pastorId').val(valor).trigger('change');
                                 }
+                                else if (propriedade === 'generoPessoa'){
+                                    if(valor == null || valor == ""){
+                                        campo.value = "Selecione uma opção";
+                                    }
+                                    else{
+                                        campo.value = valor;
+                                    }
+                                }
                                 else {
                                     campo.value = valor;
                                 }
