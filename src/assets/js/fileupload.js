@@ -77,3 +77,41 @@ function InputComImagem(imagePath){
 
     pond.addFile(imagePath);
 }
+
+function InputSemImagemQuad(){
+    const pond = FilePond.create(
+        document.querySelector('.single-fileuploadquad'),
+        {
+            labelIdle: `Arraste e solte a imagem ou <span class="filepond--label-action">Escolha</span>`,
+            imagePreviewHeight: 125,
+            imageCropAspectRatio: '1:1',
+            imageResizeTargetWidth: 400,
+            imageResizeTargetHeight: 400,
+            stylePanelLayout: 'integrated',
+            styleLoadIndicatorPosition: 'center bottom',
+            styleButtonRemoveItemPosition: 'center bottom',
+            maxFileSize: '5MB',
+            labelMaxFileSizeExceeded: `Max 5MB permitido!`,
+            labelMaxFileSize: '!'
+        }
+    );
+}
+
+function InputComImagemQuad(imagePath){
+    const pond = FilePond.create(
+        document.querySelector('.single-fileuploadquad'),
+        {
+            labelIdle: `Arraste e solte a imagem ou <span class="filepond--label-action">Escolha</span>`,
+            imagePreviewHeight: 125,
+            imageCropAspectRatio: '1:1',
+            imageResizeTargetWidth: 400,
+            imageResizeTargetHeight: 400,
+            stylePanelLayout: 'integrated',
+            styleLoadIndicatorPosition: 'center bottom',
+            styleButtonRemoveItemPosition: 'center bottom',
+            maxFileSize: '5MB'
+        }
+    );
+
+    pond.addFile(imagePath);
+}

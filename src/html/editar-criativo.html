@@ -1,0 +1,199 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Criativo", "dashbordsubtitle":
+        'Criativos', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-criativos">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-criativo" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Criativo</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <label for="imagemCriativo" class="mb-2 text-muted">Imagem*</label>
+                                            <input type="file" class="single-fileuploadquad" name="imagemCriativo" id="imagemCriativo" accept="image/png, image/jpeg, image/gif">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label for="tituloCriativo" class="mb-2 text-muted">Título*</label>
+                                            <input type="text" class="form-control" id="tituloCriativo" name="tituloCriativo">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label for="linkCriativo" class="mb-2 text-muted">Link*</label>
+                                            <input type="text" class="form-control" id="linkCriativo" name="linkCriativo">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarCriativo()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            CarregarCriativo();
+        });
+
+        function CarregarCriativo(){
+            const idCriativo = sessionStorage.getItem('criativo');
+            const formData = { idCriativo : idCriativo}
+
+            IniLoader();
+
+            $.post('api/carregarCriativo', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(criativo) {
+                        for (const propriedade in criativo) {
+                            const valor = criativo[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if(propriedade === 'imagemCriativo') {
+                                    
+                                    if(valor){
+                                        const caminho = '../assets/uploads/' + valor;
+                                        InputComImagemQuad(caminho);
+                                    }
+                                    else{
+                                        InputSemImagemQuad();
+                                    }
+
+                                } 
+                                else{
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarCriativo() {
+
+            const idCriativo = sessionStorage.getItem('criativo');
+            let formData = $('#form-criativo').serializeArray();
+
+            formData.push({ name: 'idCriativo', value: idCriativo });
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarCriativo', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        
+    </script>
+
+</body>
+
+</html>

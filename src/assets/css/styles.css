@@ -15142,6 +15142,12 @@ span.flatpickr-weekday {
   margin: 0 auto !important;
 }
 
+.single-fileuploadquad {
+  width: 8rem !important;
+  height: 8rem !important;
+  margin: 0 auto 0 0 !important;
+}
+
 /* End::filepond */
 /* Start:: quill editor */
 .ql-toolbar.ql-snow,

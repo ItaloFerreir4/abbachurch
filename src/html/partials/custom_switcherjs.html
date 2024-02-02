@@ -98,10 +98,7 @@
             }
 
             // Se pelo menos uma classe corresponder, mantenha o elemento visível
-            if (!hideElement) {
-                element.style.display = 'block'; // Ou você pode definir como 'initial' para usar o estilo padrão
-            } else {
-                // Se nenhuma classe corresponder, oculte o elemento
+            if (hideElement) {
                 element.style.display = 'none';
             }
         });
@@ -129,7 +126,7 @@
             'categoriaEventoId': 'Categoria',
             'ministerioId': 'Ministério',
             'observacoesEvento': 'Observações',
-            'nomeCategoria': 'Categoria',
+            'nomeCategoria': 'Nome',
             'nomeIgreja': 'Nome',
             'paisIgreja': 'País',
             'estadoIgreja': 'Estado',
@@ -147,6 +144,9 @@
             'informacoesRequisicao': 'Informações',
             'voluntarioId': 'Voluntário',
             'categoria': 'Habilidade',
+            'imagemCriativo': 'Imagem',
+            'tituloCriativo': 'Título',
+            'linkCriativo': 'Link',
         };
 
         if (!excludedFields.includes(field.name)) {

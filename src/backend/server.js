@@ -15,6 +15,7 @@ const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizar
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
+const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
@@ -1244,6 +1245,120 @@ app.post('/api/atualizarStatusRequisicao', async (req, res) => {
     
     try {
         const resultado = await atualizarStatusRequisicao(idRequisicao, statusRequisicao);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarCriativos', async (req, res) => {
+
+    try {
+        const lista = await listarCriativos();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarCriativo', async (req, res) => {
+
+    const { tituloCriativo, imagemCriativo, linkCriativo } = req.body;
+    
+    try {
+
+        const nomeImagem = imagemCriativo != null  && imagemCriativo != '' ? await saveImage(JSON.parse(imagemCriativo)) : 'semfoto.png';
+        const resultado = await cadastrarCriativo(tituloCriativo, nomeImagem, linkCriativo);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarCriativo', async (req, res) => {
+
+    const { idCriativo, tituloCriativo, imagemCriativo, linkCriativo } = req.body;
+    
+    try {
+
+        const nomeImagem = imagemCriativo != null  && imagemCriativo != '' ? await saveImage(JSON.parse(imagemCriativo)) : 'semfoto.png';
+        const resultado = await atualizarCriativo(idCriativo, tituloCriativo, nomeImagem, linkCriativo);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarCriativo', async (req, res) => {
+
+    const { idCriativo } = req.body;
+
+    try {
+        const resultado = await deletarCriativo(idCriativo);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarCriativo', async (req, res) => {
+
+    const { idCriativo } = req.body;
+
+    try {
+        const resultado = await carregarCriativo(idCriativo);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarStatusCriativo', async (req, res) => {
+
+    const { idCriativo, statusCriativo } = req.body;
+    
+    try {
+        const resultado = await atualizarStatusCriativo(idCriativo, statusCriativo);
         
         if (resultado) {
             res.json({ message: 'Atualizado com sucesso' });

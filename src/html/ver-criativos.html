@@ -1,0 +1,90 @@
+@SPK@include("partials/mainhead.html")
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Lista de Criativos", "dashbordsubtitle":
+        'Criativos', "dashbordsubtitle2": 'Listar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="row row-cols-xl-4 row-cols-md-2" id="lista">
+                    
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        window.addEventListener("load", function() {
+            ListarCriativos();
+        });
+
+        function ListarCriativos(){
+
+            IniLoader();
+
+            const divLista = document.getElementById("lista");
+
+            divLista.innerHTML = "";
+
+            $.post('api/listarCriativos')
+                .done(function (data) {
+                    data.forEach(function(criativo) {
+                        divLista.innerHTML += 
+                        `<div class="col">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <a href="${criativo.linkCriativo}" title="${criativo.tituloCriativo}" target="_blank">
+                                        <div class="card custom-card shadow-none border mb-0"> <img src="../assets/uploads/${criativo.imagemCriativo}"
+                                                class="card-img-top" alt="${criativo.imagemCriativo}">
+                                            <div class="card-body py-3">
+                                                <h6 class="card-title fw-semibold text-center mb-0">${criativo.tituloCriativo}</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>
