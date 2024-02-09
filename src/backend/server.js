@@ -13,11 +13,13 @@ const { translateElements } = require('./translate');
 const { listarNomePaises } = require('./paises');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
+const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
+const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio } = require('./categorias-relatorio');
 const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
 const e = require('express');
@@ -1365,6 +1367,190 @@ app.post('/api/atualizarStatusCriativo', async (req, res) => {
         } else {
             res.status(401).json({ message: 'Erro ao atualizar' });
         }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarCategoriasRelatorio', async (req, res) => {
+
+    try {
+        const lista = await listarCategoriasRelatorio();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarCategoriaRelatorio', async (req, res) => {
+
+    const { nomeCategoriaRelatorio } = req.body;
+    
+    try {
+        const resultado = await cadastrarCategoriaRelatorio(nomeCategoriaRelatorio);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarCategoriaRelatorio', async (req, res) => {
+
+    const { idCategoriaRelatorio, nomeCategoriaRelatorio } = req.body;
+    
+    try {
+        const resultado = await atualizarCategoriaRelatorio(idCategoriaRelatorio, nomeCategoriaRelatorio);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarCategoriaRelatorio', async (req, res) => {
+
+    const { idCategoriaRelatorio } = req.body;
+
+    try {
+        const resultado = await deletarCategoriaRelatorio(idCategoriaRelatorio);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarCategoriaRelatorio', async (req, res) => {
+
+    const { idCategoriaRelatorio } = req.body;
+
+    try {
+        const resultado = await carregarCategoriaRelatorio(idCategoriaRelatorio);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarRelatorios', async (req, res) => {
+
+    try {
+        const lista = await listarRelatorios();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarRelatorio', async (req, res) => {
+
+    const { categoriaRelatorioId, dataHoraRelatorio, quantidadeRelatorio } = req.body;
+    
+    try {
+        const resultado = await cadastrarRelatorio(categoriaRelatorioId, dataHoraRelatorio, quantidadeRelatorio);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarRelatorio', async (req, res) => {
+
+    const { idRelatorio, categoriaRelatorioId, dataHoraRelatorio, quantidadeRelatorio } = req.body;
+    
+    try {
+        const resultado = await atualizarRelatorio(idRelatorio, categoriaRelatorioId, dataHoraRelatorio, quantidadeRelatorio);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarRelatorio', async (req, res) => {
+
+    const { idRelatorio } = req.body;
+
+    try {
+        const resultado = await deletarRelatorio(idRelatorio);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarRelatorio', async (req, res) => {
+
+    const { idRelatorio } = req.body;
+
+    try {
+        const resultado = await carregarRelatorio(idRelatorio);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
     } catch (erro) {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });

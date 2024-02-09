@@ -1,0 +1,234 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Relatorio", "dashbordsubtitle":
+        'Relatorios', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-relatorios">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-relatorio" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Relatorio</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-4 mb-2">
+                                            <label for="categoriaRelatorioId" class="mb-2 text-muted">Categoria*</label>
+                                            <select class="form-select mb-2 single-select" id="categoriaRelatorioId" name="categoriaRelatorioId">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-4 mb-2">
+                                            <label for="dataHoraRelatorio" class="mb-2 text-muted">Data e Hora*</label>
+                                            <input type="text" class="form-control datetime" id="dataHoraRelatorio" name="dataHoraRelatorio">
+                                        </div>
+                                        <div class="col-12 col-lg-4 mb-2">
+                                            <label for="quantidadeRelatorio" class="mb-2 text-muted">Quantidade*</label>
+                                            <input type="text" class="form-control" id="quantidadeRelatorio" name="quantidadeRelatorio">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarRelatorio()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            Promise.all([ListarCategorias()])
+            .then(function () {
+                CarregarRelatorio();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
+            });
+        });
+
+        function CarregarRelatorio(){
+            const idRelatorio = sessionStorage.getItem('relatorio');
+            const formData = { idRelatorio : idRelatorio}
+
+            IniLoader();
+
+            $.post('api/carregarRelatorio', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(relatorio) {
+                        for (const propriedade in relatorio) {
+                            const valor = relatorio[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                if(propriedade === 'categoriaRelatorioId'){
+                                    campo.value = valor;
+                                    $('#categoriaRelatorioId').val(valor).trigger('change');
+                                }
+                                else if (propriedade === 'dataHoraRelatorio') {
+                                    const parsedDate = new Date(valor);
+                                    const data = formatarDataHora(parsedDate);
+                                    campo.value = data;
+                                }
+                                else{
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarRelatorio() {
+
+            const idRelatorio = sessionStorage.getItem('relatorio');
+            let formData = $('#form-relatorio').serializeArray();
+
+            formData.push({ name: 'idRelatorio', value: idRelatorio });
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarRelatorio', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function ListarCategorias(){
+            return new Promise(function (resolve, reject) {
+                const selectCategoria = $("#categoriaRelatorioId");
+
+                selectCategoria.empty();
+                selectCategoria.append('<option>Selecione uma opção</option>');
+
+                IniLoader();
+
+                $.post('api/listarCategoriasRelatorio')
+                    .done(function (data) {
+                        data.forEach(function(categoria) {
+                            selectCategoria.append('<option value="' + categoria.idCategoriaRelatorio + '">' + categoria.nomeCategoriaRelatorio + '</option>');
+                        });
+
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
