@@ -28,12 +28,12 @@ async function listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId) {
             query = `SELECT * FROM filhos fi, pessoas pe WHERE fi.pastorId = ${pessoaId} AND fi.pessoaId = pe.idPessoa`;
             break;
         case 'voluntario':
-            if(tipoUserLog == 0){
-                query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa and us.pessoaId = pe.idPessoa`;
-            }
-            else{
-                query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pastorId = ${idUserLog} AND vo.pessoaId = pe.idPessoa and us.pessoaId = pe.idPessoa`;
-            }
+            // if(tipoUserLog == 0){
+                query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa and us.pessoaId = pe.idPessoa ORDER BY pe.idPessoa DESC`;
+            // }
+            // else{
+            //     query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pastorId = ${idUserLog} AND vo.pessoaId = pe.idPessoa and us.pessoaId = pe.idPessoa`;
+            // }
             break;
         case 'voluntarioAtivo':
             query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa AND us.pessoaId = pe.idPessoa AND us.statusUsuario = 1`;

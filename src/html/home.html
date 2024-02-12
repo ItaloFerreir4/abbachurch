@@ -19,8 +19,21 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <div class="row row-cols-xl-4 row-cols-md-2">
-                    <div class="col card-background flex-fill restricao admin pastor lider ministerios ">
+                <div class="row row-cols-xl-3 row-cols-2">
+                    <div class="col card-background flex-fill restricao admin pastor lider ">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Requisições</p>
+                                        <h3 class="mb-0" id="qtdRequisicoes"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill restricao admin pastor lider ">
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div class="d-flex">
@@ -33,7 +46,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col card-background flex-fill restricao admin pastor lider ministerios ">
+                    <div class="col card-background flex-fill restricao admin pastor lider ">
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div class="d-flex">
@@ -46,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col card-background flex-fill restricao admin pastor lider ministerios ">
+                    <div class="col card-background flex-fill restricao admin pastor lider ">
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div class="d-flex">
@@ -77,13 +90,13 @@
                     <div class="card-header align-center" style="overflow: auto;">
                         <h5 class="fw-medium mb-0 text-muted translate">Filtros</h5>
                         <div class="d-flex">
-                            <button class="btn btn-outline-light btn-wave waves-effect waves-light btn-md ms-3 translate" id="filter-todos" type="button" onClick="CalendarioFull(this)">Todos</button>
-                            <button class="btn btn-outline-light btn-wave waves-effect waves-light btn-md ms-2 translate" type="button" onClick="CalendarioNiver(this)">Aniversários</button>
+                            <button class="btn btn-outline-light btn-wave waves-effect waves-light btn-md ms-3 btn-filter translate" id="filter-todos" type="button" onClick="CalendarioFull(this)">Todos</button>
+                            <button class="btn btn-outline-light btn-wave waves-effect waves-light btn-md ms-2 btn-filter translate" type="button" onClick="CalendarioNiver(this)">Aniversários</button>
                             <div class="ms-2">
-                                <select class="form-select single-select" id="filter-categoria" onChange="CalendarioCat(this)"></select>
+                                <select class="form-select single-select btn-md btn-filter" id="filter-categoria" onChange="CalendarioCat(this)"></select>
                             </div>
                             <div class="ms-2">
-                                <select class="form-select ms-2 single-select" id="filter-ministerio" onChange="CalendarioMin(this)"></select>
+                                <select class="form-select single-select btn-md btn-filter" id="filter-ministerio" onChange="CalendarioMin(this)"></select>
                             </div>
                         </div>
                     </div>
@@ -141,6 +154,7 @@
         window.addEventListener("load", function() {
             const buttonTodos = document.getElementById("filter-todos");
             ListarCategorias();
+            QtdRequisicoes();
             QtdPastores();
             QtdLideres();
             QtdVoluntarios();
@@ -172,20 +186,20 @@
                 dataEventos.push(dataCalendarBirthday);
 
                 const calendarEl = document.getElementById('calendario');
-                let calendar = new FullCalendar.Calendar(calendarEl, {
+
+                let calendarOptions = {
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                     },
                     defaultView: 'month',
-                    navLinks: true, // can click day/week names to navigate views
-                    businessHours: true, // display business hours
+                    navLinks: true,
+                    businessHours: true,
                     editable: false,
                     selectable: false,
                     selectMirror: false,
-                    droppable: false, // this allows things to be dropped onto the calendar
-
+                    droppable: false,
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
                         const description = arg.event.extendedProps.description;
@@ -193,16 +207,20 @@
                             position: 'center',
                             icon: 'info',
                             title: arg.event.title,
-                            html:
-                            '<br> Descrição: ' + description,
+                            html: '<br> Descrição: ' + description,
                             showConfirmButton: true,
                         });
                     },
-
-                    dayMaxEvents: true, // allow "more" link when too many events
+                    dayMaxEvents: true,
                     eventSources: dataEventos,
+                };
 
-                });
+                // Verifique a largura da tela e ajuste a visualização padrão
+                if (window.innerWidth < 1200) {
+                    calendarOptions.initialView = 'listWeek';
+                }
+
+                let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
 
                 FinLoader();
@@ -210,6 +228,7 @@
         }
         
         function CalendarioNiver(button){
+
             TirarSelecaoBtn();
             button.classList.add("active");
             
@@ -230,7 +249,8 @@
                 dataEventos.push(dataCalendarBirthday);
 
                 const calendarEl = document.getElementById('calendario');
-                let calendar = new FullCalendar.Calendar(calendarEl, {
+
+                let calendarOptions = {
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -260,7 +280,14 @@
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
 
-                });
+                };
+
+                // Verifique a largura da tela e ajuste a visualização padrão
+                if (window.innerWidth < 1200) {
+                    calendarOptions.initialView = 'listWeek';
+                }
+
+                let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
 
                 FinLoader();
@@ -276,7 +303,7 @@
             Promise.all([ListarEventosCat(button.value)]).then(function ([dataEventos]) {
 
                 const calendarEl = document.getElementById('calendario');
-                let calendar = new FullCalendar.Calendar(calendarEl, {
+                let calendarOptions = {
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -307,7 +334,14 @@
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
 
-                });
+                };
+                
+                // Verifique a largura da tela e ajuste a visualização padrão
+                if (window.innerWidth < 1200) {
+                    calendarOptions.initialView = 'listWeek';
+                }
+
+                let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
 
                 FinLoader();
@@ -323,7 +357,8 @@
             Promise.all([ListarEventosMin(button.value)]).then(function ([dataEventos]) {
 
                 const calendarEl = document.getElementById('calendario');
-                let calendar = new FullCalendar.Calendar(calendarEl, {
+
+                let calendarOptions = {
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -354,7 +389,14 @@
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
 
-                });
+                };
+                
+                // Verifique a largura da tela e ajuste a visualização padrão
+                if (window.innerWidth < 1200) {
+                    calendarOptions.initialView = 'listWeek';
+                }
+
+                let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
 
                 FinLoader();
@@ -655,6 +697,30 @@
                             selectCat.append(`<option value="${categoria.idCategoriaEvento}">${categoria.nomeCategoriaEvento}</option>`);
                         }
                     });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdRequisicoes(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("qtdRequisicoes");
+            
+            $.post('api/listarRequisicoes', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);

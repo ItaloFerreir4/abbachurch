@@ -116,7 +116,7 @@
                                 break;
                         }
 
-                        if(sessionStorage.getItem('tipoUser') == 0){
+                        if(sessionStorage.getItem('tipoUser') == 0 || sessionStorage.getItem('tipoUser') == 5){
                             divBtns = `
                             <div class="btns-actions">
                                 <select class="btn btn-outline-light btn-wave waves-effect waves-light btn-sm mr-1" onChange="AlterarStatus(${pessoa.idPessoa}, this.value)">

@@ -90,6 +90,7 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
+                order: [[2, 'desc']]
             });
 
             tabela.clear().draw();
@@ -133,7 +134,7 @@
                                     break;
                             }
 
-                            if(sessionStorage.getItem('tipoUser') == 0){
+                            if(sessionStorage.getItem('tipoUser') == 0 || sessionStorage.getItem('tipoUser') == 5){
                                 
                                 divBtns = `
                                 <div class="btns-actions">

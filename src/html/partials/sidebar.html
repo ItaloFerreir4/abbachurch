@@ -22,7 +22,7 @@
             </div>
             <ul class="main-menu">
                 <!-- Start::slide__category -->
-                <li class="slide__category"><span class="category-name">Main</span></li>
+                <li class="slide__category"><span class="category-name translate">Eventos</span></li>
                 <!-- End::slide__category -->
 
                 <!-- Agenda -->
@@ -31,13 +31,10 @@
                         <span class=" side-menu__icon">
                             <i class='bi bi-calendar2'></i>
                         </span>
-                        <span class="side-menu__label translate">Agenda</span>
+                        <span class="side-menu__label translate">Calendário</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Agenda</a>
-                        </li>
                         <li class="slide">
                             <a href="home" class="side-menu__item translate">Ver</a>
                         </li>
@@ -49,6 +46,29 @@
                         </li>
                     </ul>
                 </li>
+                <!-- Categorias dos Eventos -->
+                <li class="slide has-sub restricao admin">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <span class=" side-menu__icon">
+                            <i class="las la-certificate"></i>
+                        </span>
+                        <span class="side-menu__label translate">Tipos de Eventos</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="listar-categorias-eventos" class="side-menu__item translate">Listar</a>
+                        </li>
+                        <li class="slide">
+                            <a href="cadastrar-categoria-evento" class="side-menu__item translate">Cadastrar</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin pastor lider"><span class="category-name translate">Pessoas</span></li>
+                <!-- End::slide__category -->
+
                 <!-- Pastores -->
                 <li class="slide has-sub restricao admin">
                     <a href="javascript:void(0);" class="side-menu__item">
@@ -59,9 +79,6 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Pastores</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-pastores" class="side-menu__item translate">Listar</a>
                         </li>
@@ -80,9 +97,6 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Líderes</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-lideres" class="side-menu__item translate">Listar</a>
                         </li>
@@ -91,29 +105,8 @@
                         </li>
                     </ul>
                 </li>
-                <!-- Habilidades -->
-                <li class="slide has-sub restricao admin">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <span class=" side-menu__icon">
-                            <i class="las la-certificate"></i>
-                        </span>
-                        <span class="side-menu__label translate">Habilidades</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Habilidades</a>
-                        </li>
-                        <li class="slide">
-                            <a href="listar-habilidades" class="side-menu__item translate">Listar</a>
-                        </li>
-                        <li class="slide">
-                            <a href="cadastrar-habilidade" class="side-menu__item translate">Cadastrar</a>
-                        </li>
-                    </ul>
-                </li>
                 <!-- Voluntarios -->
-                <li class="slide has-sub restricao admin pastor">
+                <li class="slide has-sub restricao admin pastor lider">
                     <a href="javascript:void(0);" class="side-menu__item">
                         <span class=" side-menu__icon">
                             <i class='bi bi-person'></i>
@@ -122,77 +115,11 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Voluntários</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-voluntarios" class="side-menu__item translate">Listar</a>
                         </li>
                         <li class="slide restricao admin">
                             <a href="cadastrar-voluntario" class="side-menu__item translate">Cadastrar</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- Ministerios -->
-                <li class="slide has-sub restricao admin lider">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <span class=" side-menu__icon">
-                            <i class='las la-users'></i>
-                        </span>
-                        <span class="side-menu__label translate">Ministérios</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Ministérios</a>
-                        </li>
-                        <li class="slide">
-                            <a href="listar-ministerios" class="side-menu__item translate">Listar</a>
-                        </li>
-                        <li class="slide restricao admin">
-                            <a href="cadastrar-ministerio" class="side-menu__item translate">Cadastrar</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- Igrejas -->
-                <li class="slide has-sub restricao admin">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <span class=" side-menu__icon">
-                            <i class='las la-church'></i>
-                        </span>
-                        <span class="side-menu__label translate">Igrejas</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Igrejas</a>
-                        </li>
-                        <li class="slide">
-                            <a href="listar-igrejas" class="side-menu__item translate">Listar</a>
-                        </li>
-                        <li class="slide">
-                            <a href="cadastrar-igreja" class="side-menu__item translate">Cadastrar</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- Categorias dos Eventos -->
-                <li class="slide has-sub restricao admin">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <span class=" side-menu__icon">
-                            <i class="las la-certificate"></i>
-                        </span>
-                        <span class="side-menu__label translate">Categorias Eventos</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Categorias Eventos</a>
-                        </li>
-                        <li class="slide">
-                            <a href="listar-categorias-eventos" class="side-menu__item translate">Listar</a>
-                        </li>
-                        <li class="slide">
-                            <a href="cadastrar-categoria-evento" class="side-menu__item translate">Cadastrar</a>
                         </li>
                     </ul>
                 </li>
@@ -206,14 +133,101 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Admins</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-admin" class="side-menu__item translate">Listar</a>
                         </li>
                         <li class="slide">
                             <a href="cadastrar-admin" class="side-menu__item translate">Cadastrar</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Habilidades -->
+                <li class="slide has-sub restricao admin">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <span class=" side-menu__icon">
+                            <i class="las la-certificate"></i>
+                        </span>
+                        <span class="side-menu__label translate">Habilidades</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="listar-habilidades" class="side-menu__item translate">Listar</a>
+                        </li>
+                        <li class="slide">
+                            <a href="cadastrar-habilidade" class="side-menu__item translate">Cadastrar</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin pastor lider"><span class="category-name translate">Ministérios</span></li>
+                <!-- End::slide__category -->
+                
+                <!-- Ministerios -->
+                <li class="slide has-sub restricao admin lider pastor">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <span class=" side-menu__icon">
+                            <i class='las la-users'></i>
+                        </span>
+                        <span class="side-menu__label translate">Ministérios</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="listar-ministerios" class="side-menu__item translate">Listar</a>
+                        </li>
+                        <li class="slide restricao admin">
+                            <a href="cadastrar-ministerio" class="side-menu__item translate">Cadastrar</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin"><span class="category-name translate">Igrejas</span></li>
+                <!-- End::slide__category -->
+
+                <!-- Igrejas -->
+                <li class="slide has-sub restricao admin">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <span class=" side-menu__icon">
+                            <i class='las la-church'></i>
+                        </span>
+                        <span class="side-menu__label translate">Igrejas</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="listar-igrejas" class="side-menu__item translate">Listar</a>
+                        </li>
+                        <li class="slide">
+                            <a href="cadastrar-igreja" class="side-menu__item translate">Cadastrar</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin"><span class="category-name translate">Relatórios</span></li>
+                <!-- End::slide__category -->
+
+                <!-- Relatorios -->
+                <li class="slide has-sub restricao admin">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <span class=" side-menu__icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </span>
+                        <span class="side-menu__label translate">Relatórios</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="graficos-relatorios" class="side-menu__item translate">Gráficos</a>
+                        </li>
+                        <li class="slide">
+                            <a href="listar-relatorios" class="side-menu__item translate">Listar</a>
+                        </li>
+                        <li class="slide">
+                            <a href="cadastrar-relatorio" class="side-menu__item translate">Cadastrar</a>
                         </li>
                     </ul>
                 </li>
@@ -227,9 +241,6 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Categorias Relatório</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-categorias-relatorio" class="side-menu__item translate">Listar</a>
                         </li>
@@ -238,27 +249,11 @@
                         </li>
                     </ul>
                 </li>
-                <!-- Relatorios -->
-                <li class="slide has-sub restricao admin">
-                    <a href="javascript:void(0);" class="side-menu__item">
-                        <span class=" side-menu__icon">
-                            <i class="las la-certificate"></i>
-                        </span>
-                        <span class="side-menu__label translate">Relatórios</span>
-                        <i class="fe fe-chevron-right side-menu__angle"></i>
-                    </a>
-                    <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Relatórios</a>
-                        </li>
-                        <li class="slide">
-                            <a href="listar-relatorios" class="side-menu__item translate">Listar</a>
-                        </li>
-                        <li class="slide">
-                            <a href="cadastrar-relatorio" class="side-menu__item translate">Cadastrar</a>
-                        </li>
-                    </ul>
-                </li>
+                
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin pastor lider"><span class="category-name translate">Criativo</span></li>
+                <!-- End::slide__category -->
+
                 <!-- Criativo -->
                 <li class="slide has-sub restricao admin pastor lider">
                     <a href="javascript:void(0);" class="side-menu__item">
@@ -269,9 +264,6 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Criativo</a>
-                        </li>
                         <li class="slide">
                             <a href="ver-criativos" class="side-menu__item translate">Ver</a>
                         </li>
@@ -283,6 +275,11 @@
                         </li>
                     </ul>
                 </li>
+                
+                <!-- Start::slide__category -->
+                <li class="slide__category restricao admin pastor lider"><span class="category-name translate">Requisições</span></li>
+                <!-- End::slide__category -->
+
                 <!-- Requisições -->
                 <li class="slide has-sub restricao admin pastor lider">
                     <a href="javascript:void(0);" class="side-menu__item">
@@ -293,9 +290,6 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide side-menu__label1">
-                            <a href="javascript:void(0)" class="translate">Requisições</a>
-                        </li>
                         <li class="slide">
                             <a href="listar-requisicoes" class="side-menu__item translate">Listar</a>
                         </li>

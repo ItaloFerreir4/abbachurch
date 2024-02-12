@@ -112,7 +112,7 @@
                                 data = dataOld;
                             }
 
-                            if(sessionStorage.getItem('tipoUser') == 0){
+                            if(sessionStorage.getItem('tipoUser') == 0 || sessionStorage.getItem('tipoUser') == 5){
                                 divBtns = `
                                 <div class="btns-actions">
                                     <button class="btn btn-success btn-sm mr-1" onClick="EditarMinisterio(${ministerio.idMinisterio})">Editar</button>

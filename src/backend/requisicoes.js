@@ -2,9 +2,13 @@ const executarQuery = require('./consulta');
 const { format } = require('date-fns');
 const { enviarEmail } = require('./send-email');
 
-async function listarRequisicoes(idUserLog, tipoUserLog) {
+async function listarRequisicoes(idUserLog, tipoUserLog, limit) {
     
-    let query = tipoUserLog == 0 ? 'SELECT * FROM requisicoes ORDER BY idRequisicao DESC' : `SELECT * FROM requisicoes WHERE pessoaId = ${idUserLog}`;
+    let query = tipoUserLog == 0 || tipoUserLog == 5 ? 'SELECT * FROM requisicoes ORDER BY idRequisicao DESC' : `SELECT * FROM requisicoes WHERE pessoaId = ${idUserLog}  ORDER BY idRequisicao DESC`;
+
+    if(limit > 0){
+        query = 'SELECT req.*, pe.fotoPessoa, pe.nomePessoa FROM requisicoes req, pessoas pe WHERE req.pessoaId = pe.idPessoa ORDER BY idRequisicao DESC LIMIT 3';
+    }
 
     try {
         const resultados = await executarQuery(query);

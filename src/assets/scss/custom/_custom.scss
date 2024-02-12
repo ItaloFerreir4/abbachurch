@@ -572,7 +572,6 @@ body {
 @media (max-width: 575.98px) {
   .cart-dropdown,
   .header-settings,
-  .notifications-dropdown,
   .header-shortcuts-dropdown,
   .header-fullscreen {
     display: none !important;
@@ -2270,4 +2269,8 @@ h6 {
 
 .status[status="2"] {
   color: rgba(var(--danger-rgb), 1);
+}
+
+.cursor-pointer{
+  cursor: pointer;
 }

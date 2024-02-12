@@ -10,6 +10,18 @@
     window.addEventListener("load", function(){
         const tipoUser = sessionStorage.getItem('tipoUser');
         hideElementsBasedOnUserRole(tipoUser);
+
+        if (!sessionStorage.getItem('idiomaDestino')) {
+            sessionStorage.setItem('idiomaDestino', 'pt');
+        }
+
+        // Se o idioma não for 'pt', chama TraduzirFront
+        if (sessionStorage.getItem('idiomaDestino') !== 'pt') {
+            TraduzirFront(sessionStorage.getItem('idiomaOriginal'));
+        }
+
+        $('#idioma-sistema').val(sessionStorage.getItem('idiomaDestino')).trigger('change');
+
     });
 
     $('.single-select').select2({
@@ -18,6 +30,13 @@
 
     $('.multiple-select').select2({
         dir: "ltr"
+    });
+
+    $('.image-select').select2({
+        dir: "ltr",
+        templateResult: formatState,
+        templateSelection: formatStateSelection,
+        minimumResultsForSearch: Infinity
     });
 
     if(document.querySelector(".datetime")){
@@ -34,19 +53,8 @@
     }
 
     function FinLoader(){
-        console.log('teste');
-        Promise.all([TraduzirFront()])
-        .then(function () {
-            const loader = document.getElementById("loader");
-            loader.classList.add('d-none');
-            console.log('teste2');
-        })
-        .catch(function (error) {
-            console.error('Erro:', error);
-            const loader = document.getElementById("loader");
-            loader.classList.add('d-none');
-        });       
-
+        const loader = document.getElementById("loader");
+        loader.classList.add('d-none');     
     }
 
     function formatarDataHora(data) {
@@ -146,7 +154,10 @@
             'categoria': 'Habilidade',
             'imagemCriativo': 'Imagem',
             'tituloCriativo': 'Título',
-            'linkCriativo': 'Link',
+            'categoriaRelatorioId': 'Categoria',
+            'dataHoraRelatorio': 'Data e Hora',
+            'quantidadeRelatorio': 'Quantidade',
+            'nomeCategoriaRelatorio': 'Nome',
         };
 
         if (!excludedFields.includes(field.name)) {
@@ -160,60 +171,73 @@
         }
     }
 
-    function TraduzirFront(){
-        return new Promise(function (resolve, reject) {
+    async function TraduzirFront(idiomaOriginal) {
+        let idiomaDestino = sessionStorage.getItem('idiomaDestino');
 
+        if (idiomaDestino !== 'pt') {
             const elementosParaTraduzir = document.querySelectorAll(".translate");
-            
-            if(elementosParaTraduzir.length){
-                const formData = [];
-                formData.push({ name: 'idiomaOrigem', value: 'pt' });
-                formData.push({ name: 'idiomaDestino', value: 'en' });
-                formData.push({ name: 'textoOriginal', value: '' });
-    
-                elementosParaTraduzir.forEach(async (elemento) => {
-    
-                    
+
+            if (elementosParaTraduzir.length) {
+                const formData = {
+                    idiomaOrigem: idiomaOriginal,
+                    idiomaDestino: idiomaDestino,
+                    textoOriginal: ''
+                };
+
+                await Promise.all(Array.from(elementosParaTraduzir).map(async (elemento) => {
                     const textoOriginal = elemento.innerText;
                     console.log(textoOriginal);
-                    
-                    const indexTextoOriginal = formData.findIndex(item => item.name === 'textoOriginal');
-                    formData[indexTextoOriginal].value = textoOriginal;
+
+                    formData.textoOriginal = textoOriginal;
+
+                    try {
+                        const data = await $.post('api/traduzirElemetos', formData);
+                        elemento.innerText = data;
+                    } catch (error) {
+                        console.error('Erro na requisição:', error);
+                    }
+                }));
+            }
+        }
+    }
     
-                    resolve(true);
-    
-                    // $.post('api/traduzirElemetos', formData)
-                    //     .done(function (data) {
-                            
-                    //         elemento.innerText = data;
-    
-                    //         resolve(true);
-    
-                    //     })
-                    //     .fail(function (error) {
-    
-                    //         console.error('Erro na requisição:', error);
-    
-                    //         message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
-    
-                    //         Swal.fire({
-                    //             position: 'center',
-                    //             icon: 'error',
-                    //             title: message,
-                    //             showConfirmButton: false,
-                    //             timer: 1500
-                    //         });
-    
-                    //         reject(error);
-    
-                    //     });
-                });
+    function MudarIdioma(idioma){
+        const idiomaAtual = sessionStorage.getItem('idiomaDestino');
+        const idiomaOriginal = sessionStorage.getItem('idiomaOriginal');
+        
+        if (idiomaAtual !== idioma) {
+            sessionStorage.setItem('idiomaOriginal', idiomaAtual);
+            sessionStorage.setItem('idiomaDestino', idioma);
+
+            if(idioma == 'pt'){
+                window.location.reload();
             }
             else{
-                resolve(true);
+                TraduzirFront(idiomaOriginal);
             }
+            
+            console.log("trocando idioma");
+        }
+    }
+    
+    function formatState(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var $state = $(
+            '<span style=" width: 100%; height: 100%; display: flex; justify-content: center; align-items:center; " ><img style="width: 30px; height: 20px; margin: 0 auto;" src="' + $(state.element).data('image') + '" class="img-flag" /></span>'
+        );
+        return $state;
+    }
 
-        });
+    function formatStateSelection(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var $state = $(
+            '<span><img style="width: 30px; height: 20px; margin: 0 auto;" src="' + $(state.element).data('image') + '" class="img-flag" /></span>'
+        );
+        return $state;
     }
 
 </script>

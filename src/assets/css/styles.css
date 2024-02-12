@@ -10150,7 +10150,6 @@ body {
 @media (max-width: 575.98px) {
   .cart-dropdown,
   .header-settings,
-  .notifications-dropdown,
   .header-shortcuts-dropdown,
   .header-fullscreen {
     display: none !important;
@@ -12072,6 +12071,10 @@ h6 {
   color: rgba(var(--danger-rgb), 1);
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* Start:: Sales Dashboard Styles */
 .main-card-icon {
   inset-block-end: 0.75rem;
@@ -13929,6 +13932,9 @@ ul {
 @media (max-width: 991px) {
   .main-header-container .header-search .header-link {
     padding: 0.85rem 0.15rem;
+  }
+  .main-header-container .notifications-dropdown .main-header-dropdown {
+    width: 320px !important;
   }
 }
 /* Start:Choices JS */

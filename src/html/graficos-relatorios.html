@@ -1,0 +1,187 @@
+@SPK@include("partials/mainhead.html")
+
+<link rel="stylesheet" href="../assets/libs/apexcharts/apexcharts.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Gráficos dos Relatórios", "dashbordsubtitle":
+        'Gráficos', "dashbordsubtitle2": 'Listar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <select class="form-select" id="selectAno" onchange="filtrarPorAno()"></select>
+                    </div>
+                    <div class="card-body">
+                        <div id="area-stacked"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Apex Charts JS -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!---Used In Basic Area Chart-->
+    <script src="../assets/js/apexcharts-stock-prices.js"></script>
+
+    <!-- Used For Secection-Github Style Chart -->
+    <script src="../assets/js/apex-github-data.js"></script>
+
+    <!-- Used For Irregular Time Series Chart -->
+    <script src="../assets/js/apexcharts-irregulardata.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        let relatoriosOriginais;
+
+        window.addEventListener("load", function() {
+            ListarRelatorios();
+        });
+
+        function GraficoStacked(relatorios) {
+            let categorias = [];
+            let seriesData = [];
+
+            $("#area-stacked").empty();
+
+            // Processar os relatórios e preparar dados para o gráfico
+            relatorios.forEach(function (relatorio) {
+                let dataHora = new Date(relatorio.dataHoraRelatorio);
+                let data = dataHora.toISOString().split('T')[0];
+
+                if (!categorias.includes(relatorio.nomeCategoriaRelatorio)) {
+                    categorias.push(relatorio.nomeCategoriaRelatorio);
+                    seriesData[relatorio.nomeCategoriaRelatorio] = [];
+                }
+
+                seriesData[relatorio.nomeCategoriaRelatorio].push({ x: data, y: relatorio.quantidadeRelatorio });
+            });
+
+            let series = [];
+            categorias.forEach(function (categoria) {
+                series.push({
+                    name: categoria,
+                    data: seriesData[categoria]
+                });
+            });
+
+            let options = {
+                series: series,
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    zoom: {
+                        enabled: false,
+                    }
+                },
+                colors: ['#008FFB', '#00E396', '#CED4DC', '#FFBB00', '#FF5733', '#DA70D6'],
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'left'
+                },
+                xaxis: {
+                    type: 'datetime'
+                },
+            };
+
+            let chart = new ApexCharts(document.querySelector("#area-stacked"), options);
+            chart.render();
+        }
+
+        function ListarRelatorios() {
+            IniLoader();
+
+            $.post('api/listarRelatorios')
+                .done(function (data) {
+
+                    let anoOld = 0;
+                    let selectAno = document.getElementById('selectAno');
+
+                    selectAno.innerHTML = "";
+                    relatoriosOriginais = data; // Armazene os relatórios originais
+
+                    relatoriosOriginais.forEach(function (relatorio) {
+
+                        let dataHora = new Date(relatorio.dataHoraRelatorio);
+                        let data = dataHora.toISOString().split('T')[0];
+
+                        // Extraia o ano e adicione à lista de anos
+                        let ano = data.split('-')[0];
+
+                        if (anoOld != ano) {
+                            let option = document.createElement('option');
+                            option.value = ano;
+                            option.text = ano;
+                            selectAno.add(option);
+
+                            anoOld = ano;
+                        }
+                    
+                    });
+
+                    // Filtra relatórios do ano atual
+                    let anoAtual = new Date().getFullYear().toString();
+                    let relatoriosAnoAtual = data.filter(relatorio => relatorio.dataHoraRelatorio.includes(anoAtual));
+                    
+                    // Chama a função de grafico
+                    GraficoStacked(relatoriosAnoAtual);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function filtrarPorAno() {
+            var anoSelecionado = document.getElementById('selectAno').value;
+
+            // Filtrar os relatórios localmente
+            var relatoriosFiltrados = relatoriosOriginais.filter(relatorio => relatorio.dataHoraRelatorio.includes(anoSelecionado));
+
+            // Atualizar o gráfico com os relatórios filtrados
+            GraficoStacked(relatoriosFiltrados);
+        }
+
+    </script>
+
+</body>
+
+</html>

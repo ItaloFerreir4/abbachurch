@@ -1151,7 +1151,28 @@ app.post('/api/listarRequisicoes', async (req, res) => {
     const tipoUserLog = req.session.tipoUsuario;
 
     try {
-        const lista = await listarRequisicoes(idUserLog, tipoUserLog);
+        const lista = await listarRequisicoes(idUserLog, tipoUserLog, 0);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/listar3UltimasRequisicoes', async (req, res) => {
+
+    const idUserLog = req.session.idPessoa;
+    const tipoUserLog = req.session.tipoUsuario;
+
+    try {
+        const lista = await listarRequisicoes(idUserLog, tipoUserLog, 3);
 
         if (lista) {
             res.json(lista);
