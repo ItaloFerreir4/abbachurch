@@ -19,7 +19,7 @@ async function translateElements(textoOriginal, idiomaOrigem, idiomaDestino, ten
 
     try {
         // Optar pelo novo modo headless ao iniciar o navegador
-        browser = await puppeteer.launch({ headless: "new" });
+        browser = await puppeteer.launch({ headless: "new", args: ['--no-sandbox'] });
         const page = await browser.newPage();
 
         const url = `https://translate.google.com.br/?sl=${idiomaOrigem}&tl=${idiomaDestino}&text=${encodeURIComponent(textoOriginal)}&op=translate`;
