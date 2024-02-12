@@ -248,11 +248,11 @@
         document.getElementById('submitBtn').addEventListener('click', function(e) {
             e.preventDefault();
             
-            grecaptcha.ready(function() {
-                grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', {action: 'submit'}).then(function(token) {
+            // grecaptcha.ready(function() {
+            //     grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', {action: 'submit'}).then(function(token) {
             
                     let formData = $('#form-pessoa').serializeArray();
-                    formData.push({name: 'recaptchaToken', value: token});
+                    //formData.push({name: 'recaptchaToken', value: token});
                     let habilidadesSelecionadas = $('#categoriasVoluntario').val();
                     let idiomasSelecionados = $('#idiomaPessoa').val();
                     let habilidadesString = habilidadesSelecionadas.join(',');
@@ -324,8 +324,8 @@
                             FinLoader();
                         });
                     }
-                });
-            });
+                //});
+            //});
         });
 
         function validarEmail() {
