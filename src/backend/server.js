@@ -303,15 +303,19 @@ app.post('/api/alterarAdminPastor', async (req, res) => {
 app.post('/api/cadastrarVoluntario', async (req, res) => {
 
     const recaptchaToken = req.body.recaptchaToken;
-    const postData = `secret=6LfIkmApAAAAAKdUTiizCvzhHdPE1OZyhtlgVZGj&response=${recaptchaToken}`;
+    const dados = JSON.stringify({
+        secret: '1LfIkmApAAAAAKdUTiizCvzhHdPE1OZyhtlgVZG1',
+        response: recaptchaToken
+    });
     const options = {
         hostname: 'www.google.com',
+        port: 443,
         path: '/recaptcha/api/siteverify',
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': postData.length,
-        },
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(dados)
+        }
     };
 
     const verificationRequest = https.request(options, (verificationResponse) => {
