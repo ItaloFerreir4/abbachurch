@@ -365,6 +365,7 @@
                 .done(function (data) {
                     data.forEach(relatorio => {
                         let dataHoraRelatorio = relatorio.dataHoraRelatorio;
+                        dataHoraRelatorio = new Date(dataHoraRelatorio);
                         dataHoraRelatorio = dataHoraRelatorio.toISOString().split('T')[0];
 
                         divWidget.innerHTML += `
