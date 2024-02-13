@@ -250,12 +250,12 @@
    
         function QtdRequisicoes(){
             const formData = { tipoPessoa : 'voluntario' }
-            const elementh3 = document.getElementById("elqtdRequisicoes");
+            const elRequisicoes = document.getElementById("elqtdRequisicoes");
             
             $.post('api/listarRequisicoes', formData)
                 .done(function (data) {
                     if(data.length > 0){
-                        elementh3.innerHTML = data.length;
+                        elRequisicoes.innerHTML = data.length;
                     }
                     console.log(data.length);
                 })
@@ -273,12 +273,12 @@
 
         function QtdPastores(){
             const formData = { tipoPessoa : 'pastor' }
-            const elementh3 = document.getElementById("elqtdPastores");
+            const elPastores = document.getElementById("elqtdPastores");
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
-                        elementh3.innerHTML = data.length;
+                        elPastores.innerHTML = data.length;
                     }
                     console.log(data.length);
                 })
@@ -296,12 +296,12 @@
     
         function QtdLideres(){
             const formData = { tipoPessoa : 'lider' }
-            const elementh3 = document.getElementById("elqtdLideres");
+            const elLideres = document.getElementById("elqtdLideres");
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
-                        elementh3.innerHTML = data.length;
+                        elLideres.innerHTML = data.length;
                     }
                     console.log(data.length);
                 })
@@ -319,36 +319,36 @@
 
         function QtdVoluntarios(){
             const formData = { tipoPessoa : 'voluntario' }
-            const elementh3 = document.getElementById("elqtdVoluntarios");
+            const elVoluntarios = document.getElementById("elqtdVoluntarios");
             
             $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    if(data.length > 0){
-                        elementh3.innerHTML = data.length;
-                    }
+            .done(function (data) {
+                if(data.length > 0){
+                    elVoluntarios.innerHTML = data.length;
+                }
 
-                    console.log(data.length);
-                    console.log(elementh3);
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                console.log(data.length);
+                console.log(elVoluntarios);
+            })
+            .fail(function (error) {
+                console.error('Erro na requisição:', error);
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Erro ao listar!',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
+            });
         }
 
         function QtdEventos(){
-            const elementh3 = document.getElementById("elqtdEventos");
+            const elEventos = document.getElementById("elqtdEventos");
             
             $.post('api/listarEventos')
                 .done(function (data) {
                     if(data.length > 0){
-                        elementh3.innerHTML = data.length;
+                        elEventos.innerHTML = data.length;
                     }
                     console.log(data.length);
                 })
