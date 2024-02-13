@@ -250,7 +250,7 @@
             grecaptcha.ready(function() {
                 grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', { action: 'submit_form' })
                 .then(function(token) {
-                    $('#form-pessoa').append('<input type="hidden" name="recaptchaToken" value="' + token + '">');
+                    $('#form-pessoa').append('<input type="hidden" name="recaptchaToken" value="6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8">');
             
                     let formData = $('#form-pessoa').serializeArray();
                     let habilidadesSelecionadas = $('#categoriasVoluntario').val();
