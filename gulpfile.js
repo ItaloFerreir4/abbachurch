@@ -42,7 +42,6 @@ function browsersyncFn(callback) {
         proxy: 'http://localhost:3000',
         port: 1111,
         open: false,
-        ssl: true,
         https: true
     });
     callback();
