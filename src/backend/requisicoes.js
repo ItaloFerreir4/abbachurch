@@ -89,7 +89,7 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
             }
         }
 
-        return resultados ? 'Cadastrado' : false;
+        return 'Cadastrado';
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
