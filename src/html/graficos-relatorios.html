@@ -318,14 +318,14 @@
         }
 
         function QtdVoluntarios(){
+            
             const formData = { tipoPessoa : 'voluntario' }
             const elVoluntarios = document.getElementById("elqtdVoluntarios");
             
             $.post('api/listarPessoas', formData)
             .done(function (data) {
-                if(data.length > 0){
-                    elVoluntarios.innerHTML = data.length;
-                }
+
+                elVoluntarios.innerHTML = data.length;
 
                 console.log(data.length);
                 console.log(elVoluntarios);
