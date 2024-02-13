@@ -19,7 +19,7 @@ const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinis
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
-const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio } = require('./categorias-relatorio');
+const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio, atualizarWidgetRelatorio } = require('./categorias-relatorio');
 const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
 const e = require('express');
@@ -1419,9 +1419,13 @@ app.post('/api/cadastrarCategoriaRelatorio', async (req, res) => {
     try {
         const resultado = await cadastrarCategoriaRelatorio(nomeCategoriaRelatorio);
         
-        if (resultado) {
-            res.json({ message: 'Cadastrado com sucesso' });
-        } else {
+        if (resultado == 'Cadastrado') {
+            res.json({ message: 'Cadastrado com sucesso!', statusMessage: 'success' });
+        } 
+        else if(resultado == 'Existe'){
+            res.json({ message: 'Já existe cadastro com esse nome!', statusMessage: 'error' });
+        }
+        else {
             res.status(401).json({ message: 'Erro ao cadastrar' });
         }
     } catch (erro) {
@@ -1489,7 +1493,25 @@ app.post('/api/carregarCategoriaRelatorio', async (req, res) => {
 app.post('/api/listarRelatorios', async (req, res) => {
 
     try {
-        const lista = await listarRelatorios();
+        const lista = await listarRelatorios('todosRelatorios');
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/listarUltimosRelatorios', async (req, res) => {
+
+    try {
+        const lista = await listarRelatorios('totalUltimoRelatorio');
 
         if (lista) {
             res.json(lista);
@@ -1570,6 +1592,25 @@ app.post('/api/carregarRelatorio', async (req, res) => {
             res.json(resultado);
         } else {
             res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarWidgetRelatorio', async (req, res) => {
+
+    const { idCategoriaRelatorio, widgetRelatorio } = req.body;
+    
+    try {
+        const resultado = await atualizarWidgetRelatorio(idCategoriaRelatorio, widgetRelatorio);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
         }
 
     } catch (erro) {

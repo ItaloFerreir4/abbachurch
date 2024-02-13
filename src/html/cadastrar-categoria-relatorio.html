@@ -95,23 +95,28 @@
 
                     cleanform();
                     
+                    let message = data.message ? data.message : 'Cadastrado com sucesso!';
+                    let statusMessage = data.statusMessage ? data.statusMessage : 'success';
+
                     Swal.fire({
                         position: 'center',
-                        icon: 'success',
-                        title: 'Cadastrado com sucesso!',
+                        icon: statusMessage,
+                        title: message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2500
                     });
-
+                    
                 })
                 .fail(function (error) {
 
                     console.error('Erro na requisição:', error);
 
+                    let message = error.message ? error.message : 'Erro ao cadastrar!';
+
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
-                        title: 'Erro ao cadastrar!',
+                        title: message,
                         showConfirmButton: false,
                         timer: 1500
                     });

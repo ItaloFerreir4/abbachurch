@@ -17,6 +17,73 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
+                <div class="row row-cols-xl-3 row-cols-2" id="widgets">
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Requisições</p>
+                                        <h3 class="mb-0" id="elqtdRequisicoes">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Pastores</p>
+                                        <h3 class="mb-0" id="elqtdPastores">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Líderes</p>
+                                        <h3 class="mb-0" id="elqtdLideres">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Voluntários</p>
+                                        <h3 class="mb-0" id="elqtdVoluntarios">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Eventos</p>
+                                        <h3 class="mb-0" id="elqtdEventos">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card custom-card">
                     <div class="card-header">
                         <select class="form-select" id="selectAno" onchange="filtrarPorAno()"></select>
@@ -58,7 +125,33 @@
         let relatoriosOriginais;
 
         window.addEventListener("load", function() {
-            ListarRelatorios();
+            setTimeout(function() {
+                QtdRequisicoes();
+            }, 100);
+
+            setTimeout(function() {
+                QtdPastores();
+            }, 200);
+
+            setTimeout(function() {
+                QtdLideres();
+            }, 300);
+
+            setTimeout(function() {
+                QtdVoluntarios();
+            }, 400);
+
+            setTimeout(function() {
+                QtdEventos();
+            }, 500);
+
+            setTimeout(function() {
+                CarregarWidgets();
+            }, 600);
+
+            setTimeout(function() {
+                ListarRelatorios();
+            }, 700);
         });
 
         function GraficoStacked(relatorios) {
@@ -118,8 +211,6 @@
         }
 
         function ListarRelatorios() {
-            IniLoader();
-
             $.post('api/listarRelatorios')
                 .done(function (data) {
 
@@ -164,9 +255,6 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
                 });
         }
 
@@ -178,6 +266,165 @@
 
             // Atualizar o gráfico com os relatórios filtrados
             GraficoStacked(relatoriosFiltrados);
+        }
+   
+        function QtdRequisicoes(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("elqtdRequisicoes");
+            
+            $.post('api/listarRequisicoes', formData)
+                .done(function (data) {
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
+                    }
+                    console.log(data.length);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdPastores(){
+            const formData = { tipoPessoa : 'pastor' }
+            const elementh3 = document.getElementById("elqtdPastores");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
+                    }
+                    console.log(data.length);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+        function QtdLideres(){
+            const formData = { tipoPessoa : 'lider' }
+            const elementh3 = document.getElementById("elqtdLideres");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
+                    }
+                    console.log(data.length);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdVoluntarios(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("elqtdVoluntarios");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
+                    }
+
+                    console.log(data.length);
+                    console.log(elementh3);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdEventos(){
+            const elementh3 = document.getElementById("elqtdEventos");
+            
+            $.post('api/listarEventos')
+                .done(function (data) {
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
+                    }
+                    console.log(data.length);
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+        function CarregarWidgets(){
+            IniLoader();
+            const divWidget = document.getElementById("widgets");
+
+            $.post('api/listarUltimosRelatorios')
+                .done(function (data) {
+                    data.forEach(relatorio => {
+                        let dataHoraRelatorio = relatorio.dataHoraRelatorio;
+                        dataHoraRelatorio = new Date(dataHoraRelatorio);
+                        dataHoraRelatorio = dataHoraRelatorio.toISOString().split('T')[0];
+
+                        divWidget.innerHTML += `
+                        <div class="col card-background flex-fill">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div>
+                                            <p class="fw-medium mb-1 text-muted translate">Total de ${relatorio.nomeCategoriaRelatorio} - ${dataHoraRelatorio}</p>
+                                            <h3 class="mb-0" id="qtdEventos">${relatorio.quantidadeRelatorio}</h3>
+                                        </div>
+                                        <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+
+                    FinLoader();
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    FinLoader();
+                });
         }
 
     </script>
