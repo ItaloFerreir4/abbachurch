@@ -318,7 +318,7 @@
         }
 
         function QtdVoluntarios(){
-            
+
             const formData = { tipoPessoa : 'voluntario' }
             const elVoluntarios = document.getElementById("elqtdVoluntarios");
             
@@ -375,7 +375,7 @@
                         dataHoraRelatorio = new Date(dataHoraRelatorio);
                         dataHoraRelatorio = dataHoraRelatorio.toISOString().split('T')[0];
 
-                        divWidget.innerHTML += `
+                        divWidget.appendChild(`
                         <div class="col card-background flex-fill">
                             <div class="card custom-card">
                                 <div class="card-body">
@@ -389,7 +389,7 @@
                                 </div>
                             </div>
                         </div>
-                        `;
+                        `);
                     });
 
                     FinLoader();
