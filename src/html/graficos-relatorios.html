@@ -24,7 +24,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Requisições</p>
-                                        <h3 class="mb-0" id="qtdRequisicoes">0</h3>
+                                        <h3 class="mb-0" id="elqtdRequisicoes">0</h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -37,7 +37,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Pastores</p>
-                                        <h3 class="mb-0" id="qtdPastores">0</h3>
+                                        <h3 class="mb-0" id="elqtdPastores">0</h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -50,7 +50,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Líderes</p>
-                                        <h3 class="mb-0" id="qtdLideres">0</h3>
+                                        <h3 class="mb-0" id="elqtdLideres">0</h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -63,7 +63,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Voluntários</p>
-                                        <h3 class="mb-0" id="qtdVoluntarios">0</h3>
+                                        <h3 class="mb-0" id="elqtdVoluntarios">0</h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -76,7 +76,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Eventos</p>
-                                        <h3 class="mb-0" id="qtdEventos">0</h3>
+                                        <h3 class="mb-0" id="elqtdEventos">0</h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -250,13 +250,14 @@
    
         function QtdRequisicoes(){
             const formData = { tipoPessoa : 'voluntario' }
-            const elementh3 = document.getElementById("qtdRequisicoes");
+            const elementh3 = document.getElementById("elqtdRequisicoes");
             
             $.post('api/listarRequisicoes', formData)
                 .done(function (data) {
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
+                    console.log(data.length);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -272,13 +273,14 @@
 
         function QtdPastores(){
             const formData = { tipoPessoa : 'pastor' }
-            const elementh3 = document.getElementById("qtdPastores");
+            const elementh3 = document.getElementById("elqtdPastores");
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
+                    console.log(data.length);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -294,13 +296,14 @@
     
         function QtdLideres(){
             const formData = { tipoPessoa : 'lider' }
-            const elementh3 = document.getElementById("qtdLideres");
+            const elementh3 = document.getElementById("elqtdLideres");
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
+                    console.log(data.length);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -316,13 +319,15 @@
 
         function QtdVoluntarios(){
             const formData = { tipoPessoa : 'voluntario' }
-            const elementh3 = document.getElementById("qtdVoluntarios");
+            const elementh3 = document.getElementById("elqtdVoluntarios");
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
+
+                    console.log(data.length);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -337,13 +342,14 @@
         }
 
         function QtdEventos(){
-            const elementh3 = document.getElementById("qtdEventos");
+            const elementh3 = document.getElementById("elqtdEventos");
             
             $.post('api/listarEventos')
                 .done(function (data) {
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
+                    console.log(data.length);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
