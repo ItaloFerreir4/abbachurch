@@ -125,13 +125,33 @@
         let relatoriosOriginais;
 
         window.addEventListener("load", function() {
-            QtdRequisicoes();
-            QtdPastores();
-            QtdLideres();
-            QtdVoluntarios();
-            QtdEventos();
-            CarregarWidgets();
-            ListarRelatorios();
+            setTimeout(function() {
+                QtdRequisicoes();
+            }, 100);
+
+            setTimeout(function() {
+                QtdPastores();
+            }, 200);
+
+            setTimeout(function() {
+                QtdLideres();
+            }, 300);
+
+            setTimeout(function() {
+                QtdVoluntarios();
+            }, 400);
+
+            setTimeout(function() {
+                QtdEventos();
+            }, 500);
+
+            setTimeout(function() {
+                CarregarWidgets();
+            }, 600);
+
+            setTimeout(function() {
+                ListarRelatorios();
+            }, 700);
         });
 
         function GraficoStacked(relatorios) {
