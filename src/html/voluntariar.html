@@ -27,7 +27,7 @@
     @SPK@include("partials/fileupload_link.html")
 
     <!-- recaptcha -->
-    <!-- <script src="https://www.google.com/recaptcha/api.js?render=6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8"></script> -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/libs/sweetalert2/sweetalert2.min.css">
@@ -246,13 +246,13 @@
         });
 
         document.getElementById('submitBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // grecaptcha.ready(function() {
-            //     grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', {action: 'submit'}).then(function(token) {
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8', { action: 'submit_form' })
+                .then(function(token) {
+                    $('#form-pessoa').append('<input type="hidden" name="recaptchaToken" value="' + token + '">');
             
                     let formData = $('#form-pessoa').serializeArray();
-                    //formData.push({name: 'recaptchaToken', value: token});
                     let habilidadesSelecionadas = $('#categoriasVoluntario').val();
                     let idiomasSelecionados = $('#idiomaPessoa').val();
                     let habilidadesString = habilidadesSelecionadas.join(',');
@@ -289,7 +289,7 @@
                     } 
                     else {
                         IniLoader();
-                        $.post('/api/cadastrarPessoa', formData)
+                        $.post('/api/cadastrarVoluntario', formData)
                         .done(function (data) {
                             
                             Swal.fire({
@@ -324,8 +324,8 @@
                             FinLoader();
                         });
                     }
-                //});
-            //});
+                });
+            });
         });
 
         function validarEmail() {
