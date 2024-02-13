@@ -35,10 +35,6 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
 
         let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
         const evento = await executarQuery(query); 
-        
-        console.log('dataHoraInicio: ', dataHoraInicio);
-        console.log('query: ', query);
-        console.log('array evento: ', evento);
 
         if(evento && evento.length > 0){
             return 'Existe';
@@ -137,11 +133,7 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
         dataHoraFim = formatarDataHora(dataHoraFimEvento);
 
         let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
-        const evento = await executarQuery(query); 
-
-        console.log('dataHoraInicio: ', dataHoraInicio);
-        console.log('query: ', query);
-        console.log('array evento: ', evento);
+        const evento = await executarQuery(query);
 
         if(evento && evento.length > 0){
             return 'Existe';
