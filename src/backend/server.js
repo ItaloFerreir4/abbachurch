@@ -302,29 +302,33 @@ app.post('/api/alterarAdminPastor', async (req, res) => {
 
 app.post('/api/cadastrarVoluntario', async (req, res) => {
 
-    const recaptchaToken = req.body.recaptchaToken;
-    const postData = `secret=6LfIkmApAAAAAKdUTiizCvzhHdPE1OZyhtlgVZGj&response=${recaptchaToken}`;
-    const options = {
-        hostname: 'www.google.com',
-        path: '/recaptcha/api/siteverify',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': postData.length,
-        },
-    };
+    // const recaptchaToken = req.body.recaptchaToken;
+    // const dados = JSON.stringify({
+    //     secret: '1LfIkmApAAAAAKdUTiizCvzhHdPE1OZyhtlgVZG1',
+    //     response: recaptchaToken
+    // });
+    // const options = {
+    //     hostname: 'www.google.com',
+    //     port: 443,
+    //     path: '/recaptcha/api/siteverify',
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Content-Length': Buffer.byteLength(dados)
+    //     }
+    // };
 
-    const verificationRequest = https.request(options, (verificationResponse) => {
-        let responseData = '';
+    // const verificationRequest = https.request(options, (verificationResponse) => {
+    //     let responseData = '';
 
-        verificationResponse.on('data', (chunk) => {
-            responseData += chunk;
-        });
+    //     verificationResponse.on('data', (chunk) => {
+    //         responseData += chunk;
+    //     });
 
-        verificationResponse.on('end', async () => {
-            try {
-                const result = JSON.parse(responseData);
-                if (result.success) {
+    //     verificationResponse.on('end', async () => {
+    //         try {
+    //             const result = JSON.parse(responseData);
+    //             if (result.success) {
                     
                     const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
     
@@ -359,14 +363,14 @@ app.post('/api/cadastrarVoluntario', async (req, res) => {
                         res.status(500).json({ message: 'Erro no servidor' });
                     }
 
-                } else {
-                    res.status(401).json({ message: 'Falha na verificação do reCAPTCHA.' });
-                }
-            } catch (error) {
-                res.status(401).json({ message: 'Erro interno.' });
-            }
-        });
-    });
+    //             } else {
+    //                 res.status(401).json({ message: 'Falha na verificação do reCAPTCHA.' });
+    //             }
+    //         } catch (error) {
+    //             res.status(401).json({ message: 'Erro interno.' });
+    //         }
+    //     });
+    // });
 
     verificationRequest.on('error', (error) => {
         res.status(401).json({ message: 'Erro interno.' });
