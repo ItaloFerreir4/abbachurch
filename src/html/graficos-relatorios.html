@@ -17,6 +17,73 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
+                <div class="row row-cols-xl-3 row-cols-2" id="widgets">
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Requisições</p>
+                                        <h3 class="mb-0" id="qtdRequisicoes">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Pastores</p>
+                                        <h3 class="mb-0" id="qtdPastores">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Líderes</p>
+                                        <h3 class="mb-0" id="qtdLideres">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Voluntários</p>
+                                        <h3 class="mb-0" id="qtdVoluntarios">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Eventos</p>
+                                        <h3 class="mb-0" id="qtdEventos">0</h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card custom-card">
                     <div class="card-header">
                         <select class="form-select" id="selectAno" onchange="filtrarPorAno()"></select>
@@ -59,6 +126,12 @@
 
         window.addEventListener("load", function() {
             ListarRelatorios();
+            QtdRequisicoes();
+            QtdPastores();
+            QtdLideres();
+            QtdVoluntarios();
+            QtdEventos();
+            CarregarWidgets();
         });
 
         function GraficoStacked(relatorios) {
@@ -118,8 +191,6 @@
         }
 
         function ListarRelatorios() {
-            IniLoader();
-
             $.post('api/listarRelatorios')
                 .done(function (data) {
 
@@ -164,9 +235,6 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
                 });
         }
 
@@ -178,6 +246,167 @@
 
             // Atualizar o gráfico com os relatórios filtrados
             GraficoStacked(relatoriosFiltrados);
+        }
+   
+        function QtdRequisicoes(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("qtdRequisicoes");
+            
+            $.post('api/listarRequisicoes', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdPastores(){
+            const formData = { tipoPessoa : 'pastor' }
+            const elementh3 = document.getElementById("qtdPastores");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+        function QtdLideres(){
+            const formData = { tipoPessoa : 'lider' }
+            const elementh3 = document.getElementById("qtdLideres");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdVoluntarios(){
+            const formData = { tipoPessoa : 'voluntario' }
+            const elementh3 = document.getElementById("qtdVoluntarios");
+            
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        elementh3.innerHTML = data.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+
+        function QtdEventos(){
+            const elementh3 = document.getElementById("qtdEventos");
+            
+            $.post('api/listarEventos')
+                .done(function (data) {
+                    if (Array.isArray(data)) {
+                        const eventosNaoCategoria2 = data.filter(function (evento) {
+                            return evento.categoriaEventoId !== 2;
+                        });
+                        elementh3.innerHTML = eventosNaoCategoria2.length;
+                    } else {
+                        elementh3.innerHTML = 'Sem dados.';
+                    }
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
+        function CarregarWidgets(){
+            IniLoader();
+            const divWidget = document.getElementById("widgets");
+
+            $.post('api/listarUltimosRelatorios')
+                .done(function (data) {
+                    data.forEach(relatorio => {
+                        divWidget.innerHTML += `
+                        <div class="col card-background flex-fill">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div>
+                                            <p class="fw-medium mb-1 text-muted translate">Total do último evento de ${relatorio.nomeCategoriaRelatorio}</p>
+                                            <h3 class="mb-0" id="qtdEventos">${relatorio.quantidadeRelatorio}</h3>
+                                        </div>
+                                        <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+
+                    FinLoader();
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    FinLoader();
+                });
         }
 
     </script>

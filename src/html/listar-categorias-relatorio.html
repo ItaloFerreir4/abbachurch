@@ -27,6 +27,7 @@
                                     <thead>
                                         <tr>
                                             <th class="all" scope="col">Nome</th>
+                                            <th class="min-desktop" scope="col">Widget</th>
                                             <th class="min-desktop" scope="col">Ações</th>
                                         </tr>
                                     </thead>
@@ -96,6 +97,10 @@
                     data.forEach(function(categoria) {
                         tabela.row.add([
                             categoria.nomeCategoriaRelatorio,
+                            `<div class="form-check form-switch" style="display:flex;align-items:center;">
+                                <input style="width:35px;height:15px;" class="form-check-input" type="checkbox" role="switch" onChange="AlterarWidgetRelatorio(${categoria.idCategoriaRelatorio}, this)" ${categoria.widgetRelatorio == 1 ? 'checked' : ''}>
+                                <label class="form-check-label" for="statusCriativo_${categoria.idCategoriaRelatorio}"></label>
+                            </div>`,
                             `<div class="btns-actions">
                                 <button class="btn btn-success btn-sm mr-1" onClick="EditarCategoria(${categoria.idCategoriaRelatorio})">Editar</button>
                                 <button class="btn btn-danger btn-sm mr-1" onClick="DeletarCategoria(${categoria.idCategoriaRelatorio})">Deletar</button>
@@ -163,6 +168,35 @@
             sessionStorage.setItem('categoria-relatorio', idCategoria);
             window.location.href = "editar-categoria-relatorio";
         }
+    
+        function AlterarWidgetRelatorio(idCategoriaRelatorio, btnCheck){
+
+            status = btnCheck.checked ? 1 : 0;
+            const dataApi = { idCategoriaRelatorio: idCategoriaRelatorio, widgetRelatorio : status };
+
+            $.post('api/atualizarWidgetRelatorio', dataApi)
+                .done(function (data) {
+                    console.log(data);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Alterado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao alterar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        }
+    
     </script>
 
 </body>

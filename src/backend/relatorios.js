@@ -1,9 +1,17 @@
 const executarQuery = require('./consulta');
 const { formatarDataHora } = require('./formata-data');
 
-async function listarRelatorios() {
+async function listarRelatorios(tipoLista) {
     
-    let query = 'SELECT * FROM relatorios re, categoriasRelatorio catRe WHERE re.categoriaRelatorioId = catRe.idCategoriaRelatorio';
+    let query = ''
+
+    switch(tipoLista){
+        case 'todosRelatorios':
+            query = 'SELECT * FROM relatorios re, categoriasRelatorio catRe WHERE re.categoriaRelatorioId = catRe.idCategoriaRelatorio';
+            break;
+        case 'totalUltimoRelatorio':
+            query = 'SELECT re.*, cat.nomeCategoriaRelatorio FROM relatorios re, categoriasRelatorio cat WHERE re.categoriaRelatorioId = cat.idCategoriaRelatorio AND (re.categoriaRelatorioId, re.dataHoraRelatorio) IN ( SELECT categoriaRelatorioId, MAX(dataHoraRelatorio) AS maxDataHoraRelatorio FROM relatorios GROUP BY categoriaRelatorioId ) ORDER BY re.dataHoraRelatorio DESC';
+    }
 
     try {
         const resultados = await executarQuery(query);
@@ -73,4 +81,20 @@ async function atualizarRelatorio(idRelatorio, categoriaRelatorioId, dataHoraRel
     }
 }
 
-module.exports = { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio };
+async function atualizarWidgetRelatorio(idRelatorio, widgetRelatorio) {
+    
+    let query = `
+        UPDATE relatorios SET 
+        widgetRelatorio = '${widgetRelatorio}'
+        WHERE idRelatorio = ${idRelatorio};`;
+        
+    try {
+        const resultados = await executarQuery(query);
+        return resultados ? true : false;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+module.exports = { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio, atualizarWidgetRelatorio };
