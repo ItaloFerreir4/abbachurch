@@ -24,7 +24,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Requisições</p>
-                                        <h3 class="mb-0" id="elqtdRequisicoes">0</h3>
+                                        <h3 class="mb-0" id="elqtdRequisicoes"></h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -37,7 +37,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Pastores</p>
-                                        <h3 class="mb-0" id="elqtdPastores">0</h3>
+                                        <h3 class="mb-0" id="elqtdPastores"></h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -50,7 +50,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Líderes</p>
-                                        <h3 class="mb-0" id="elqtdLideres">0</h3>
+                                        <h3 class="mb-0" id="elqtdLideres"></h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -63,7 +63,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Voluntários</p>
-                                        <h3 class="mb-0" id="elqtdVoluntarios">0</h3>
+                                        <h3 class="mb-0" id="elqtdVoluntarios"></h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -76,7 +76,7 @@
                                 <div class="d-flex">
                                     <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Eventos</p>
-                                        <h3 class="mb-0" id="elqtdEventos">0</h3>
+                                        <h3 class="mb-0" id="elqtdEventos"></h3>
                                     </div>
                                     <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
                                 </div>
@@ -125,33 +125,13 @@
         let relatoriosOriginais;
 
         window.addEventListener("load", function() {
-            setTimeout(function() {
-                QtdRequisicoes();
-            }, 100);
-
-            setTimeout(function() {
-                QtdPastores();
-            }, 200);
-
-            setTimeout(function() {
-                QtdLideres();
-            }, 300);
-
-            setTimeout(function() {
-                QtdVoluntarios();
-            }, 400);
-
-            setTimeout(function() {
-                QtdEventos();
-            }, 500);
-
-            setTimeout(function() {
-                CarregarWidgets();
-            }, 600);
-
-            setTimeout(function() {
-                ListarRelatorios();
-            }, 700);
+            QtdRequisicoes();
+            QtdPastores();
+            QtdLideres();
+            QtdVoluntarios();
+            QtdEventos();
+            CarregarWidgets();
+            ListarRelatorios();
         });
 
         function GraficoStacked(relatorios) {
