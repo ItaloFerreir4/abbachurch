@@ -10,7 +10,7 @@ async function listarRelatorios(tipoLista) {
             query = 'SELECT * FROM relatorios re, categoriasRelatorio catRe WHERE re.categoriaRelatorioId = catRe.idCategoriaRelatorio';
             break;
         case 'totalUltimoRelatorio':
-            query = 'SELECT re.*, cat.nomeCategoriaRelatorio FROM relatorios re, categoriasRelatorio cat WHERE re.categoriaRelatorioId = cat.idCategoriaRelatorio AND (re.categoriaRelatorioId, re.dataHoraRelatorio) IN ( SELECT categoriaRelatorioId, MAX(dataHoraRelatorio) AS maxDataHoraRelatorio FROM relatorios GROUP BY categoriaRelatorioId ) ORDER BY re.dataHoraRelatorio DESC';
+            query = 'SELECT re.*, cat.nomeCategoriaRelatorio FROM relatorios re, categoriasRelatorio cat WHERE cat.widgetRelatorio = 1 AND re.categoriaRelatorioId = cat.idCategoriaRelatorio AND (re.categoriaRelatorioId, re.dataHoraRelatorio) IN ( SELECT categoriaRelatorioId, MAX(dataHoraRelatorio) AS maxDataHoraRelatorio FROM relatorios GROUP BY categoriaRelatorioId ) ORDER BY re.dataHoraRelatorio DESC';
     }
 
     try {

@@ -320,13 +320,9 @@
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
-
                     if(data.length > 0){
                         elementh3.innerHTML = data.length;
                     }
-
-                    console.log(data);
-                    console.log(elementh3);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
