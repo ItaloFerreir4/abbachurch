@@ -254,10 +254,8 @@
             
             $.post('api/listarRequisicoes', formData)
                 .done(function (data) {
-                    if (Array.isArray(data)) {
+                    if(data.length > 0){
                         elementh3.innerHTML = data.length;
-                    } else {
-                        elementh3.innerHTML = 'Sem dados.';
                     }
                 })
                 .fail(function (error) {
@@ -278,10 +276,8 @@
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
-                    if (Array.isArray(data)) {
+                    if(data.length > 0){
                         elementh3.innerHTML = data.length;
-                    } else {
-                        elementh3.innerHTML = 'Sem dados.';
                     }
                 })
                 .fail(function (error) {
@@ -302,10 +298,8 @@
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
-                    if (Array.isArray(data)) {
+                    if(data.length > 0){
                         elementh3.innerHTML = data.length;
-                    } else {
-                        elementh3.innerHTML = 'Sem dados.';
                     }
                 })
                 .fail(function (error) {
@@ -326,13 +320,13 @@
             
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
-                    if (Array.isArray(data)) {
+
+                    if(data.length > 0){
                         elementh3.innerHTML = data.length;
-                    } else {
-                        elementh3.innerHTML = 'Sem dados.';
                     }
 
                     console.log(data);
+                    console.log(elementh3);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -351,13 +345,8 @@
             
             $.post('api/listarEventos')
                 .done(function (data) {
-                    if (Array.isArray(data)) {
-                        const eventosNaoCategoria2 = data.filter(function (evento) {
-                            return evento.categoriaEventoId !== 2;
-                        });
-                        elementh3.innerHTML = eventosNaoCategoria2.length;
-                    } else {
-                        elementh3.innerHTML = 'Sem dados.';
+                    if(data.length > 0){
+                        elementh3.innerHTML = data.length;
                     }
                 })
                 .fail(function (error) {
