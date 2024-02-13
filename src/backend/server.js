@@ -1189,15 +1189,19 @@ app.post('/api/listar3UltimasRequisicoes', async (req, res) => {
 
 app.post('/api/cadastrarRequisicao', async (req, res) => {
 
-    const { pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao } = req.body;
+    const { pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento, statusRequisicao } = req.body;
     
     try {
-        const resultado = await cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao);
-        
-        if (resultado) {
-            res.json({ message: 'Cadastrado com sucesso' });
-        } else {
-            res.status(401).json({ message: 'Erro ao cadastrar' });
+        const resultado = await cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento, statusRequisicao);
+
+        if (resultado == 'Cadastrado') {
+            res.json({ message: 'Cadastrado com sucesso!', statusMessage: 'success' });
+        }
+        else if (resultado == 'Existe') {
+            res.json({ message: 'Já existe evento cadastrado nesse horário', statusMessage: 'error' });
+        } 
+        else {
+            res.status(401).json({ message: 'Erro ao cadastrar!' });
         }
     } catch (erro) {
         console.error('Erro:', erro);
@@ -1207,16 +1211,20 @@ app.post('/api/cadastrarRequisicao', async (req, res) => {
 
 app.post('/api/atualizarRequisicao', async (req, res) => {
 
-    const { idRequisicao, classificacaoRequisicao, informacoesRequisicao } = req.body;
+    const { idRequisicao, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento } = req.body;
     const idPessoa = req.session.idPessoa;
     
     try {
-        const resultado = await atualizarRequisicao(idPessoa, idRequisicao, classificacaoRequisicao, informacoesRequisicao);
+        const resultado = await atualizarRequisicao(idPessoa, idRequisicao, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento);
         
-        if (resultado) {
-            res.json({ message: 'Atualizado com sucesso' });
-        } else {
-            res.status(401).json({ message: 'Erro ao atualizar' });
+        if (resultado == 'Atualizado') {
+            res.json({ message: 'Atualizado com sucesso!', statusMessage: 'success' });
+        }
+        else if (resultado == 'Existe') {
+            res.json({ message: 'Já existe evento cadastrado nesse horário', statusMessage: 'error' });
+        } 
+        else {
+            res.status(401).json({ message: 'Erro ao atualizar!' });
         }
     } catch (erro) {
         console.error('Erro:', erro);

@@ -35,7 +35,7 @@
                                     <div class="row">
                                         <div class="col-12 mb-2">
                                             <label for="classificacaoRequisicao" class="mb-2 text-muted">Classificação*</label>
-                                            <select class="form-select" id="classificacaoRequisicao" name="classificacaoRequisicao">
+                                            <select class="form-select" id="classificacaoRequisicao" name="classificacaoRequisicao" onChange="VerificaClassSelecionada(this.value)">
                                                 <option>Selecione uma opção</option>
                                                 <option>Evento</option>
                                                 <option>Voluntário</option>
@@ -43,6 +43,57 @@
                                                 <option>Líder</option>
                                                 <option>Ministério</option>
                                                 <option>Criativo</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2 div-evento">
+                                            <label for="departamentoEvento" class="mb-2 text-muted">Departamento*</label>
+                                            <input type="text" class="form-control" id="departamentoEvento" name="departamentoEvento">
+                                        </div>
+                                        <div class="col-12 mb-2 div-evento">
+                                            <label for="nomeEvento" class="mb-2 text-muted">Nome*</label>
+                                            <input type="text" class="form-control" id="nomeEvento" name="nomeEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2 div-evento">
+                                            <label for="dataHoraInicioEvento" class="mb-2 text-muted">Data/Hora Inicio*</label>
+                                            <input type="text" class="form-control datetime" id="dataHoraInicioEvento" name="dataHoraInicioEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2 div-evento">
+                                            <label for="dataHoraFimEvento" class="mb-2 text-muted">Data/Hora Fim*</label>
+                                            <input type="text" class="form-control datetime" id="dataHoraFimEvento" name="dataHoraFimEvento">
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2 div-evento">
+                                            <label for="ambienteEvento" class="mb-2 text-muted">Ambiente*</label>
+                                            <select class="form-select" id="ambienteEvento" name="ambienteEvento">
+                                                <option>Selecione uma opção</option>
+                                                <option>Auditório 1</option>
+                                                <option>Auditório 2</option>
+                                                <option>Salão Social</option>
+                                                <option>Sala de reuniōes (max. 13 pessoas)</option>
+                                                <option>Check-in Kids (max. 50 pessoas)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2 div-evento">
+                                            <label for="departamentosProducaoEvento" class="mb-2 text-muted">Departamentos da produção*</label>
+                                            <select class="form-select" id="departamentosProducaoEvento" name="departamentosProducaoEvento">
+                                                <option>Selecione uma opção</option>
+                                                <option>Som</option>
+                                                <option>Luz</option>
+                                                <option>Projeção</option>
+                                                <option>Video (Live Streaming)</option>
+                                                <option>Fotografia</option>
+                                                <option>Criativo/Reels</option>
+                                                <option>Voluntarios na recepção</option>
+                                                <option>Voluntarios no estacionamento</option>
+                                                <option>Decoração</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2 div-evento">
+                                            <label for="participacaoAbbaWorshipEvento" class="mb-2 text-muted">Participação do Abba worship*</label>
+                                            <select class="form-select" id="participacaoAbbaWorshipEvento" name="participacaoAbbaWorshipEvento">
+                                                <option>Selecione uma opção</option>
+                                                <option>Sim. Banda Completa.</option>
+                                                <option>Sim. Set reduzido.</option>
+                                                <option>Não</option>
                                             </select>
                                         </div>
                                         <div class="col-12 mb-2">
@@ -99,7 +150,23 @@
                             const campo = document.getElementById(propriedade);
     
                             if (campo) {
-                                campo.value = valor;
+                                if(propriedade === 'classificacaoRequisicao'){
+                                    campo.value = valor;
+                                    VerificaClassSelecionada(valor);
+                                }
+                                else if (propriedade === 'dataHoraInicioEvento') {
+                                    const parsedDate = new Date(valor);
+                                    const data = formatarDataHora(parsedDate);
+                                    campo.value = data;
+                                }
+                                else if (propriedade === 'dataHoraFimEvento') {
+                                    const parsedDate = new Date(valor);
+                                    const data = formatarDataHora(parsedDate);
+                                    campo.value = data;
+                                }
+                                else{
+                                    campo.value = valor;
+                                }
                             }
 
                         }
@@ -150,13 +217,16 @@
                 IniLoader();
                 $.post('api/atualizarRequisicao', formData)
                 .done(function (data) {
-                    
+
+                    let message = data.message ? data.message : 'Atualizado com sucesso!';
+                    let statusMessage = data.statusMessage ? data.statusMessage : 'success';
+
                     Swal.fire({
                         position: 'center',
-                        icon: 'success',
-                        title: 'Atualizado com sucesso!',
+                        icon: statusMessage,
+                        title: message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2500
                     });
 
                 })
@@ -180,7 +250,46 @@
 
         }
 
-        
+        function VerificaClassSelecionada(valor){
+            if(valor == 'Evento'){
+                MostraInputsEvent();
+
+                const campos = ['departamentoEvento', 'nomeEvento', 'dataHoraInicioEvento', 'dataHoraFimEvento', 'ambienteEvento', 'departamentosProducaoEvento', 'participacaoAbbaWorshipEvento'];
+                campos.forEach(campo => {
+                const indexCampo = excludedFields.indexOf(campo);
+                    if (indexCampo !== -1) {
+                        excludedFields.splice(indexCampo, 1);
+                    }
+                });
+
+            }
+            else{
+                EscondeInputsEvent();
+
+                const campos = ['departamentoEvento', 'nomeEvento', 'dataHoraInicioEvento', 'dataHoraFimEvento', 'ambienteEvento', 'departamentosProducaoEvento', 'participacaoAbbaWorshipEvento'];
+                campos.forEach(campo => {
+                    if (!excludedFields.includes(campo)) {
+                        excludedFields.push(campo);
+                    }
+                });
+            }
+
+        }
+
+        function EscondeInputsEvent(){
+            const divs = document.querySelectorAll(".div-evento");
+            divs.forEach(div => {
+                div.classList.add("d-none");
+            });
+        }
+
+        function MostraInputsEvent(){
+            const divs = document.querySelectorAll(".div-evento");
+            divs.forEach(div => {
+                div.classList.remove("d-none");
+            });
+        }
+
     </script>
 
 </body>

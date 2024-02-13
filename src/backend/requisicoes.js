@@ -1,6 +1,7 @@
 const executarQuery = require('./consulta');
 const { format } = require('date-fns');
 const { enviarEmail } = require('./send-email');
+const { formatarDataHora } = require('./formata-data');
 
 async function listarRequisicoes(idUserLog, tipoUserLog, limit) {
     
@@ -19,14 +20,30 @@ async function listarRequisicoes(idUserLog, tipoUserLog, limit) {
     }
 }
 
-async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao) {
+async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento, statusRequisicao) {
     
     let dataRequisicao = new Date();
     dataRequisicao = format(dataRequisicao, 'yyyy-MM-dd');
 
-    let query = `
-    INSERT INTO requisicoes (pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, statusRequisicao, dataRequisicao) 
-    VALUES ('${pessoaId}', '${tipoUsuario}', '${classificacaoRequisicao}', '${informacoesRequisicao}', '${statusRequisicao}', '${dataRequisicao}')`;
+    let dataHoraInicio = '';
+    let dataHoraFim = '';
+
+    if(classificacaoRequisicao == 'Evento'){
+
+        dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
+        dataHoraFim = formatarDataHora(dataHoraFimEvento);
+
+        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
+        const evento = await executarQuery(query); 
+
+        if(evento && evento.length > 0){
+            return 'Existe';
+        }
+    }
+
+    query = `
+    INSERT INTO requisicoes (pessoaId, tipoUsuario, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento, statusRequisicao, dataRequisicao) 
+    VALUES ('${pessoaId}', '${tipoUsuario}', '${classificacaoRequisicao}', '${informacoesRequisicao}', '${departamentoEvento}', '${nomeEvento}', '${dataHoraInicio}', '${dataHoraFim}', '${ambienteEvento}', '${departamentosProducaoEvento}', '${participacaoAbbaWorshipEvento}', '${statusRequisicao}', '${dataRequisicao}')`;
 
     try {
         const resultado = await executarQuery(query);
@@ -37,9 +54,26 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
             query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`; 
             const quem = await executarQuery(query);
             const assunto = 'Cadastro de requisição!';
+
+            let camposEvento;
+
+            if(classificacaoRequisicao == 'Evento'){
+                camposEvento = `
+                <p><strong>Informações do Evento</strong><p>
+                <p><strong>Departamento:</strong> ${departamentoEvento}<p>
+                <p><strong>Nome:</strong> ${nomeEvento}<p>
+                <p><strong>Data/Hora Inicio:</strong> ${dataHoraInicioEvento}<p>
+                <p><strong>Data/Hora Fim:</strong> ${dataHoraFimEvento}<p>
+                <p><strong>Ambiente:</strong> ${ambienteEvento}<p>
+                <p><strong>Departamentos da produção:</strong> ${departamentosProducaoEvento}<p>
+                <p><strong>Participação do Abba worship:</strong> ${participacaoAbbaWorshipEvento}<p>
+                `
+            }
+
             const corpo = `<p>Uma requisição foi cadastrada!</p>
             <p><strong>Quem cadastrou:</strong> ${quem[0].nomePessoa}<p>
-            <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
+            ${camposEvento}
+            <p><strong>Informações adicionais:</strong> ${informacoesRequisicao}<p>
             <p>Acesse <a href="https://abbachurch.app/" title="Painel Abba Church">https://abbachurch.app/</a><p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
 
@@ -55,7 +89,7 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
             }
         }
 
-        return resultado;
+        return resultados ? 'Cadastrado' : false;
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
@@ -88,10 +122,35 @@ async function carregarRequisicao(idRequisicao) {
     }
 }
 
-async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisicao, informacoesRequisicao) {
-    
+async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento) {
+
+    let dataHoraInicio = '';
+    let dataHoraFim = '';
+
+    if(classificacaoRequisicao == 'Evento'){
+        
+        dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
+        dataHoraFim = formatarDataHora(dataHoraFimEvento);
+
+        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
+        const evento = await executarQuery(query); 
+
+        if(evento && evento.length > 0){
+            return 'Existe';
+        }
+    }
+
     let query = `
-        UPDATE requisicoes SET classificacaoRequisicao = '${classificacaoRequisicao}', informacoesRequisicao = '${informacoesRequisicao}' WHERE idRequisicao = ${idRequisicao};`;
+        UPDATE requisicoes SET 
+        classificacaoRequisicao = '${classificacaoRequisicao}', 
+        informacoesRequisicao = '${informacoesRequisicao}', 
+        departamentoEvento = '${departamentoEvento}', 
+        nomeEvento = '${nomeEvento}', 
+        dataHoraInicioEvento = '${dataHoraInicio}', 
+        dataHoraFimEvento = '${dataHoraFim}', 
+        ambienteEvento = '${ambienteEvento}', 
+        departamentosProducaoEvento = '${departamentosProducaoEvento}', 
+        participacaoAbbaWorshipEvento = '${participacaoAbbaWorshipEvento}' WHERE idRequisicao = ${idRequisicao};`;
         
     try {
         const resultados = await executarQuery(query);
@@ -102,8 +161,25 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
             query = `SELECT * FROM pessoas WHERE idPessoa = ${pessoaId}`; 
             const quem = await executarQuery(query);
             const assunto = 'Atualização de requisição!';
+
+            let camposEvento;
+
+            if(classificacaoRequisicao == 'Evento'){
+                camposEvento = `
+                <p><strong>Informações do Evento</strong><p>
+                <p><strong>Departamento:</strong> ${departamentoEvento}<p>
+                <p><strong>Nome:</strong> ${nomeEvento}<p>
+                <p><strong>Data/Hora Inicio:</strong> ${dataHoraInicioEvento}<p>
+                <p><strong>Data/Hora Fim:</strong> ${dataHoraFimEvento}<p>
+                <p><strong>Ambiente:</strong> ${ambienteEvento}<p>
+                <p><strong>Departamentos da produção:</strong> ${departamentosProducaoEvento}<p>
+                <p><strong>Participação do Abba worship:</strong> ${participacaoAbbaWorshipEvento}<p>
+                `
+            }
+
             const corpo = `<p>Uma requisição foi atualizada!</p>
             <p><strong>Quem atualizou:</strong> ${quem[0].nomePessoa}<p>
+            ${camposEvento}
             <p><strong>Informações:</strong> ${informacoesRequisicao}<p>
             <p>Acesse <a href="https://abbachurch.app/" title="Painel Abba Church">https://abbachurch.app/</a><p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
@@ -120,7 +196,7 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
             }
         }
 
-        return resultados ? true : false;
+        return resultados ? 'Atualizado' : false;
     } catch (erro) {
         console.error('Erro:', erro);
         throw erro;
