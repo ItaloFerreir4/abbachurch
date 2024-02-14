@@ -17,7 +17,7 @@
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="container-fluid">
-                <div class="row row-cols-xl-3 row-cols-2">
+                <div class="row row-cols-xl-3 row-cols-2" id="widgets">
                     <div class="col card-background flex-fill">
                         <div class="card custom-card">
                             <div class="card-body">
@@ -84,7 +84,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row row-cols-xl-3 row-cols-2" id="widgets"></div>
                 <div class="card custom-card">
                     <div class="card-header">
                         <select class="form-select" id="selectAno" onchange="filtrarPorAno()"></select>
@@ -126,12 +125,14 @@
         let relatoriosOriginais;
 
         window.addEventListener("load", function() {
-            QtdRequisicoes();
-            QtdPastores();
-            QtdLideres();
-            QtdVoluntarios();
-            QtdEventos();
-            CarregarWidgets();
+            Promise.all([QtdRequisicoes(), QtdPastores(), QtdLideres(), QtdVoluntarios(), QtdEventos()])
+            .then(function () {
+                CarregarWidgets();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+            });
+
             ListarRelatorios();
         });
 
@@ -250,61 +251,95 @@
         }
    
         function QtdRequisicoes(){
-            const formData = { tipoPessoa : 'voluntario' }
-            const elRequisicoes = document.getElementById("elqtdRequisicoes");
-            
-            $.post('api/listarRequisicoes', formData)
-                .done(function (data) {
-                    if(data.length > 0){
-                        elRequisicoes.innerHTML = data.length;
-                    }
-                    console.log(data.length);
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'voluntario' }
+                const elRequisicoes = document.getElementById("elqtdRequisicoes");
+                
+                $.post('api/listarRequisicoes', formData)
+                    .done(function (data) {
+                        if(data.length > 0){
+                            elRequisicoes.innerHTML = data.length;
+                        }
+                        
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                });
+            });
         }
 
         function QtdPastores(){
-            const formData = { tipoPessoa : 'pastor' }
-            const elPastores = document.getElementById("elqtdPastores");
-            
-            $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    if(data.length > 0){
-                        elPastores.innerHTML = data.length;
-                    }
-                    console.log(data.length);
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'pastor' }
+                const elPastores = document.getElementById("elqtdPastores");
+                
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        if(data.length > 0){
+                            elPastores.innerHTML = data.length;
+                        }
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                });
+            });
         }
     
         function QtdLideres(){
-            const formData = { tipoPessoa : 'lider' }
-            const elLideres = document.getElementById("elqtdLideres");
-            
-            $.post('api/listarPessoas', formData)
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'lider' }
+                const elLideres = document.getElementById("elqtdLideres");
+                
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        if(data.length > 0){
+                            elLideres.innerHTML = data.length;
+                        }
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+
+        function QtdVoluntarios(){
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'voluntario' }
+                const elVoluntarios = document.getElementById("elqtdVoluntarios");
+                
+                $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
-                        elLideres.innerHTML = data.length;
+                        elVoluntarios.innerHTML = data.length;
                     }
-                    console.log(data.length);
+                    resolve(true);
                 })
                 .fail(function (error) {
                     console.error('Erro na requisição:', error);
@@ -315,54 +350,34 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                });
-        }
-
-        function QtdVoluntarios(){
-            
-            const formData = { tipoPessoa : 'voluntario' }
-            const elVoluntarios = document.getElementById("elqtdVoluntarios");
-            
-            $.post('api/listarPessoas', formData)
-            .done(function (data) {
-
-                elVoluntarios.innerHTML = data.length;
-
-                console.log(data.length);
-                console.log(elVoluntarios);
-            })
-            .fail(function (error) {
-                console.error('Erro na requisição:', error);
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Erro ao listar!',
-                    showConfirmButton: false,
-                    timer: 1500
+                    reject(error);
                 });
             });
         }
 
         function QtdEventos(){
-            const elEventos = document.getElementById("elqtdEventos");
-            
-            $.post('api/listarEventos')
-                .done(function (data) {
-                    if(data.length > 0){
-                        elEventos.innerHTML = data.length;
-                    }
-                    console.log(data.length);
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
+            return new Promise(function (resolve, reject) {
+                const elEventos = document.getElementById("elqtdEventos");
+                
+                $.post('api/listarEventos')
+                    .done(function (data) {
+                        if(data.length > 0){
+                            elEventos.innerHTML = data.length;
+                        }
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                });
+            });
         }
     
         function CarregarWidgets(){
@@ -376,7 +391,7 @@
                         dataHoraRelatorio = new Date(dataHoraRelatorio);
                         dataHoraRelatorio = dataHoraRelatorio.toISOString().split('T')[0];
 
-                        divWidget.innerHTML = `
+                        divWidget.innerHTML += `
                         <div class="col card-background flex-fill">
                             <div class="card custom-card">
                                 <div class="card-body">
