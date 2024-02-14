@@ -79,8 +79,16 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+
+        let tabela;
+        let paginaAtual = sessionStorage.getItem('tabelaVoluntarioEv') || 0;
+
         window.addEventListener("load", function() {
             ListarVoluntarioEvento();
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaVoluntarioEv', tabela.page());
+            });
         });
 
         function ListarVoluntarioEvento(){
@@ -102,6 +110,11 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ],
+                scrollX: true
             });
 
             tabela.clear().draw();
@@ -121,6 +134,9 @@
                                 <button class="btn btn-danger btn-sm mr-1" onClick="DeletarVoluntarioEvento(${pessoa.idvoluntariosEvento})">Deletar</button>
                             </div>`
                         ]).draw();
+
+                        tabela.page(parseInt(paginaAtual)).draw('page');
+
                     });
                 })
                 .fail(function (error) {

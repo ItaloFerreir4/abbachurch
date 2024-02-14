@@ -69,8 +69,16 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+        
+        let tabela;
+        let paginaAtual = sessionStorage.getItem('tabelaMinisterios') || 0;
+
         window.addEventListener("load", function() {
             ListarMinisterios();
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaMinisterios', tabela.page());
+            });
         });
 
         function ListarMinisterios() {
@@ -88,6 +96,11 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ],
+                scrollX: true
             });
 
             tabela.clear().draw();
@@ -129,6 +142,9 @@
                                 data,
                                 divBtns
                             ]).draw();
+                            
+                            tabela.page(parseInt(paginaAtual)).draw('page');
+                            
                         });
                     })
                     .fail(function (error) {

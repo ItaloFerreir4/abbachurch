@@ -71,8 +71,16 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+        
+        let tabela;
+        let paginaAtual = sessionStorage.getItem('tabelaPastores') || 0;
+
         window.addEventListener("load", function() {
             ListarPessoas();
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaPastores', tabela.page());
+            });
         });
 
         function ListarPessoas(){
@@ -91,6 +99,11 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ],
+                scrollX: true
             });
 
             tabela.clear().draw();
@@ -114,6 +127,9 @@
                                 <button class="btn btn-danger btn-sm mr-1" id="${pessoa.idPessoa}" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
                             </div>`
                         ]).draw();
+                            
+                        tabela.page(parseInt(paginaAtual)).draw('page');
+                        
                     });
                 })
                 .fail(function (error) {

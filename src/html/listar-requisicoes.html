@@ -70,8 +70,16 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+
+        let tabela;
+        let paginaAtual = sessionStorage.getItem('tabelaRequisicoes') || 0;
+
         window.addEventListener("load", function() {
             ListarRequisicoes();
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaRequisicoes', tabela.page());
+            });
         });
 
         function ListarRequisicoes(){
@@ -90,7 +98,12 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
-                order: [[2, 'desc']]
+                order: [[2, 'desc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ],
+                scrollX: true
             });
 
             tabela.clear().draw();
@@ -171,6 +184,9 @@
                                 status,
                                 divBtns
                             ]).draw();
+                            
+                            tabela.page(parseInt(paginaAtual)).draw('page');
+
                         });
                     })
                     .fail(function (error) {

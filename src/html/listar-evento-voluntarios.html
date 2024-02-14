@@ -72,8 +72,16 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
+        
+        let tabela;
+        let paginaAtual = sessionStorage.getItem('tabelaEvVoluntario') || 0;
+
         window.addEventListener("load", function() {
             ListarVoluntarioEvento();
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaEvVoluntario', tabela.page());
+            });
         });
 
         function ListarVoluntarioEvento(){
@@ -92,6 +100,11 @@
                     sSearch: '',
                 },
                 "pageLength": 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf'
+                ],
+                scrollX: true
             });
 
             tabela.clear().draw();
@@ -124,6 +137,9 @@
                                 nomeCategoriaEvento,
                                 evento.observacoesEvento,
                             ]).draw();
+                    
+                            tabela.page(parseInt(paginaAtual)).draw('page');
+                
                         });
                     })
                     .fail(function (error) {

@@ -75,6 +75,45 @@
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Voluntários Aguardando</p>
+                                        <h3 class="mb-0" id="elqtdVoluntariosAguardando"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Voluntários Ativos</p>
+                                        <h3 class="mb-0" id="elqtdVoluntariosAtivos"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Voluntários Inativos</p>
+                                        <h3 class="mb-0" id="elqtdVoluntariosInativos"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
                                         <p class="fw-medium mb-1 text-muted translate">Total de Eventos</p>
                                         <h3 class="mb-0" id="elqtdEventos"></h3>
                                     </div>
@@ -125,12 +164,14 @@
         let relatoriosOriginais;
 
         window.addEventListener("load", function() {
+            IniLoader();
             Promise.all([QtdRequisicoes(), QtdPastores(), QtdLideres(), QtdVoluntarios(), QtdEventos()])
             .then(function () {
                 CarregarWidgets();
             })
             .catch(function (error) {
                 console.error('Erro ao carregar dados:', error);
+                FinLoader();
             });
 
             ListarRelatorios();
@@ -333,11 +374,21 @@
             return new Promise(function (resolve, reject) {
                 const formData = { tipoPessoa : 'voluntario' }
                 const elVoluntarios = document.getElementById("elqtdVoluntarios");
+                const elVoluntariosAtivos = document.getElementById("elqtdVoluntariosAtivos");
+                const elVoluntariosInativos = document.getElementById("elqtdVoluntariosInativos");
+                const elVoluntariosAguardando = document.getElementById("elqtdVoluntariosAguardando");
                 
                 $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     if(data.length > 0){
+                        let dataAtivos = data.filter(voluntario => voluntario.statusUsuario == 1);
+                        let dataInativos = data.filter(voluntario => voluntario.statusUsuario == 2);
+                        let dataAguardando = data.filter(voluntario => voluntario.statusUsuario == 0);
+                        console.log(data);
                         elVoluntarios.innerHTML = data.length;
+                        elVoluntariosAtivos.innerHTML = dataAtivos.length;
+                        elVoluntariosInativos.innerHTML = dataInativos.length;
+                        elVoluntariosAguardando.innerHTML = dataAguardando.length;
                     }
                     resolve(true);
                 })
