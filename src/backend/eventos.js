@@ -24,9 +24,6 @@ async function cadastrarEvento(nomeEvento, dataHoraInicioEvento, dataHoraFimEven
     localEvento = localEvento.replace(/(['"])/g, "\\$1");
     observacoesEvento = observacoesEvento.replace(/(['"])/g, "\\$1");
 
-    console.log(dataHoraInicio);
-    console.log(dataHoraFim);
-
     const query = `
     INSERT INTO eventos (nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, localEvento, ministerioId, observacoesEvento, categoriaEventoId) 
     VALUES ('${nomeEvento}', '${dataHoraInicio}', '${dataHoraFim}', '${localEvento}', '${ministerioId}', '${observacoesEvento}', '${categoriaEventoId}')`;
@@ -75,9 +72,6 @@ async function atualizarEvento(idEvento, nomeEvento, dataHoraInicioEvento, dataH
     nomeEvento = nomeEvento.replace(/(['"])/g, "\\$1");
     localEvento = localEvento.replace(/(['"])/g, "\\$1");
     observacoesEvento = observacoesEvento.replace(/(['"])/g, "\\$1");
-
-    console.log(dataHoraInicio);
-    console.log(dataHoraFim);
 
     let query = `UPDATE eventos SET nomeEvento = '${nomeEvento}', dataHoraInicioEvento = '${dataHoraInicio}', dataHoraFimEvento = '${dataHoraFim}', localEvento = '${localEvento}', ministerioId = '${ministerioId}', observacoesEvento = '${observacoesEvento}', categoriaEventoId = '${categoriaEventoId}' WHERE idEvento = ${idEvento};`;
 

@@ -70,6 +70,7 @@
     "masonry-layout": "^4.2.2",
     "mime-types": "^2.1.35",
     "moment": "^2.24.0",
+    "moment-timezone": "^0.5.45",
     "mysql2": "^3.6.5",
     "node-waves": "^0.7.6",
     "nodemailer": "^6.9.8",

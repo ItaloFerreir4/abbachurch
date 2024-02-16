@@ -124,19 +124,6 @@
                             console.log('----------');
                             dataFim = new Date(dataFim);
                             dataFim = formatarDataHora(dataFim);
-
-                            // Valor do banco de dados
-                            const valorDoBanco = "2024-03-09 05:00:00";
-
-                            // Converter para objeto Date
-                            const dataHoraInicioEvento = new Date(valorDoBanco);
-
-                            // Formatar para o formato desejado (ISO 8601 com fuso horário UTC)
-                            const dataHoraFormatada = dataHoraInicioEvento.toISOString();
-
-                            console.log("Valor do banco:", valorDoBanco);
-                            console.log("Data e hora formatadas:", dataHoraFormatada);
-
                             
                             tabela.row.add([
                                 evento.nomeEvento,

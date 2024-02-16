@@ -23,6 +23,7 @@ const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoria
 const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
 const e = require('express');
+const moment = require('moment-timezone');
 const app = express();
 const port = 3000;
 
@@ -32,6 +33,8 @@ app.use('/html', express.static(path.join(__dirname, '../html')));
 
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
+
+moment.tz.setDefault('America/Sao_Paulo');
 
 app.use(cookieParser());
 app.use(session({
