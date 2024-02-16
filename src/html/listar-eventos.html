@@ -118,7 +118,7 @@
                             let dataInicio = evento.dataHoraInicioEvento;
                             let dataFim = evento.dataHoraFimEvento;
                             console.log('in', dataInicio);
-                            dataInicio = new Date(dataInicio);
+                            dataInicio = new Date(dataInicio + 'Z');
                             console.log('new', dataInicio);
                             dataInicio = formatarDataHora(dataInicio);
                             console.log('form', dataInicio);
