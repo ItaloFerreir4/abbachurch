@@ -111,6 +111,7 @@
                 $.post('api/listarEventos')
                     .done(function (data) {
                         data.forEach(function (evento) {
+
                             const idProcurado = evento.ministerioId;
                             let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                             nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
@@ -118,6 +119,7 @@
                             let dataInicio = evento.dataHoraInicioEvento;
                             let dataFim = evento.dataHoraFimEvento;
                             console.log('nomeEvento', evento.nomeEvento);
+                            console.log('dataHoraInicioEvento', evento.dataHoraInicioEvento);
                             console.log('in', dataInicio);
                             dataInicio = new Date(dataInicio);
                             console.log('new', dataInicio);
