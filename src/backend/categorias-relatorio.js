@@ -15,6 +15,9 @@ async function listarCategoriasRelatorio() {
 
 async function cadastrarCategoriaRelatorio(nomeCategoriaRelatorio) {
 
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoriaRelatorio = nomeCategoriaRelatorio.replace(/(['"])/g, "\\$1");
+
     let query = `
     SELECT * FROM categoriasRelatorio WHERE nomeCategoriaRelatorio = '${nomeCategoriaRelatorio}'
     `;
@@ -80,6 +83,9 @@ async function atualizarCategoriaRelatorio(idCategoriaRelatorio, nomeCategoriaRe
 }
 
 async function atualizarWidgetRelatorio(idCategoriaRelatorio, widgetRelatorio) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoriaRelatorio = nomeCategoriaRelatorio.replace(/(['"])/g, "\\$1");
     
     let query = `
         UPDATE categoriasRelatorio SET 

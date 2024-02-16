@@ -18,6 +18,9 @@ async function listarMinisterios(idUserLog, tipoUserLog, evento) {
 }
 
 async function cadastrarMinisterio(nomeMinisterio, liderId, dataEntradaMinisterio) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeMinisterio = nomeMinisterio.replace(/(['"])/g, "\\$1");
     
     const query = `
     INSERT INTO ministerios (nomeMinisterio, liderId, dataEntradaMinisterio) 
@@ -59,6 +62,9 @@ async function carregarMinisterio(idMinisterios) {
 }
 
 async function atualizarMinisterio(idMinisterio, nomeMinisterio, liderId, dataEntradaMinisterio) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeMinisterio = nomeMinisterio.replace(/(['"])/g, "\\$1");
     
     let query = `UPDATE ministerios SET nomeMinisterio = '${nomeMinisterio}', liderId = '${liderId}', dataEntradaMinisterio = '${dataEntradaMinisterio}' WHERE idMinisterio = ${idMinisterio};`;
         

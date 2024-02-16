@@ -28,12 +28,16 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
     let dataHoraInicio = '';
     let dataHoraFim = '';
 
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    informacoesRequisicao = informacoesRequisicao.replace(/(['"])/g, "\\$1");
+
     if(classificacaoRequisicao == 'Evento'){
 
+        nomeEvento = nomeEvento.replace(/(['"])/g, "\\$1");
         dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
         dataHoraFim = formatarDataHora(dataHoraFimEvento);
 
-        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
+        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}:00' `;
         const evento = await executarQuery(query); 
 
         if(evento && evento.length > 0){
@@ -127,12 +131,16 @@ async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisic
     let dataHoraInicio = '';
     let dataHoraFim = '';
 
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    informacoesRequisicao = informacoesRequisicao.replace(/(['"])/g, "\\$1");
+    
     if(classificacaoRequisicao == 'Evento'){
         
+        nomeEvento = nomeEvento.replace(/(['"])/g, "\\$1");
         dataHoraInicio = formatarDataHora(dataHoraInicioEvento);
         dataHoraFim = formatarDataHora(dataHoraFimEvento);
 
-        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}' `;
+        let query = `SELECT * FROM eventos WHERE dataHoraInicioEvento = '${dataHoraInicio}:00' `;
         const evento = await executarQuery(query);
 
         if(evento && evento.length > 0){

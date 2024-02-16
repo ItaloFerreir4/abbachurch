@@ -14,6 +14,9 @@ async function listarCategorias() {
 }
 
 async function cadastrarCategoria(nomeCategoria) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoria = nomeCategoria.replace(/(['"])/g, "\\$1");
     
     const query = `
     INSERT INTO categorias (nomeCategoria) 
@@ -55,6 +58,9 @@ async function carregarCategoria(idCategoria) {
 }
 
 async function atualizarCategoria(idCategoria, nomeCategoria) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoria = nomeCategoria.replace(/(['"])/g, "\\$1");
     
     let query = `
         UPDATE categorias SET nomeCategoria = '${nomeCategoria}' WHERE idCategoria = ${idCategoria};`;

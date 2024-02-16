@@ -14,6 +14,9 @@ async function listarCategoriasEventos() {
 }
 
 async function cadastrarCategoriaEvento(nomeCategoriaEvento) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoriaEvento = nomeCategoriaEvento.replace(/(['"])/g, "\\$1");
     
     const query = `
     INSERT INTO categoriasEventos (nomeCategoriaEvento) 
@@ -55,6 +58,9 @@ async function carregarCategoriaEvento(idCategoriaEvento) {
 }
 
 async function atualizarCategoriaEvento(idCategoriaEvento, nomeCategoriaEvento) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeCategoriaEvento = nomeCategoriaEvento.replace(/(['"])/g, "\\$1");
     
     let query = `
         UPDATE categoriasEventos SET nomeCategoriaEvento = '${nomeCategoriaEvento}' WHERE idCategoriaEvento = ${idCategoriaEvento};`;

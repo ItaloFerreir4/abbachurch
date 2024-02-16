@@ -160,11 +160,10 @@
                 $.post('api/cadastrarRequisicao', formData)
                 .done(function (data) {
 
-                    cleanform();
-
+                    
                     let message = data.message ? data.message : 'Cadastrado com sucesso!';
                     let statusMessage = data.statusMessage ? data.statusMessage : 'success';
-
+                    
                     Swal.fire({
                         position: 'center',
                         icon: statusMessage,
@@ -173,6 +172,10 @@
                         timer: 2500
                     });
 
+                    if(statusMessage == 'success'){
+                        cleanform();
+                    }
+                    
                 })
                 .fail(function (error) {
 

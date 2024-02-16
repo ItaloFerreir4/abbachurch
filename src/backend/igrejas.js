@@ -17,6 +17,9 @@ async function cadastrarIgreja(nomeIgreja, paisIgreja, estadoIgreja, enderecoIgr
     
     matrizId = tipoIgreja == 0 ? matrizId = 0 : matrizId;
 
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeIgreja = nomeIgreja.replace(/(['"])/g, "\\$1");
+
     const query = `
     INSERT INTO igrejas (nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId) 
     VALUES ('${nomeIgreja}', '${paisIgreja}', '${estadoIgreja}', '${enderecoIgreja}', '${cepIgreja}', '${telefoneIgreja}', '${emailIgreja}', ${tipoIgreja}, ${matrizId})`;
@@ -59,6 +62,9 @@ async function carregarIgreja(idIgreja) {
 async function atualizarIgreja(idIgreja, nomeIgreja, paisIgreja, estadoIgreja, enderecoIgreja, cepIgreja, telefoneIgreja, emailIgreja, tipoIgreja, matrizId) {
     
     matrizId = tipoIgreja == 0 ? matrizId = 0 : matrizId;
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    nomeIgreja = nomeIgreja.replace(/(['"])/g, "\\$1");
     
     let query = `
         UPDATE igrejas SET nomeIgreja = '${nomeIgreja}', paisIgreja = '${paisIgreja}', estadoIgreja = '${estadoIgreja}', enderecoIgreja = '${enderecoIgreja}', cepIgreja = '${cepIgreja}', telefoneIgreja = '${telefoneIgreja}', emailIgreja = '${emailIgreja}', tipoIgreja = ${tipoIgreja}, matrizId = ${matrizId} WHERE idIgreja = ${idIgreja};`;

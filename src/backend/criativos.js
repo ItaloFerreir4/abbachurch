@@ -14,6 +14,9 @@ async function listarCriativos() {
 }
 
 async function cadastrarCriativo(tituloCriativo, imagemCriativo, linkCriativo) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    tituloCriativo = tituloCriativo.replace(/(['"])/g, "\\$1");
     
     const query = `
     INSERT INTO criativos (tituloCriativo, imagemCriativo, linkCriativo, statusCriativo) 
@@ -55,6 +58,9 @@ async function carregarCriativo(idCriativo) {
 }
 
 async function atualizarCriativo(idCriativo, tituloCriativo, imagemCriativo, linkCriativo) {
+
+    // Aplicar escape nas aspas simples e duplas nos valores de texto
+    tituloCriativo = tituloCriativo.replace(/(['"])/g, "\\$1");
     
     let query = `
         UPDATE criativos SET 
