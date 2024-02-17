@@ -7,6 +7,7 @@ async function listarEventos() {
 
     try {
         const resultados = await executarQuery(query);
+        console.log(resultados);
         return resultados;
     } catch (erro) {
         console.error('Erro:', erro);
