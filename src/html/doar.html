@@ -64,13 +64,11 @@
             <a href="./"> <img src="../assets/images/brand-logos/logo-1000.svg" height="170px" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
         </div>
         <div class="col-xxl-6 col-xl-7 col-lg-12">
-            <div class="btns-dist mt-3">
-                <div class="left">
-                    <a class="btn btn-secondary btn-wave waves-effect waves-light" href="./">Voltar</a>
-                </div>
-            </div>
             <form id="form-doacao">
                 <div class="card custom-card">
+                    <div class="card-header">
+                        <div class="card-title">Doação / Donate</div>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-2">
@@ -83,6 +81,9 @@
                 <div class="row">
                     <div class="col-12">
                         <button class="btn btn-donate w-100 mb-4" type="button" onClick="Doar()">GIVE</button>
+                    </div>
+                    <div class="col-12">
+                        <a class="btn btn-secondary btn-wave waves-effect waves-light" href="./">Voltar</a>
                     </div>
                     <div class="col-12">
                         <p class="mb-3 text-muted op-7 fw-normal text-center">Powered and Secured by Tithe.ly.</p>
@@ -161,9 +162,7 @@
             
             let formData = $('#form-doacao').serializeArray();
 
-            const firstEmptyField = formData
-                .map(field => field.value <= 0)
-                .find(result => result !== null);
+            const firstEmptyField = formData[0].value == null || formData[0].value == '0,00';
 
             if (firstEmptyField) {
                 const errorMessage = `Preencha o valor!`;
