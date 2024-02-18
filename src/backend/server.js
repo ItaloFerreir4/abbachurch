@@ -11,6 +11,7 @@ const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
 const { saveImage } = require('./upload-imagem');
 const { translateElements } = require('./translate');
 const { listarNomePaises } = require('./paises');
+const { listarDoacoes, cadastrarDoacao } = require('./doacoes');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
@@ -43,7 +44,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -101,6 +102,11 @@ app.get('/esqueci-minha-senha', (req, res) => {
 
 app.get('/voluntariar', (req, res) => { 
     const filePath = path.join(__dirname, '../html', 'voluntariar.html');
+    res.sendFile(filePath);
+})
+
+app.get('/doar', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'doar.html');
     res.sendFile(filePath);
 })
 
@@ -1620,6 +1626,42 @@ app.post('/api/atualizarWidgetRelatorio', async (req, res) => {
             res.status(401).json({ message: 'Erro ao atualizar' });
         }
 
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarDoacoes', async (req, res) => {
+
+    try {
+        const lista = await listarDoacoes();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarDoacao', async (req, res) => {
+
+    const { valorDoacao } = req.body;
+    
+    try {
+        const resultado = await cadastrarDoacao(valorDoacao);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
     } catch (erro) {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });

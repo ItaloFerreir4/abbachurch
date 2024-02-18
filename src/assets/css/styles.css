@@ -12075,6 +12075,12 @@ h6 {
   cursor: pointer;
 }
 
+.btn-donate {
+  background-color: #00A884 !important;
+  border: #00A884 !important;
+  color: #FFF !important;
+}
+
 /* Start:: Sales Dashboard Styles */
 .main-card-icon {
   inset-block-end: 0.75rem;

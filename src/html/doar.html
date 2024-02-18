@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="dark" data-header-styles="dark" data-menu-styles="dark" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Doar</title>
+    <meta name="description" content="Doar a Abba Church">
+    <meta name="author" content="Code +">
+	<meta name="keywords" content="painel">
+    <meta name="robots" content="index,follow">
+    <meta name="rating" content="General">
+    <meta name="revisit-after" content="7 days">
+    <meta property="og:title" content="Painel - Abba Church">
+    <meta property="og:description" content="Painel de Agenda">
+    <meta property="og:url" content="abbachurch.app">
+    <meta property="og:type" content="system">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="https://abbachurch.app/assets/images/img-seo_2.png">
+    <meta property="og:image:width" content="800"/>
+    <meta property="og:image:height" content="450"/>
+    <meta property="og:image:alt" content="Painel de Agenda">
+    
+    @SPK@include("partials/fileupload_link.html")
+
+    <!-- recaptcha -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js?render=6LfIkmApAAAAAMvKCn-Gqcm9lBhxRZU86OCA7WR8"></script> -->
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/libs/sweetalert2/sweetalert2.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/fav.ico" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="../assets/js/authentication-main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.min.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.min.css" rel="stylesheet" >
+
+
+    <link rel="stylesheet" href="../assets/libs/swiper/swiper-bundle.min.css">
+
+    <!-- Custom Css -->
+    <link href="../assets/css/custom.css" rel="stylesheet" >
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="row mx-0 authentication">
+        <div class="d-flex justify-content-center align-items-center mt-4 d-lg-none">
+            <a href="./"> <img src="../assets/images/brand-logos/logo-1000.svg" height="170px" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
+        </div>
+        <div class="col-xxl-6 col-xl-7 col-lg-12">
+            <div class="btns-dist mt-3">
+                <div class="left">
+                    <a class="btn btn-secondary btn-wave waves-effect waves-light" href="./">Voltar</a>
+                </div>
+            </div>
+            <form id="form-doacao">
+                <div class="card custom-card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <label for="valorDoacao" class="mb-2 text-muted">Valor*</label>
+                                <input type="text" id="valorDoacao" name="valorDoacao" class="form-control" placeholder="00,00">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-donate w-100 mb-4" type="button" onClick="Doar()">GIVE</button>
+                    </div>
+                    <div class="col-12">
+                        <p class="mb-3 text-muted op-7 fw-normal text-center">Powered and Secured by Tithe.ly.</p>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img src="../assets/images/brand-logos/logo-tithely.svg" alt="Tithe.ly" height="30px"> 
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xxl-6 col-xl-5 col-lg-5 d-xl-block d-none px-0">
+            <div class="authentication-cover">
+                <div class="">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-xl-9">
+                            <a href="./"> <img src="../assets/images/brand-logos/desktop-dark.png" alt="Voltar" class="authentication-brand cover-dark-logo op-9"></a>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    
+    @SPK@include("partials/fileupload_script.html")
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <script src="../assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Show Password JS -->
+    <script src="../assets/js/show-password.js"></script>
+
+    <!-- Select2 Cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            FinLoader();
+
+            $('#valorDoacao').on('input', function() {
+                // Remove caracteres não numéricos
+                let valorDigitado = $(this).val().replace(/[^0-9]/g, '');
+
+                // Remove zeros à esquerda
+                valorDigitado = valorDigitado.replace(/^0+/, '');
+
+                // Adiciona zeros à esquerda até que o comprimento seja pelo menos 3
+                while (valorDigitado.length < 3) {
+                    valorDigitado = '0' + valorDigitado;
+                }
+
+                // Separa os centavos dos outros dígitos
+                let centavos = valorDigitado.slice(-2);
+                let valorSemCentavos = valorDigitado.slice(0, -2);
+
+                // Formata o valor com ponto decimal e vírgula
+                let valorFormatado = valorSemCentavos.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ',' + centavos;
+
+                // Atualiza o valor no campo de entrada
+                $(this).val(valorFormatado);
+            });
+            
+        });
+
+        
+        function Doar() {
+            
+            let formData = $('#form-doacao').serializeArray();
+
+            const firstEmptyField = formData
+                .map(field => field.value <= 0)
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o valor!`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/cadastrarDoacao', formData)
+                .done(function (data) {
+
+                    let valor = formData[0].value;
+                    valor = valor.replace(/[^0-9]/g, '');
+
+                    window.location.href = `https://give.tithe.ly/?formId=7b81b631-6864-11ee-90fc-1260ab546d11&amount=${valor}`;
+                    FinLoader();
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    FinLoader();
+                });
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>
