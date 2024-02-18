@@ -2280,3 +2280,7 @@ h6 {
   border: #00A884!important;
   color: #FFF!important;
 }
+
+.input-valor, .input-valor::placeholder{
+  font-size: 40px;
+}
