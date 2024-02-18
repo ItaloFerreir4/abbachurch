@@ -73,7 +73,7 @@
                         <div class="row">
                             <div class="col-12 mb-2">
                                 <label for="valorDoacao" class="mb-2 text-muted">Valor*</label>
-                                <input type="text" id="valorDoacao" name="valorDoacao" class="form-control" placeholder="00,00">
+                                <input type="text" class="form-control" id="valorDoacao" name="valorDoacao" placeholder="0,00">
                             </div>
                         </div>
                     </div>
@@ -82,19 +82,38 @@
                     <div class="col-12">
                         <button class="btn btn-donate w-100 mb-4" type="button" onClick="Doar()">GIVE</button>
                     </div>
-                    <div class="col-12">
-                        <a class="btn btn-secondary btn-wave waves-effect waves-light w-100 mb-4" href="./">Voltar</a>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-12">
+                    <a class="btn btn-secondary btn-wave waves-effect waves-light w-100 mb-4" href="./">Voltar</a>
+                </div>
+                <div class="col-12">
+                    <p class="mb-3 text-muted op-7 fw-normal text-center">Powered and Secured by Tithe.ly.</p>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <img src="../assets/images/brand-logos/logo-tithely.svg" alt="Tithe.ly" height="30px"> 
                     </div>
-                    <div class="col-12">
-                        <p class="mb-3 text-muted op-7 fw-normal text-center">Powered and Secured by Tithe.ly.</p>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-flex align-items-center justify-content-center">
-                            <img src="../assets/images/brand-logos/logo-tithely.svg" alt="Tithe.ly" height="30px"> 
+                </div>
+            </div>
+            <div class="modal fade" id="modalDonate" tabindex="-1" aria-labelledby="modalDonate"
+                data-bs-keyboard="false" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content h-100">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel1">Doação / Donate</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-center align-items-center">
+                            <iframe class="iframe-donate w-100v h-100" style="background-color: #FFF;" id="iframeModal" src="" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="col-xxl-6 col-xl-5 col-lg-5 d-xl-block d-none px-0">
             <div class="authentication-cover">
@@ -128,6 +147,10 @@
 
     <script>
         const excludedFields = [];
+        const modalDonate = new bootstrap.Modal(document.getElementById('modalDonate'), {
+            backdrop: 'static',
+            keyboard: false
+        });
 
         window.addEventListener("load", function() {
             FinLoader();
@@ -155,8 +178,15 @@
                 $(this).val(valorFormatado);
             });
             
-        });
+            $('#form-doacao').submit(function (event) {
+                // Impede a submissão padrão do formulário
+                event.preventDefault();
+                
+                // Chama a função Doar
+                Doar();
+            });
 
+        });
         
         function Doar() {
             
@@ -175,15 +205,21 @@
                     timer: 1500
                 });
 
-            } else {
+            } 
+            else {
                 IniLoader();
+                $("#iframeModal").attr("src", '');
                 $.post('api/cadastrarDoacao', formData)
                 .done(function (data) {
 
                     let valor = formData[0].value;
                     valor = valor.replace(/[^0-9]/g, '');
 
-                    window.location.href = `https://give.tithe.ly/?formId=7b81b631-6864-11ee-90fc-1260ab546d11&amount=${valor}`;
+                    const url = `https://give.tithe.ly/?formId=7b81b631-6864-11ee-90fc-1260ab546d11&amount=${valor}`;
+                    
+                    $("#iframeModal").attr("src", url);
+                    modalDonate.show();
+
                     FinLoader();
                 })
                 .fail(function (error) {
@@ -199,8 +235,8 @@
                     });
                     FinLoader();
                 });
+            
             }
-
         }
 
     </script>
