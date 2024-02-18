@@ -162,7 +162,7 @@
             
             let formData = $('#form-doacao').serializeArray();
 
-            const firstEmptyField = formData[0].value == null || formData[0].value == '0,00';
+            const firstEmptyField = formData[0].value == null || formData[0].value.trim() == '0,00'|| formData[0].value.trim() === '';
 
             if (firstEmptyField) {
                 const errorMessage = `Preencha o valor!`;
