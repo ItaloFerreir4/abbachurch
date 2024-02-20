@@ -210,6 +210,21 @@
                     window.open(url, '_blank');
                     // $("#iframeModal").attr("src", url);
                     // modalDonate.show();
+                    // Cria um elemento <a> dinamicamente
+                    const link = $('<a>', {
+                        href: url,
+                        target: '_blank'
+                    });
+
+                    // Adiciona o link ao corpo do documento
+                    $('body').append(link);
+
+                    // Simula o clique no link para abrir em uma nova aba
+                    link[0].click();
+
+                    // Remove o link depois que foi clicado
+                    link.remove();
+                    
                     FinLoader();
                 })
                 .fail(function (error) {
