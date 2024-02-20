@@ -12081,6 +12081,14 @@ h6 {
   color: #FFF !important;
 }
 
+.input-valor::-moz-placeholder {
+  font-size: 40px;
+}
+
+.input-valor, .input-valor::placeholder {
+  font-size: 40px;
+}
+
 /* Start:: Sales Dashboard Styles */
 .main-card-icon {
   inset-block-end: 0.75rem;

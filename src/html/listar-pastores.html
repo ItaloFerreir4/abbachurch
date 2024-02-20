@@ -30,6 +30,7 @@
                                             <th class="all" scope="col">Nome</th>
                                             <th class="min-desktop" scope="col">E-mail</th>
                                             <th class="min-desktop" scope="col">Telefone</th>
+                                            <th class="min-desktop" scope="col">Líder</th>
                                             <th class="min-desktop" scope="col">Admin</th>
                                             <th class="min-desktop" scope="col">Ações</th>
                                         </tr>
@@ -77,10 +78,6 @@
 
         window.addEventListener("load", function() {
             ListarPessoas();
-
-            tabela.on('page.dt', function () {
-                sessionStorage.setItem('tabelaPastores', tabela.page());
-            });
         });
 
         function ListarPessoas(){
@@ -119,6 +116,10 @@
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
                             `<div class="form-check form-switch" style="display:flex;align-items:center;">
+                                <input style="width:35px;height:15px;" class="form-check-input" type="checkbox" role="switch" onChange="LiderPastor(${pessoa.idPessoa}, this)" ${pessoa.isLider == 1 ? 'checked' : ''}>
+                                <label class="form-check-label" for="liderPastor_${pessoa.idPessoa}"></label>
+                            </div>`,
+                            `<div class="form-check form-switch" style="display:flex;align-items:center;">
                                 <input style="width:35px;height:15px;" class="form-check-input" type="checkbox" role="switch" id="adminPastor_${pessoa.idPessoa}" onChange="alterarAdminPastor(${pessoa.idPessoa})" ${pessoa.tipoUsuario == 5 ? 'checked' : ''}>
                                 <label class="form-check-label" for="adminPastor_${pessoa.idPessoa}"></label>
                             </div>`,
@@ -145,6 +146,10 @@
                 .always(function () {
                     FinLoader();
                 });
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaPastores', tabela.page());
+            });
         }
 
         function alterarAdminPastor(pessoaId){
@@ -175,6 +180,34 @@
                     });
                 });
         }
+
+        function LiderPastor(pessoaId, btnCheck){
+
+            tipoUsuario = btnCheck.checked ? 'pastorLider' : 'pastor';
+            const dataApi = { pessoaId: pessoaId, tipoUsuario : tipoUsuario };
+
+            $.post('/api/liderPastor', dataApi)
+                .done(function (data) {
+                    console.log(data);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Alterado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao alterar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            }
 
         function DeletarPessoa(pessoaId){
 

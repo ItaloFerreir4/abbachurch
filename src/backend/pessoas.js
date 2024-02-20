@@ -161,18 +161,8 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
 
                 break;
                 case 'lider':
-                    query = `SELECT * FROM lideres WHERE pessoaId = ${pessoaId};`
-
-                    const lider = await executarQuery(query);
-
-                    if(lider){
-
-                        return true;
-
-                    }
-                    else{
-                        return null;
-                    }
+                    query = `DELETE FROM lideres WHERE pessoaId = ${pessoaId};`
+                    return await executarQuery(query) ?  true :  null;
 
                 break;
                 case 'filho':
@@ -452,4 +442,37 @@ async function cadastrarRedes(pessoaId, instagram, facebook, linkedin) {
     }
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor };
+async function deletarLider(pessoaId) {
+    
+    let query = `DELETE FROM lideres WHERE pessoaId = ${pessoaId};`;
+
+    try {
+        const resultados = await executarQuery(query);
+
+        if(resultados){
+            return true;
+        }
+        else{
+            return null;
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+}
+
+async function isLider(pessoaId, tipo) {
+        
+    let query = `UPDATE pastores SET isLider = ${tipo} WHERE pessoaId = ${pessoaId};`;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+    
+}
+
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider };

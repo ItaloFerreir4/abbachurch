@@ -22,7 +22,7 @@ const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequi
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio, atualizarWidgetRelatorio } = require('./categorias-relatorio');
 const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
-const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor } = require('./pessoas');
+const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider } = require('./pessoas');
 const e = require('express');
 const app = express();
 const port = 3000;
@@ -294,6 +294,38 @@ app.post('/api/alterarAdminPastor', async (req, res) => {
 
     try {
         const resultado = await alterarAdminPastor(pessoaId, tipoUsuario);
+
+        if (resultado) {
+            res.json({ message: 'Alterado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao alterar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor'+erro });
+    }
+    
+});
+
+app.post('/api/liderPastor', async (req, res) => {
+    
+    const { pessoaId, tipoUsuario } = req.body;
+
+    try {
+
+        let resultado;
+
+        switch(tipoUsuario){
+            case 'pastorLider':
+                resultado = await isLider(pessoaId, 1);
+                resultado = await cadastrarLider(pessoaId);
+                break;
+            case 'pastor':
+                resultado = await isLider(pessoaId, 0);
+                resultado = await deletarLider(pessoaId);
+                break;
+        }
 
         if (resultado) {
             res.json({ message: 'Alterado com sucesso' });
