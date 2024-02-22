@@ -228,16 +228,16 @@ async function atualizarStatusRequisicao(idRequisicao, statusRequisicao) {
             const assunto = 'Alteração no status na requisição!';
             let status = '';
             switch(statusRequisicao){
-                case 1:
+                case '1':
                     status = 'Ativo';
                     break;
-                case 2:
+                case '2':
                     status = 'Inativo';
                     break;
-                case 3:
+                case '3':
                     status = 'Cancelado';
                     break;
-                case 4:
+                case '4':
                     status = 'Finalizado';
                     break;
             }
