@@ -12089,6 +12089,12 @@ h6 {
   font-size: 40px;
 }
 
+.btn-donate-zelle {
+  background-color: #FFF !important;
+  border: #FFF !important;
+  color: #00A884 !important;
+}
+
 /* Start:: Sales Dashboard Styles */
 .main-card-icon {
   inset-block-end: 0.75rem;
