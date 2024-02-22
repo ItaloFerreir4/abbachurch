@@ -145,6 +145,12 @@
                                 case 2:
                                     status = '<div class="status" status="2">Inativo</div>';
                                     break;
+                                case 3:
+                                    status = '<div class="status" status="3">Cancelado</div>';
+                                    break;
+                                case 4:
+                                    status = '<div class="status" status="4">Finalizado</div>';
+                                    break;
                             }
 
                             if(sessionStorage.getItem('tipoUser') == 0 || sessionStorage.getItem('tipoUser') == 5){
@@ -155,6 +161,8 @@
                                         <option value="0" ${requisicao.statusRequisicao === 0 ? 'selected' : ''}>Selecionar</option>
                                         <option value="1" ${requisicao.statusRequisicao === 1 ? 'selected' : ''}>Ativo</option>
                                         <option value="2" ${requisicao.statusRequisicao === 2 ? 'selected' : ''}>Inativo</option>
+                                        <option value="2" ${requisicao.statusRequisicao === 3 ? 'selected' : ''}>Inativo</option>
+                                        <option value="2" ${requisicao.statusRequisicao === 4 ? 'selected' : ''}>Inativo</option>
                                     </select>
                                     <button class="btn btn-success btn-sm mr-1" onClick="EditarRequisicao(${requisicao.idRequisicao})">Editar</button>
                                     <button class="btn btn-danger btn-sm mr-1" onClick="DeletarRequisicao(${requisicao.idRequisicao})">Deletar</button>
