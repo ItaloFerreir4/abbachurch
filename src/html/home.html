@@ -130,14 +130,34 @@
                     droppable: false,
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
-                        const description = arg.event.extendedProps.description;
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'info',
-                            title: arg.event.title,
-                            html: '<br> Descrição: ' + description,
-                            showConfirmButton: true,
-                        });
+                        const niver = arg.event.extendedProps.isNiver;
+                        if(niver == 0){
+                            const descriptionEvent = arg.event.extendedProps.description;
+                            const localEvent = arg.event.extendedProps.localEvent;
+                            let dataEvent = arg.event.extendedProps.dataEvent;
+                            dataEvent = new Date(dataEvent);
+                            dataEvent = formatarDataHora(dataEvent);
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'info',
+                                title: arg.event.title,
+                                html: 
+                                '<br> <strong>Data:</strong> ' + dataEvent +
+                                '<br> <strong>Local:</strong> ' + localEvent +
+                                '<br> <strong>Descrição:</strong> ' + descriptionEvent,
+                                showConfirmButton: true,
+                            });
+                        }
+                        else{
+                            const descriptionEvent = arg.event.extendedProps.description;
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'info',
+                                title: arg.event.title,
+                                html: '<br> <strong>Descrição:</strong> ' + descriptionEvent,
+                                showConfirmButton: true,
+                            });
+                        }
                     },
                     dayMaxEvents: true,
                     eventSources: dataEventos,
@@ -247,14 +267,17 @@
 
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
-                        const description = arg.event.extendedProps.description;
+                        const descriptionEvent = arg.event.extendedProps.description;
+                        const dataEvent = arg.event.extendedProps.dataEvent;
+                        const localEvent = arg.event.extendedProps.localEvent;
                         Swal.fire({
                             position: 'center',
                             icon: 'info',
                             title: arg.event.title,
-                            html:
-                            'Data: ' + arg.event.start +
-                            '<br> Descrição: ' + description,
+                            html: 
+                            '<br> <strong>Data:</strong> ' + dataEvent +
+                            '<br> <strong>Local:</strong> ' + localEvent +
+                            '<br> <strong>Descrição:</strong> ' + descriptionEvent,
                             showConfirmButton: true,
                         });
                     },
@@ -302,14 +325,17 @@
 
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
-                        const description = arg.event.extendedProps.description;
+                        const descriptionEvent = arg.event.extendedProps.description;
+                        const dataEvent = arg.event.extendedProps.dataEvent;
+                        const localEvent = arg.event.extendedProps.localEvent;
                         Swal.fire({
                             position: 'center',
                             icon: 'info',
                             title: arg.event.title,
-                            html:
-                            'Data: ' + arg.event.start +
-                            '<br> Descrição: ' + description,
+                            html: 
+                            '<br> <strong>Data:</strong> ' + dataEvent +
+                            '<br> <strong>Local:</strong> ' + localEvent +
+                            '<br> <strong>Descrição:</strong> ' + descriptionEvent,
                             showConfirmButton: true,
                         });
                     },
@@ -351,6 +377,7 @@
                                 let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idProcurado)?.nomeMinisterio;
                                 nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
 
+                                let isNiver = 0;
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
                                 let dataFimEvento = evento.dataHoraFimEvento;
                                 let anoAtual = new Date().getFullYear();
@@ -361,6 +388,7 @@
                                     dataFimEvento = dataFimEvento.toISOString().split('T')[0];
                                     dataInicioEvento = dataInicioEvento.replace(/^(\d{4})/, anoAtual);
                                     dataFimEvento = dataFimEvento.replace(/^(\d{4})/, anoAtual);
+                                    isNiver = 1;
                                 }
 
                                 if (categoriaEventoId) {
@@ -382,7 +410,10 @@
                                         start: dataInicioEvento,
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
-                                        description: evento.observacoesEvento
+                                        description: evento.observacoesEvento,
+                                        dataEvent: dataInicioEvento,
+                                        localEvent: evento.localEvento,
+                                        isNiver: isNiver
                                     });
 
                                     countIdData++;
@@ -589,7 +620,14 @@
     
                                 data = data.replace(/^(\d{4})/, anoAtual);
     
-                                dataEvents.push({ id: count, start: data, end: data, title: nome, description: description });
+                                dataEvents.push({ 
+                                    id: count, 
+                                    start: data, 
+                                    end: data, 
+                                    title: nome, 
+                                    description: description,
+                                    isNiver: 1
+                                });
     
                                 count ++;
                             } 
