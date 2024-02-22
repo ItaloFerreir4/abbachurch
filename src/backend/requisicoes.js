@@ -226,7 +226,7 @@ async function atualizarStatusRequisicao(idRequisicao, statusRequisicao) {
             const pessoa = await executarQuery(query);
             const destinatario = pessoa[0].emailPessoa;
             const assunto = 'Alteração no status na requisição!';
-            let status = statusVoluntario == 1 ? 'ativo' : 'inativo';
+            let status = statusRequisicao == 1 ? 'ativo' : 'inativo';
             let corpo = `<p>O status do sua requisição foi alterada para <b>${status}</b>!</p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
             enviarEmail(destinatario, assunto, corpo);
