@@ -25,8 +25,8 @@ async function cadastrarRequisicao(pessoaId, tipoUsuario, classificacaoRequisica
     let dataRequisicao = new Date();
     dataRequisicao = format(dataRequisicao, 'yyyy-MM-dd');
 
-    let dataHoraInicio = new Date();
-    let dataHoraFim = new Date();
+    let dataHoraInicio = format(new Date(), 'yyyy-MM-dd');
+    let dataHoraFim = format(new Date(), 'yyyy-MM-dd');
 
     // Aplicar escape nas aspas simples e duplas nos valores de texto
     informacoesRequisicao = informacoesRequisicao.replace(/(['"])/g, "\\$1");
@@ -128,8 +128,8 @@ async function carregarRequisicao(idRequisicao) {
 
 async function atualizarRequisicao(pessoaId, idRequisicao, classificacaoRequisicao, informacoesRequisicao, departamentoEvento, nomeEvento, dataHoraInicioEvento, dataHoraFimEvento, ambienteEvento, departamentosProducaoEvento, participacaoAbbaWorshipEvento) {
 
-    let dataHoraInicio = new Date();
-    let dataHoraFim = new Date();
+    let dataHoraInicio = format(new Date(), 'yyyy-MM-dd');
+    let dataHoraFim = format(new Date(), 'yyyy-MM-dd');
 
     // Aplicar escape nas aspas simples e duplas nos valores de texto
     informacoesRequisicao = informacoesRequisicao.replace(/(['"])/g, "\\$1");
