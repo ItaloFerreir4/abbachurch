@@ -21,7 +21,7 @@ const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, a
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio, atualizarWidgetRelatorio } = require('./categorias-relatorio');
-const { listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
+const { listarEventosVoluntario, listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider } = require('./pessoas');
 const e = require('express');
 const app = express();
@@ -1698,6 +1698,26 @@ app.post('/api/cadastrarDoacao', async (req, res) => {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });
     }
+});
+
+app.post('/api/listarEventosVoluntario', async (req, res) => {
+
+    const pessoaId = req.session.idPessoa;
+
+    try {
+        const lista = await listarEventosVoluntario(pessoaId);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
 });
 
 // Rota para tratar solicitações de dados

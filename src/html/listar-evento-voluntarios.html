@@ -26,13 +26,14 @@
                                 <table id="responsiveTable" class="table table-bordered text-nowrap" style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th class="all" scope="col">Habilidade</th>
                                             <th class="all" scope="col">Nome</th>
                                             <th class="min-desktop" scope="col">Data inicio</th>
                                             <th class="min-desktop" scope="col">Data Fim</th>
                                             <th class="min-desktop" scope="col">Local</th>
-                                            <th class="min-desktop" scope="col">Ministério</th>
-                                            <th class="min-desktop" scope="col">Categoria</th>
-                                            <th class="min-desktop" scope="col">Observações</th>
+                                            <th class="none" scope="col">Ministério</th>
+                                            <th class="none" scope="col">Categoria</th>
+                                            <th class="none" scope="col">Observações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="body-table">
@@ -78,10 +79,6 @@
 
         window.addEventListener("load", function() {
             ListarVoluntarioEvento();
-
-            tabela.on('page.dt', function () {
-                sessionStorage.setItem('tabelaEvVoluntario', tabela.page());
-            });
         });
 
         function ListarVoluntarioEvento(){
@@ -109,94 +106,48 @@
 
             tabela.clear().draw();
 
-            Promise.all([ListaMinisterios(), ListarCategorias()]).then(function ([listaMinisterios, listaCategorias]) {
-                $.post('api/listarEventos')
-                    .done(function (data) {
-                        data.forEach(function (evento) {
-                            const idMinisterio = evento.ministerioId;
-                            let nomeMinisterio = listaMinisterios.find(ministerio => ministerio.idMinisterio === idMinisterio)?.nomeMinisterio;
-                            nomeMinisterio = nomeMinisterio ? nomeMinisterio : 'Ministerio não encontrado!';
+            $.post('api/listarEventosVoluntario')
+            .done(function (data) {
+                data.forEach(function (evento) {
 
-                            const idCategoria = evento.categoriaEventoId;
-                            let nomeCategoriaEvento = listaCategorias.find(categoria => categoria.idCategoriaEvento === idCategoria)?.nomeCategoriaEvento;
-                            nomeCategoriaEvento = nomeCategoriaEvento ? nomeCategoriaEvento : 'Categoria não encontrada!';
-                            
-                            let dataInicio = evento.dataHoraInicioEvento;
-                            let dataFim = evento.dataHoraFimEvento;
-                            dataInicio = new Date(dataInicio);
-                            dataInicio = formatarDataHora(dataInicio);
-                            dataFim = new Date(dataFim);
-                            dataFim = formatarDataHora(dataFim);
+                    let dataInicio = evento.dataHoraInicioEvento;
+                    let dataFim = evento.dataHoraFimEvento;
+                    dataInicio = new Date(dataInicio);
+                    dataInicio = formatarDataHora(dataInicio);
+                    dataFim = new Date(dataFim);
+                    dataFim = formatarDataHora(dataFim);
 
-                            tabela.row.add([
-                                evento.nomeEvento,
-                                dataInicio,
-                                dataFim,
-                                evento.localEvento,
-                                nomeMinisterio,
-                                nomeCategoriaEvento,
-                                evento.observacoesEvento,
-                            ]).draw();
-                    
-                            tabela.page(parseInt(paginaAtual)).draw('page');
-                
-                        });
-                    })
-                    .fail(function (error) {
-                        console.error('Erro na requisição:', error);
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: 'Erro ao listar!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    })
-                    .always(function () {
-                        FinLoader();
-                    });
+                    tabela.row.add([
+                        evento.categoria,
+                        evento.nomeEvento,
+                        dataInicio,
+                        dataFim,
+                        evento.localEvento,
+                        evento.nomeMinisterio,
+                        evento.nomeCategoriaEvento,
+                        evento.observacoesEvento,
+                    ]).draw();
+            
+                    tabela.page(parseInt(paginaAtual)).draw('page');
+        
+                });
+            })
+            .fail(function (error) {
+                console.error('Erro na requisição:', error);
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Erro ao listar!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            })
+            .always(function () {
+                FinLoader();
             });
-        }
 
-        function ListaMinisterios() {
-            return new Promise(function (resolve, reject) {
-                $.post('api/listarMinisterios')
-                    .done(function (data) {
-                        resolve(data);
-                    })
-                    .fail(function (error) {
-                        console.error('Erro na requisição:', error);
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: 'Erro ao listar!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        reject(error);
-                    });
-            });
-        }
-
-        function ListarCategorias(){
-            return new Promise(function (resolve, reject) {
-                $.post('api/listarCategoriasEventos')
-                    .done(function (data) {
-                        resolve(data);
-                    })
-                    .fail(function (error) {
-                        console.error('Erro na requisição:', error);
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: 'Erro ao listar!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    })
-                    .always(function () {
-                        FinLoader();
-                    });
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaEvVoluntario', tabela.page());
             });
         }
 
