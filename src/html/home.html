@@ -162,7 +162,6 @@
                     },
                     dayMaxEvents: true,
                     eventSources: dataEventos,
-                    timeZone: 'local',
                 };
 
                 // Verifique a largura da tela e ajuste a visualização padrão
@@ -229,7 +228,6 @@
 
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
-                    timeZone: 'America/Sao_Paulo',
                 };
 
                 // Verifique a largura da tela e ajuste a visualização padrão
@@ -286,7 +284,6 @@
 
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
-                    timeZone: 'America/Sao_Paulo',
                 };
                 
                 // Verifique a largura da tela e ajuste a visualização padrão
@@ -344,7 +341,6 @@
 
                     dayMaxEvents: true, // allow "more" link when too many events
                     eventSources: dataEventos,
-                    timeZone: 'America/Sao_Paulo',
                 };
                 
                 // Verifique a largura da tela e ajuste a visualização padrão
@@ -408,6 +404,7 @@
                                     }
 
                                     categoriasArrays[categoriaEventoId].events.push({
+                                        timeZone: 'America/Sao_Paulo',
                                         id: countIdData,
                                         start: dataInicioEvento,
                                         end: dataFimEvento,
