@@ -130,7 +130,7 @@
                     droppable: false,
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
-                        console.log('arg.data:', arg.event.extendedProps.dataEvent);
+                        console.log('arg.data:', arg.date.toString());
                         const niver = arg.event.extendedProps.isNiver;
                         if(niver == 0){
                             const descriptionEvent = arg.event.extendedProps.description;
@@ -162,7 +162,7 @@
                     },
                     dayMaxEvents: true,
                     eventSources: dataEventos,
-                    timeZone: 'America/Denver',
+                    timeZone: 'local',
                 };
 
                 // Verifique a largura da tela e ajuste a visualização padrão
