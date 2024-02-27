@@ -130,7 +130,6 @@
                     droppable: false,
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
-                        console.log('arg.data:', arg.date.toString());
                         const niver = arg.event.extendedProps.isNiver;
                         if(niver == 0){
                             const descriptionEvent = arg.event.extendedProps.description;
