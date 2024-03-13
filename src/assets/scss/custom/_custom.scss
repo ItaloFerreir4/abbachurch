@@ -2290,3 +2290,8 @@ h6 {
   border: #FFF!important;
   color: #00A884!important;
 }
+
+.fc-theme-standard .fc-popover{
+  background-color: var(--default-body-bg-color);
+  color: #FFF;
+}
