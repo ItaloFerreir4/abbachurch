@@ -116,6 +116,7 @@
                 const calendarEl = document.getElementById('calendario');
 
                 let calendarOptions = {
+                    timeZone: 'UTC',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -252,7 +253,7 @@
 
                 const calendarEl = document.getElementById('calendario');
                 let calendarOptions = {
-                    timeZone: 'America/Sao_Paulo',
+                    timeZone: 'UTC',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -310,7 +311,7 @@
                 const calendarEl = document.getElementById('calendario');
 
                 let calendarOptions = {
-                    timeZone: 'America/Sao_Paulo',
+                    timeZone: 'UTC',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -480,7 +481,10 @@
                                     start: dataInicioEvento,
                                     end: dataFimEvento,
                                     title: evento.nomeEvento,
-                                    description: evento.observacoesEvento
+                                    description: evento.observacoesEvento,
+                                    dataEvent: dataInicioEvento,
+                                    localEvent: evento.localEvento,
+                                    isNiver: isNiver
                                 });
 
                                 countIdData++;
@@ -540,7 +544,10 @@
                                         start: dataInicioEvento,
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
-                                        description: evento.observacoesEvento
+                                        description: evento.observacoesEvento,
+                                        dataEvent: dataInicioEvento,
+                                        localEvent: evento.localEvento,
+                                        isNiver: isNiver
                                     });
     
                                     countIdData++;
