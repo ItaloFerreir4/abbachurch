@@ -116,7 +116,7 @@
                 const calendarEl = document.getElementById('calendario');
 
                 let calendarOptions = {
-                    timeZone: 'America/Sao_Paulo',
+                    timeZone: 'UTC',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -393,8 +393,8 @@
                                     isNiver = 1;
                                 }
                                 else{
-                                    dataInicioEvento = dataInicioEvento.replace('Z', '-03:00');
-                                    dataFimEvento = dataFimEvento.replace('Z', '-03:00');
+                                    dataInicioEvento = dataInicioEvento.replace('Z', '+03:00');
+                                    dataFimEvento = dataFimEvento.replace('Z', '+03:00');
                                 }
 
                                 if (categoriaEventoId) {
