@@ -379,10 +379,10 @@
 
                                 let isNiver = 0;
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
-                                dataInicioEvento = dataInicioEvento.toISOString().replace('Z', '-03:00');
+                                dataInicioEvento = dataInicioEvento.replace('Z', '-03:00');
                                 dataInicioEvento = new Date(dataInicioEvento);
                                 let dataFimEvento = evento.dataHoraFimEvento;
-                                dataFimEvento = dataFimEvento.toISOString().replace('Z', '-03:00');
+                                dataFimEvento = dataFimEvento.replace('Z', '-03:00');
                                 dataFimEvento = new Date(dataFimEvento);
                                 let anoAtual = new Date().getFullYear();
                                 if (categoriaEventoId == 2) {
