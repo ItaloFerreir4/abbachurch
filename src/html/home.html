@@ -382,7 +382,10 @@
                                 let dataFimEvento = evento.dataHoraFimEvento;
                                 let anoAtual = new Date().getFullYear();
                                 if (categoriaEventoId == 2) {
+                                    
+                                    dataInicioEvento = new Date(dataInicioEvento);
                                     dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
+                                    dataFimEvento = new Date(dataFimEvento);
                                     dataFimEvento = dataFimEvento.toISOString().split('T')[0];
                                     dataInicioEvento = dataInicioEvento.replace(/^(\d{4})/, anoAtual);
                                     dataFimEvento = dataFimEvento.replace(/^(\d{4})/, anoAtual);
