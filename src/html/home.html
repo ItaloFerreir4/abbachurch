@@ -100,7 +100,7 @@
             IniLoader();
 
             Promise.all([ListarEventos(), ListarPessoas()]).then(function ([dataEventos, dataPessoas]) {
-                console.log(dataEventos);
+
                 const idBirthday = dataEventos.length + 1;
 
                 const dataCalendarBirthday = {
@@ -116,6 +116,7 @@
                 const calendarEl = document.getElementById('calendario');
 
                 let calendarOptions = {
+                    timeZone: 'America/New_York',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -167,7 +168,7 @@
                 if (window.innerWidth < 1200) {
                     calendarOptions.initialView = 'listWeek';
                 }
-
+                console.log(calendarOptions);
                 let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
 
@@ -402,8 +403,6 @@
                                         countIdCat++;
                                     }
 
-                                    categoriasArrays[categoriaEventoId].timeZone = 'America/New_York';
-
                                     categoriasArrays[categoriaEventoId].events.push({
                                         id: countIdData,
                                         start: dataInicioEvento,
@@ -470,7 +469,6 @@
                                 }
 
                                 categoriasArrays[categoriaEventoId].events.push({
-                                    timeZone: 'America/Sao_Paulo',
                                     id: countIdData,
                                     start: dataInicioEvento,
                                     end: dataFimEvento,
@@ -531,7 +529,6 @@
                                     }
     
                                     categoriasArrays[categoriaEventoId].events.push({
-                                        timeZone: 'America/Sao_Paulo',
                                         id: countIdData,
                                         start: dataInicioEvento,
                                         end: dataFimEvento,
