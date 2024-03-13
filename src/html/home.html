@@ -116,7 +116,6 @@
                 const calendarEl = document.getElementById('calendario');
 
                 let calendarOptions = {
-                    timeZone: '-06:00',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -168,6 +167,9 @@
                 if (window.innerWidth < 1200) {
                     calendarOptions.initialView = 'listWeek';
                 }
+
+                calendarOptions.timeZone = 'America/SaoPaulo';
+
                 console.log(calendarOptions);
                 let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
