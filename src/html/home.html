@@ -392,10 +392,8 @@
                                     isNiver = 1;
                                 }
                                 else{
-                                    dataInicioEvento = new Date(dataInicioEvento);
-                                    dataInicioEvento = formatarDataHora(dataInicioEvento);
-                                    dataFimEvento = new Date(dataFimEvento);
-                                    dataFimEvento = formatarDataHora(dataFimEvento);
+                                    dataInicioEvento = dataInicioEvento.replace('Z', '-03:00');
+                                    dataFimEvento = dataFimEvento.replace('Z', '-03:00');
                                 }
 
                                 if (categoriaEventoId) {
