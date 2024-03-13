@@ -168,8 +168,6 @@
                     calendarOptions.initialView = 'listWeek';
                 }
 
-                calendarOptions.timeZone = 'America/SaoPaulo';
-
                 console.log(calendarOptions);
                 let calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
                 calendar.render();
@@ -381,12 +379,12 @@
 
                                 let isNiver = 0;
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
+                                dataInicioEvento = new Date(dataInicioEvento);
                                 let dataFimEvento = evento.dataHoraFimEvento;
+                                dataFimEvento = new Date(dataInicioEvento);
                                 let anoAtual = new Date().getFullYear();
                                 if (categoriaEventoId == 2) {
-                                    dataInicioEvento = new Date(dataInicioEvento);
                                     dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
-                                    dataFimEvento = new Date(dataInicioEvento);
                                     dataFimEvento = dataFimEvento.toISOString().split('T')[0];
                                     dataInicioEvento = dataInicioEvento.replace(/^(\d{4})/, anoAtual);
                                     dataFimEvento = dataFimEvento.replace(/^(\d{4})/, anoAtual);
