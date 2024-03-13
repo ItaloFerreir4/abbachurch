@@ -100,7 +100,7 @@
             IniLoader();
 
             Promise.all([ListarEventos(), ListarPessoas()]).then(function ([dataEventos, dataPessoas]) {
-
+                console.log(dataEventos);
                 const idBirthday = dataEventos.length + 1;
 
                 const dataCalendarBirthday = {
@@ -402,8 +402,9 @@
                                         countIdCat++;
                                     }
 
+                                    categoriasArrays[categoriaEventoId].timeZone = 'America/New_York';
+
                                     categoriasArrays[categoriaEventoId].events.push({
-                                        timeZone: 'America/Sao_Paulo',
                                         id: countIdData,
                                         start: dataInicioEvento,
                                         end: dataFimEvento,
