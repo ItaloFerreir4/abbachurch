@@ -417,7 +417,7 @@
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
                                         description: evento.observacoesEvento,
-                                        dataEvent: dataInicioEvento,
+                                        dataEvent: evento.dataHoraInicioEvento,
                                         localEvent: evento.localEvento,
                                         isNiver: isNiver
                                     });
@@ -462,6 +462,9 @@
 
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
                                 let dataFimEvento = evento.dataHoraFimEvento;
+                                
+                                dataInicioEvento = dataInicioEvento.replace('Z', '+03:00');
+                                dataFimEvento = dataFimEvento.replace('Z', '+03:00');
 
                                 if (!categoriasArrays[categoriaEventoId]) {
                                     backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
@@ -482,7 +485,7 @@
                                     end: dataFimEvento,
                                     title: evento.nomeEvento,
                                     description: evento.observacoesEvento,
-                                    dataEvent: dataInicioEvento,
+                                    dataEvent: evento.dataHoraInicioEvento,
                                     localEvent: evento.localEvento
                                 });
 
@@ -525,6 +528,10 @@
                                 if (categoriaEventoId != 2) {
                                     let dataInicioEvento = evento.dataHoraInicioEvento;
                                     let dataFimEvento = evento.dataHoraFimEvento;
+                                    
+                                    dataInicioEvento = dataInicioEvento.replace('Z', '+03:00');
+                                    dataFimEvento = dataFimEvento.replace('Z', '+03:00');
+
                                     if (!categoriasArrays[categoriaEventoId]) {
                                         backgroundColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 0.4)' : 'rgba(var(--primary-rgb), 0.4)';
                                         borderColor = categoriaEventoId == 2 ? 'rgba(var(--teal-rgb), 1)' : 'rgba(var(--primary-rgb), 1)';
@@ -544,7 +551,7 @@
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
                                         description: evento.observacoesEvento,
-                                        dataEvent: dataInicioEvento,
+                                        dataEvent: evento.dataHoraInicioEvento,
                                         localEvent: evento.localEvento
                                     });
     
