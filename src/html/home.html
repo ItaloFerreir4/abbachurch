@@ -379,11 +379,7 @@
 
                                 let isNiver = 0;
                                 let dataInicioEvento = evento.dataHoraInicioEvento;
-                                dataInicioEvento = new Date(dataInicioEvento);
-                                dataInicioEvento = formatarDataHora(dataInicioEvento);
                                 let dataFimEvento = evento.dataHoraFimEvento;
-                                dataFimEvento = new Date(dataFimEvento);
-                                dataFimEvento = formatarDataHora(dataFimEvento);
                                 let anoAtual = new Date().getFullYear();
                                 if (categoriaEventoId == 2) {
                                     dataInicioEvento = dataInicioEvento.toISOString().split('T')[0];
@@ -391,6 +387,12 @@
                                     dataInicioEvento = dataInicioEvento.replace(/^(\d{4})/, anoAtual);
                                     dataFimEvento = dataFimEvento.replace(/^(\d{4})/, anoAtual);
                                     isNiver = 1;
+                                }
+                                else{
+                                    dataInicioEvento = new Date(dataInicioEvento);
+                                    dataInicioEvento = formatarDataHora(dataInicioEvento);
+                                    dataFimEvento = new Date(dataFimEvento);
+                                    dataFimEvento = formatarDataHora(dataFimEvento);
                                 }
 
                                 if (categoriaEventoId) {
