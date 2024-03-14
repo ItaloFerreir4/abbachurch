@@ -2259,7 +2259,7 @@ h6 {
   justify-content: space-between;
 }
 
-.status[status="0"] {
+.status[status="0"], .status[status="5"] {
   color: rgba(var(--warning-rgb), 1);
 }
 

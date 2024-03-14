@@ -151,6 +151,9 @@
                                 case 4:
                                     status = '<div class="status" status="4">Finalizado</div>';
                                     break;
+                                case 5:
+                                status = '<div class="status" status="5">Em Andamento</div>';
+                                break;
                             }
 
                             if(sessionStorage.getItem('tipoUser') == 0 || sessionStorage.getItem('tipoUser') == 5){
@@ -163,6 +166,7 @@
                                         <option value="2" ${requisicao.statusRequisicao === 2 ? 'selected' : ''}>Inativo</option>
                                         <option value="3" ${requisicao.statusRequisicao === 3 ? 'selected' : ''}>Cancelado</option>
                                         <option value="4" ${requisicao.statusRequisicao === 4 ? 'selected' : ''}>Finalizado</option>
+                                        <option value="5" ${requisicao.statusRequisicao === 5 ? 'selected' : ''}>Em Andamento</option>
                                     </select>
                                     <button class="btn btn-success btn-sm mr-1" onClick="EditarRequisicao(${requisicao.idRequisicao})">Editar</button>
                                     <button class="btn btn-danger btn-sm mr-1" onClick="DeletarRequisicao(${requisicao.idRequisicao})">Deletar</button>

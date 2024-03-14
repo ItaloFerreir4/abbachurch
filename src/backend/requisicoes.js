@@ -240,6 +240,9 @@ async function atualizarStatusRequisicao(idRequisicao, statusRequisicao) {
                 case '4':
                     status = 'Finalizado';
                     break;
+                case '5':
+                    status = 'Em Andamento';
+                    break;
             }
             let corpo = `<p>O status do sua requisição foi alterada para <b>${status}</b>!</p>
             <p>Qualquer dúvida entre em contato com a Abba Church.</p>`;
