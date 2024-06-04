@@ -135,15 +135,19 @@
                         if(niver == 0){
                             const descriptionEvent = arg.event.extendedProps.description;
                             const localEvent = arg.event.extendedProps.localEvent;
-                            let dataEvent = arg.event.extendedProps.dataEvent;
-                            dataEvent = new Date(dataEvent);
-                            dataEvent = formatarDataHora(dataEvent);
+                            let dataIniEvent = arg.event.extendedProps.dataIniEvent;
+                            let dataFimEvent = arg.event.extendedProps.dataFimEvent;
+                            dataIniEvent = new Date(dataIniEvent);
+                            dataIniEvent = formatarDataHora(dataIniEvent);
+                            dataFimEvent = new Date(dataFimEvent);
+                            dataFimEvent = formatarDataHora(dataFimEvent);
                             Swal.fire({
                                 position: 'center',
                                 icon: 'info',
                                 title: arg.event.title,
                                 html: 
-                                '<br> <strong>Data:</strong> ' + dataEvent +
+                                '<br> <strong>Data Inicio:</strong> ' + dataIniEvent +
+                                '<br> <strong>Data Fim:</strong> ' + dataFimEvent +
                                 '<br> <strong>Local:</strong> ' + localEvent +
                                 '<br> <strong>Descrição:</strong> ' + descriptionEvent,
                                 showConfirmButton: true,
@@ -270,14 +274,20 @@
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
                         const descriptionEvent = arg.event.extendedProps.description;
-                        const dataEvent = arg.event.extendedProps.dataEvent;
                         const localEvent = arg.event.extendedProps.localEvent;
+                        let dataIniEvent = arg.event.extendedProps.dataIniEvent;
+                        let dataFimEvent = arg.event.extendedProps.dataFimEvent;
+                        dataIniEvent = new Date(dataIniEvent);
+                        dataIniEvent = formatarDataHora(dataIniEvent);
+                        dataFimEvent = new Date(dataFimEvent);
+                        dataFimEvent = formatarDataHora(dataFimEvent);
                         Swal.fire({
                             position: 'center',
                             icon: 'info',
                             title: arg.event.title,
                             html: 
-                            '<br> <strong>Data:</strong> ' + dataEvent +
+                            '<br> <strong>Data Inicio:</strong> ' + dataIniEvent +
+                            '<br> <strong>Data Fim:</strong> ' + dataFimEvent +
                             '<br> <strong>Local:</strong> ' + localEvent +
                             '<br> <strong>Descrição:</strong> ' + descriptionEvent,
                             showConfirmButton: true,
@@ -328,14 +338,20 @@
                     eventClick: function (arg) {
                         console.log('arg.event:', arg.event);
                         const descriptionEvent = arg.event.extendedProps.description;
-                        const dataEvent = arg.event.extendedProps.dataEvent;
                         const localEvent = arg.event.extendedProps.localEvent;
+                        let dataIniEvent = arg.event.extendedProps.dataIniEvent;
+                        let dataFimEvent = arg.event.extendedProps.dataFimEvent;
+                        dataIniEvent = new Date(dataIniEvent);
+                        dataIniEvent = formatarDataHora(dataIniEvent);
+                        dataFimEvent = new Date(dataFimEvent);
+                        dataFimEvent = formatarDataHora(dataFimEvent);
                         Swal.fire({
                             position: 'center',
                             icon: 'info',
                             title: arg.event.title,
                             html: 
-                            '<br> <strong>Data:</strong> ' + dataEvent +
+                            '<br> <strong>Data Inicio:</strong> ' + dataIniEvent +
+                            '<br> <strong>Data Fim:</strong> ' + dataFimEvent +
                             '<br> <strong>Local:</strong> ' + localEvent +
                             '<br> <strong>Descrição:</strong> ' + descriptionEvent,
                             showConfirmButton: true,
@@ -417,7 +433,8 @@
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
                                         description: evento.observacoesEvento,
-                                        dataEvent: evento.dataHoraInicioEvento,
+                                        dataIniEvent: evento.dataHoraInicioEvento,
+                                        dataFimEvent: evento.dataHoraFimEvento,
                                         localEvent: evento.localEvento,
                                         isNiver: isNiver
                                     });
@@ -485,7 +502,8 @@
                                     end: dataFimEvento,
                                     title: evento.nomeEvento,
                                     description: evento.observacoesEvento,
-                                    dataEvent: evento.dataHoraInicioEvento,
+                                    dataIniEvent: evento.dataHoraInicioEvento,
+                                    dataFimEvent: evento.dataHoraFimEvento,
                                     localEvent: evento.localEvento
                                 });
 
@@ -551,7 +569,8 @@
                                         end: dataFimEvento,
                                         title: evento.nomeEvento,
                                         description: evento.observacoesEvento,
-                                        dataEvent: evento.dataHoraInicioEvento,
+                                        dataIniEvent: evento.dataHoraInicioEvento,
+                                        dataFimEvent: evento.dataHoraFimEvento,
                                         localEvent: evento.localEvento
                                     });
     

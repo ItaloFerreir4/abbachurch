@@ -12059,7 +12059,7 @@ h6 {
   justify-content: space-between;
 }
 
-.status[status="0"] {
+.status[status="0"], .status[status="5"] {
   color: rgba(var(--warning-rgb), 1);
 }
 
@@ -12093,6 +12093,11 @@ h6 {
   background-color: #FFF !important;
   border: #FFF !important;
   color: #00A884 !important;
+}
+
+.fc-theme-standard .fc-popover {
+  background-color: var(--default-body-bg-color) !important;
+  color: #FFF;
 }
 
 /* Start:: Sales Dashboard Styles */
