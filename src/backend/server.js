@@ -1925,10 +1925,16 @@ app.post('/api/carregarSegmento', async (req, res) => {
 app.get('/api/api-listagem-empresas', async (req, res) => {
 
     try {
-        const lista = await listarEmpresas('redes');
+        const listaEmpresa = await listarEmpresas('redes');
+        const listaSegmentos = await listarSegmentos();
 
-        if (lista) {
-            res.json(lista);
+        const listasAgrupadas = {
+            ListaEmpresas: listaEmpresa,
+            ListaSegmentos: listaSegmentos
+        };
+
+        if (listasAgrupadas) {
+            res.json(listasAgrupadas);
         } else {
             res.status(401).json({ message: 'Erro ao listar' });
         }
