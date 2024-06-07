@@ -50,7 +50,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/api-listagem-empresas', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/api/api-listagem-empresas', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -1922,7 +1922,7 @@ app.post('/api/carregarSegmento', async (req, res) => {
     }
 });
 
-app.get('/api-listagem-empresas', async (req, res) => {
+app.get('/api/api-listagem-empresas', async (req, res) => {
 
     try {
         const lista = await listarEmpresas();
