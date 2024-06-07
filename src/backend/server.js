@@ -1736,7 +1736,7 @@ app.post('/api/listarEventosVoluntario', async (req, res) => {
 app.post('/api/listarEmpresas', async (req, res) => {
 
     try {
-        const lista = await listarEmpresas();
+        const lista = await listarEmpresas('normal');
 
         if (lista) {
             res.json(lista);
@@ -1925,7 +1925,7 @@ app.post('/api/carregarSegmento', async (req, res) => {
 app.get('/api/api-listagem-empresas', async (req, res) => {
 
     try {
-        const lista = await listarEmpresas();
+        const lista = await listarEmpresas('redes');
 
         if (lista) {
             res.json(lista);

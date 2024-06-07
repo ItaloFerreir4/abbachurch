@@ -1,10 +1,19 @@
 const executarQuery = require('./consulta');
 const { cadastrarRedes } = require('./pessoas');
 
-async function listarEmpresas() {
+async function listarEmpresas(tipo) {
+
+    let query = '';
     
-    // let query = 'SELECT * FROM empresas em, redessociais re WHERE re.pessoaId = em.idEmpresa';
-    let query = 'SELECT * FROM empresas';
+    switch(tipo){
+        case 'normal':
+            query = 'SELECT * FROM empresas';
+        break;
+        case 'redes':
+            query = 'SELECT * FROM empresas em, redessociais re WHERE re.pessoaId = em.idEmpresa';
+        break;
+
+    }
 
     try {
         const resultado = await executarQuery(query);
