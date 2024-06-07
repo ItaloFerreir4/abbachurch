@@ -5,6 +5,7 @@ const https = require('https');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const cors = require('cors');
 const { recNovaSenha } = require('./usuarios');
 const { verificarTokenConfirmacao } = require('./global');
 const { autenticarUsuario, confirmarEmail, enviarRecEmail } = require('./auth');
@@ -12,9 +13,12 @@ const { saveImage } = require('./upload-imagem');
 const { translateElements } = require('./translate');
 const { listarNomePaises } = require('./paises');
 const { listarDoacoes, cadastrarDoacao } = require('./doacoes');
+const { cadastrarEmpresario,atualizarEmpresario } = require('./empresarios');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
+const { listarEmpresas, cadastrarEmpresa, deletarEmpresa, carregarEmpresa, atualizarEmpresa } = require('./empresas');
 const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
+const { listarSegmentos, cadastrarSegmento, deletarSegmento, carregarSegmento, atualizarSegmento } = require('./segmentos');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
@@ -36,6 +40,8 @@ app.use('/html', express.static(path.join(__dirname, '../html')));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
+app.use(cors());
+
 app.use(cookieParser());
 app.use(session({
     secret: 's3Cr3T4BbA',
@@ -44,7 +50,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/api-listagem-empresas', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -419,7 +425,7 @@ app.post('/api/cadastrarVoluntario', async (req, res) => {
 
 app.post('/api/cadastrarPessoa', async (req, res) => {
 
-    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
+    const { tipoPessoa, pastorId, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId, habilidadesEmpresario } = req.body;
     
     try {
 
@@ -436,6 +442,9 @@ app.post('/api/cadastrarPessoa', async (req, res) => {
                     break;
                     case 'voluntario':
                         await cadastrarVoluntario(pessoa.insertId, pastorId, categoriasVoluntario, emailPessoa, nomePessoa, senhaUsuario);
+                    break;
+                    case 'empresario':
+                        await cadastrarEmpresario(pessoa.insertId, pastorId, habilidadesEmpresario);
                     break;
                 }
             }
@@ -498,7 +507,7 @@ app.post('/api/carregarPessoa', async (req, res) => {
 
 app.post('/api/atualizarPessoa', async (req, res) => {
 
-    const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId } = req.body;
+    const { idPessoa, pastorId, tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, telefonePessoa, estadoCivilPessoa, generoPessoa, dataNascimentoPessoa, instagram, facebook, linkedin, senhaUsuario, changeAccess, profissaoPessoa, escolaridadePessoa, idiomaPessoa, nacionalidadePessoa, categoriasVoluntario, igrejaId, habilidadesEmpresario } = req.body;
 
     try {
 
@@ -509,6 +518,10 @@ app.post('/api/atualizarPessoa', async (req, res) => {
             case 'voluntario':
                 const voluntario = await atualizarVoluntario(idPessoa, pastorId, categoriasVoluntario);
                 console.log(voluntario);
+            break;
+            case 'empresario':
+                const empresario = await atualizarEmpresario(idPessoa, pastorId, habilidadesEmpresario);
+                console.log(habilidadesEmpresario);
             break;
         }
 
@@ -1706,6 +1719,213 @@ app.post('/api/listarEventosVoluntario', async (req, res) => {
 
     try {
         const lista = await listarEventosVoluntario(pessoaId);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/listarEmpresas', async (req, res) => {
+
+    try {
+        const lista = await listarEmpresas();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarEmpresa', async (req, res) => {
+
+    const { imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin } = req.body;
+    
+    try {
+
+        const nomeImagem = imagemEmpresa != null  && imagemEmpresa != '' ? await saveImage(JSON.parse(imagemEmpresa)) : 'semfoto.png';
+        const resultado = await cadastrarEmpresa(nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarEmpresa', async (req, res) => {
+
+    const { idEmpresa, imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin } = req.body;
+    
+    try {
+
+        const nomeImagem = imagemEmpresa != null  && imagemEmpresa != '' ? await saveImage(JSON.parse(imagemEmpresa)) : 'semfoto.png';
+        const resultado = await atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarEmpresa', async (req, res) => {
+
+    const { idEmpresa } = req.body;
+
+    try {
+        const resultado = await deletarEmpresa(idEmpresa);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarEmpresa', async (req, res) => {
+
+    const { idEmpresa } = req.body;
+
+    try {
+        const resultado = await carregarEmpresa(idEmpresa);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+
+app.post('/api/listarSegmentos', async (req, res) => {
+
+    try {
+        const lista = await listarSegmentos();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarSegmento', async (req, res) => {
+
+    const { nomeSegmento } = req.body;
+    
+    try {
+        const resultado = await cadastrarSegmento(nomeSegmento);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarSegmento', async (req, res) => {
+
+    const { idSegmento, nomeSegmento } = req.body;
+    
+    try {
+        const resultado = await atualizarSegmento(idSegmento, nomeSegmento);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarSegmento', async (req, res) => {
+
+    const { idSegmento } = req.body;
+
+    try {
+        const resultado = await deletarSegmento(idSegmento);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarSegmento', async (req, res) => {
+
+    const { idSegmento } = req.body;
+
+    try {
+        const resultado = await carregarSegmento(idSegmento);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.get('/api-listagem-empresas', async (req, res) => {
+
+    try {
+        const lista = await listarEmpresas();
 
         if (lista) {
             res.json(lista);

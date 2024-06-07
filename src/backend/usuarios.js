@@ -26,6 +26,10 @@ async function cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa) {
             tipoPessoa = 4;
             statusUsuario = 0;
             break;
+        case 'empresario':
+            tipoPessoa = 6;
+            statusUsuario = 1;
+            break;
     }
 
     try {

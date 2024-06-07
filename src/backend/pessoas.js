@@ -1,6 +1,7 @@
 require('dotenv').config();
 const executarQuery = require('./consulta');
 const { cadastrarUsuario } = require('./usuarios');
+const { deletarEmpresario } = require('./empresarios');
 const { format } = require('date-fns');
 const { enviarEmail } = require('./send-email');
 const { gerarTokenConfirmacao } = require('./global');
@@ -37,6 +38,9 @@ async function listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId) {
             break;
         case 'voluntarioAtivo':
             query = `SELECT * FROM voluntarios vo, pessoas pe, usuarios us WHERE vo.pessoaId = pe.idPessoa AND us.pessoaId = pe.idPessoa AND us.statusUsuario = 1`;
+            break;
+        case 'empresario':
+            query = 'SELECT * FROM pessoas pe, empresarios em WHERE em.pessoaId = pe.idPessoa';
             break;
     }
 
@@ -100,6 +104,9 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
             case 'admin':
+                await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
+            break;
+            case 'empresario':
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
         }
@@ -173,6 +180,9 @@ async function deletarPessoa(pessoaId, tipoPessoa) {
                     query = `DELETE FROM voluntarios WHERE pessoaId = ${pessoaId};`;
                     return await executarQuery(query) ?  true :  null;
                 break;
+                case 'empresario':
+                    return deletarEmpresario(pessoaId);
+                break;
             }
         }
         else{
@@ -212,6 +222,9 @@ async function carregarPessoa(idPessoa, tipoPessoa) {
             break;
         case 'admin':
             query = `SELECT * FROM usuarios us, pessoas pe, redessociais re WHERE us.pessoaId = ${idPessoa} AND us.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa;`;
+            break;
+        case 'empresario':
+            query = `SELECT * FROM empresarios em, pessoas pe, redessociais re, usuarios u WHERE em.pessoaId = ${idPessoa} AND em.pessoaId = pe.idPessoa AND re.pessoaId = pe.idPessoa AND u.pessoaId = pe.idPessoa;`;
             break;
     }
 
@@ -475,4 +488,4 @@ async function isLider(pessoaId, tipo) {
     
 }
 
-module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider };
+module.exports = { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider, cadastrarRedes };

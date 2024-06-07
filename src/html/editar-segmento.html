@@ -1,0 +1,186 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Segmento", "dashbordsubtitle":
+        'Segmentos', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-segmentos">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-segmento" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Segmento</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label for="nomeSegmento" class="mb-2 text-muted">Nome*</label>
+                                            <input type="text" class="form-control mb-2" id="nomeSegmento" name="nomeSegmento">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarSegmento()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+            CarregarSegmento();
+        });
+
+        window.addEventListener('beforeunload', function() {
+            // Obtém o valor atual do sessionStorage
+            var habilidade = sessionStorage.getItem('habilidade');
+
+            // Se o valor existir, remove o item do sessionStorage
+            if (habilidade) {
+                sessionStorage.removeItem('habilidade');
+            }
+        });
+
+        function CarregarSegmento(){
+            const idSegmento = sessionStorage.getItem('segmento');
+            const formData = { idSegmento : idSegmento}
+
+            IniLoader();
+
+            $.post('api/carregarSegmento', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(segmento) {
+                        for (const propriedade in segmento) {
+                            const valor = segmento[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo) {
+                                campo.value = valor;
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarSegmento() {
+
+            const idSegmento = sessionStorage.getItem('segmento');
+            let formData = $('#form-segmento').serializeArray();
+
+            formData.push({ name: 'idSegmento', value: idSegmento });
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarSegmento', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        
+    </script>
+
+</body>
+
+</html>

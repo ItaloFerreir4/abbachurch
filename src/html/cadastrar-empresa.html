@@ -1,0 +1,258 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Empresa", "dashbordsubtitle":
+        'Empresas', "dashbordsubtitle2": 'Cadastrar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-empresas">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <form id="form-empresa" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Empresa</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-2">
+                                    <label for="imagemEmpresa" class="mb-2 text-muted">Imagem</label>
+                                    <input type="file" class="single-fileuploadquad" name="imagemEmpresa" id="imagemEmpresa" accept="image/png, image/jpeg, image/gif">
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label for="nomeEmpresa" class="mb-2 text-muted">Nome*</label>
+                                    <input type="text" class="form-control" id="nomeEmpresa" name="nomeEmpresa">
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label for="nomeEmpresarioEmpresa" class="mb-2 text-muted">Nome do empresário*</label>
+                                    <select class="form-select single-select" id="nomeEmpresarioEmpresa" name="nomeEmpresarioEmpresa"></select>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="telefoneEmpresa" class="mb-2 text-muted">Telefone*</label>
+                                    <input type="text" class="form-control" id="telefoneEmpresa" name="telefoneEmpresa">
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="emailEmpresa" class="mb-2 text-muted">Email*</label>
+                                    <input type="text" class="form-control" id="emailEmpresa" name="emailEmpresa">
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="siteEmpresa" class="mb-2 text-muted">Site*</label>
+                                    <input type="text" class="form-control" id="siteEmpresa" name="siteEmpresa">
+                                </div>
+                                <div class="col-12 col-lg-6 mb-2">
+                                    <label for="enderecoEmpresa" class="mb-2 text-muted">Endereço*</label>
+                                    <input type="text" class="form-control" id="enderecoEmpresa" name="enderecoEmpresa">
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label for="segmentoEmpresa" class="mb-2 text-muted">Segmentos*</label>
+                                    <select class="form-select multiple-select" id="segmentoEmpresa" name="segmentoEmpresa" multiple="multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Redes Sociais</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <label for="instagram" class="mb-2 text-muted">Instagram</label>
+                                    <input type="text" class="form-control mb-2" id="instagram" name="instagram">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="facebook" class="mb-2 text-muted">Facebook</label>
+                                    <input type="text" class="form-control mb-2" id="facebook" name="facebook">
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <label for="linkedin" class="mb-2 text-muted">Linkedin</label>
+                                    <input type="text" class="form-control mb-2" id="linkedin" name="linkedin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="CadastrarEmpresa()">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin'];
+
+        window.addEventListener("load", function() {
+            InputSemImagemQuad();
+            ListaSegmentos();
+            ListarPessoas();
+        });
+        
+        function CadastrarEmpresa() {
+            
+            let formData = $('#form-empresa').serializeArray();
+            let segmentoEmpresa = $('#segmentoEmpresa').val();
+            segmentoEmpresa = segmentoEmpresa.join(',');
+
+            formData = formData.filter(function(item) {
+                return item.name !== 'segmentoEmpresa';
+            });
+
+            formData.push({ name: 'segmentoEmpresa', value: segmentoEmpresa });
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/cadastrarEmpresa', formData)
+                .done(function (data) {
+
+                    cleanform();
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao cadastrar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        function cleanform() {
+            InputSemImagemQuad();
+            document.getElementById('form-empresa').reset();
+        }
+
+        function ListaSegmentos(){
+
+            IniLoader();
+
+            $.post('api/listarSegmentos')
+                .done(function (data) {
+                    const segmentos = data.map(function(segmento) {
+                        return { id: segmento.idSegmento, text: segmento.nomeSegmento };
+                    });
+
+                    $('#segmentoEmpresa').select2({
+                        data: segmentos
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+        
+        function ListarPessoas(){
+
+            IniLoader();
+
+            const formData = { tipoPessoa : 'empresario' }
+
+            $.post('api/listarPessoas', formData)
+                .done(function (data) {
+                    
+                    const empresarios = data.map(function(empresario) {
+                        return { id: empresario.idPessoa, text: empresario.nomePessoa };
+                    });
+
+                    $('#nomeEmpresarioEmpresa').select2({
+                        data: empresarios
+                    });
+                    
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

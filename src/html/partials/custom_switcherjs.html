@@ -101,7 +101,8 @@
                 (elementClasses.contains('lider') && tipoUser === '2') ||
                 (elementClasses.contains('ministerios') && tipoUser === '3') ||
                 (elementClasses.contains('voluntarios') && tipoUser === '4') ||
-                (elementClasses.contains('admin') && tipoUser === '5')
+                (elementClasses.contains('admin') && tipoUser === '5') ||
+                (elementClasses.contains('empresario') && tipoUser === '6')
             ) {
                 hideElement = false;
             }
@@ -114,62 +115,64 @@
     }
 
     function verificacaoCampos(excludedFields, field) {
-        const campos = {
-            'nomePessoa': 'Nome',
-            'emailPessoa': 'Email',
-            'telefonePessoa': 'Telefone',
-            'estadoCivilPessoa': 'Estado Civil',
-            'dataNascimentoPessoa': 'Data de Nascimento',
-            'profissaoPessoa': 'Profissão',
-            'escolaridadePessoa': 'Escolaridade',
-            'idiomaPessoa': 'Idiomas',
-            'nacionalidadePessoa': 'Nacionalidade',
-            'pastorId': 'Pastor Responsável',
-            'generoPessoa': 'Gênero',
-            'categoriasVoluntario': 'Habilidades',
-            'nomeCategoriaEvento': 'Nome',
-            'nomeEvento': 'Nome',
-            'localEvento': 'Local',
-            'dataHoraInicioEvento': 'Data/Hora Inicio',
-            'dataHoraFimEvento': 'Data/Hora Fim',
-            'categoriaEventoId': 'Categoria',
-            'ministerioId': 'Ministério',
-            'observacoesEvento': 'Observações',
-            'nomeCategoria': 'Nome',
-            'nomeIgreja': 'Nome',
-            'paisIgreja': 'País',
-            'estadoIgreja': 'Estado',
-            'enderecoIgreja': 'Endereço',
-            'cepIgreja': 'CEP',
-            'telefoneIgreja': 'Telefone',
-            'emailIgreja': 'Email',
-            'tipoIgreja': 'Tipo',
-            'matrizId': 'Matriz',
-            'nomeMinisterio': 'Nome',
-            'liderId': 'Líder',
-            'dataEntradaMinisterio': 'Data',
-            'igrejaId': 'Igreja',
-            'classificacaoRequisicao': 'Classificação',
-            'informacoesRequisicao': 'Informações',
-            'voluntarioId': 'Voluntário',
-            'categoria': 'Habilidade',
-            'imagemCriativo': 'Imagem',
-            'tituloCriativo': 'Título',
-            'categoriaRelatorioId': 'Categoria',
-            'dataHoraRelatorio': 'Data e Hora',
-            'quantidadeRelatorio': 'Quantidade',
-            'nomeCategoriaRelatorio': 'Nome',
-            'departamentoEvento' : 'Departamento',
-            'dataHoraInicioEvento' : 'Data/Hora Inicio',
-            'dataHoraFimEvento' : 'Data/Hora Fim',
-            'ambienteEvento' : 'Ambiente',
-            'departamentosProducaoEvento' : 'Departamentos da produção',
-            'participacaoAbbaWorshipEvento' : 'Participação do Abba worship',
-        };
+        // const campos = {
+        //     'nomePessoa': 'Nome',
+        //     'emailPessoa': 'Email',
+        //     'telefonePessoa': 'Telefone',
+        //     'estadoCivilPessoa': 'Estado Civil',
+        //     'dataNascimentoPessoa': 'Data de Nascimento',
+        //     'profissaoPessoa': 'Profissão',
+        //     'escolaridadePessoa': 'Escolaridade',
+        //     'idiomaPessoa': 'Idiomas',
+        //     'nacionalidadePessoa': 'Nacionalidade',
+        //     'pastorId': 'Pastor Responsável',
+        //     'generoPessoa': 'Gênero',
+        //     'categoriasVoluntario': 'Habilidades',
+        //     'nomeCategoriaEvento': 'Nome',
+        //     'nomeEvento': 'Nome',
+        //     'localEvento': 'Local',
+        //     'dataHoraInicioEvento': 'Data/Hora Inicio',
+        //     'dataHoraFimEvento': 'Data/Hora Fim',
+        //     'categoriaEventoId': 'Categoria',
+        //     'ministerioId': 'Ministério',
+        //     'observacoesEvento': 'Observações',
+        //     'nomeCategoria': 'Nome',
+        //     'nomeIgreja': 'Nome',
+        //     'paisIgreja': 'País',
+        //     'estadoIgreja': 'Estado',
+        //     'enderecoIgreja': 'Endereço',
+        //     'cepIgreja': 'CEP',
+        //     'telefoneIgreja': 'Telefone',
+        //     'emailIgreja': 'Email',
+        //     'tipoIgreja': 'Tipo',
+        //     'matrizId': 'Matriz',
+        //     'nomeMinisterio': 'Nome',
+        //     'liderId': 'Líder',
+        //     'dataEntradaMinisterio': 'Data',
+        //     'igrejaId': 'Igreja',
+        //     'classificacaoRequisicao': 'Classificação',
+        //     'informacoesRequisicao': 'Informações',
+        //     'voluntarioId': 'Voluntário',
+        //     'categoria': 'Habilidade',
+        //     'imagemCriativo': 'Imagem',
+        //     'tituloCriativo': 'Título',
+        //     'categoriaRelatorioId': 'Categoria',
+        //     'dataHoraRelatorio': 'Data e Hora',
+        //     'quantidadeRelatorio': 'Quantidade',
+        //     'nomeCategoriaRelatorio': 'Nome',
+        //     'departamentoEvento' : 'Departamento',
+        //     'dataHoraInicioEvento' : 'Data/Hora Inicio',
+        //     'dataHoraFimEvento' : 'Data/Hora Fim',
+        //     'ambienteEvento' : 'Ambiente',
+        //     'departamentosProducaoEvento' : 'Departamentos da produção',
+        //     'participacaoAbbaWorshipEvento' : 'Participação do Abba worship',
+        // };
 
         if (!excludedFields.includes(field.name)) {
             if (field.value.trim() === '' || field.value.trim() === 'Selecione uma opção') {
-                return { fieldName: field.name, fieldLabel: campos[field.name] };
+                const labelElement = document.querySelector(`label[for='${field.name}']`);
+                const labelText = labelElement.textContent;
+                return { fieldName: field.name, fieldLabel: labelText };
             } else {
                 return null;  // Retorna null para campos não vazios
             }
