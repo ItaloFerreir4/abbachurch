@@ -1753,12 +1753,12 @@ app.post('/api/listarEmpresas', async (req, res) => {
 
 app.post('/api/cadastrarEmpresa', async (req, res) => {
 
-    const { imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin } = req.body;
+    const { imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin } = req.body;
     
     try {
 
         const nomeImagem = imagemEmpresa != null  && imagemEmpresa != '' ? await saveImage(JSON.parse(imagemEmpresa)) : 'semfoto.png';
-        const resultado = await cadastrarEmpresa(nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin);
+        const resultado = await cadastrarEmpresa(nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin);
         
         if (resultado) {
             res.json({ message: 'Cadastrado com sucesso' });
@@ -1773,12 +1773,12 @@ app.post('/api/cadastrarEmpresa', async (req, res) => {
 
 app.post('/api/atualizarEmpresa', async (req, res) => {
 
-    const { idEmpresa, imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin } = req.body;
+    const { idEmpresa, imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin } = req.body;
     
     try {
 
         const nomeImagem = imagemEmpresa != null  && imagemEmpresa != '' ? await saveImage(JSON.parse(imagemEmpresa)) : 'semfoto.png';
-        const resultado = await atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin);
+        const resultado = await atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin);
         
         if (resultado) {
             res.json({ message: 'Atualizado com sucesso' });

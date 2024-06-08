@@ -24,14 +24,14 @@ async function listarEmpresas(tipo) {
     }
 }
 
-async function cadastrarEmpresa(nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin) {
+async function cadastrarEmpresa(nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin) {
 
     // Aplicar escape nas aspas simples e duplas nos valores de texto
     nomeEmpresa = nomeEmpresa.replace(/(['"])/g, "\\$1");
     
     const query = `
-    INSERT INTO empresas (imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa) 
-    VALUES ('${nomeImagem}', '${nomeEmpresa}', '${nomeEmpresarioEmpresa}', '${telefoneEmpresa}', '${emailEmpresa}','${ siteEmpresa}', '${enderecoEmpresa}', '${segmentoEmpresa}')`;
+    INSERT INTO empresas (imagemEmpresa, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa) 
+    VALUES ('${nomeImagem}', '${nomeEmpresa}', '${nomeEmpresarioEmpresa}', '${telefoneEmpresa}', '${emailEmpresa}','${ siteEmpresa}', '${enderecoEmpresa}', '${segmentoEmpresa}',  '${iframeMapaEmpresa}')`;
 
     try {
         const resultado = await executarQuery(query);
@@ -74,7 +74,7 @@ async function carregarEmpresa(idEmpresa) {
     }
 }
 
-async function atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, instagram, facebook, linkedin) {
+async function atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresarioEmpresa, telefoneEmpresa, emailEmpresa, siteEmpresa, enderecoEmpresa, segmentoEmpresa, iframeMapaEmpresa, instagram, facebook, linkedin) {
 
     // Aplicar escape nas aspas simples e duplas nos valores de texto
     nomeEmpresa = nomeEmpresa.replace(/(['"])/g, "\\$1");
@@ -88,7 +88,8 @@ async function atualizarEmpresa(idEmpresa, nomeImagem, nomeEmpresa, nomeEmpresar
         emailEmpresa = '${emailEmpresa}',
         siteEmpresa = '${siteEmpresa}',
         enderecoEmpresa = '${enderecoEmpresa}',
-        segmentoEmpresa = '${segmentoEmpresa}'
+        segmentoEmpresa = '${segmentoEmpresa}',
+        iframeMapaEmpresa = '${iframeMapaEmpresa}'
         WHERE idEmpresa = ${idEmpresa};`;
         
     try {
