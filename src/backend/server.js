@@ -50,7 +50,7 @@ app.use(session({
 }));
 
 const authenticateMiddleware = (req, res, next) => {
-    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/api/api-listagem-empresas', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
+    if (['/login', '/reset-password', '/index', '/voluntariar', '/doar', '/empower', '/api/cadastrarDoacao', '/api/listarCategorias', '/api/listarNomePaises', '/api/cadastrarVoluntario', '/api/traduzirElemetos', '/esqueci-minha-senha', '/nova-senha', '/api/api-listagem-empresas', '/'].includes(req.url) || req.url.startsWith('/confirmar-email')  || req.url.startsWith('/recuperar-senha') ) {
         next();
     } else if (req.session.authenticated) {
         next();
@@ -108,6 +108,11 @@ app.get('/esqueci-minha-senha', (req, res) => {
 
 app.get('/voluntariar', (req, res) => { 
     const filePath = path.join(__dirname, '../html', 'voluntariar.html');
+    res.sendFile(filePath);
+})
+
+app.get('/empower', (req, res) => { 
+    const filePath = path.join(__dirname, '../html', 'empower.html');
     res.sendFile(filePath);
 })
 

@@ -57,6 +57,7 @@ function watch() {
     gulp.watch(['./src/assets/plugins/*', './src/assets/plugins/**/*.js'], gulp.series('plugins', browsersyncReload));
     gulp.watch(['./src/html/**/*.html', './src/html/partials/*'], gulp.series('html', browsersyncReload));
     gulp.watch(['./src/backend/**/*'], gulp.series('backend', browsersyncReload)); // Adicionado para observar mudanças na pasta backend
+    gulp.watch(['./src/assets/css/**/*'], gulp.series('css', browsersyncReload));
 };
 
 function html(callback) {
@@ -152,6 +153,13 @@ function backend(callback) {
     return callback();
 };
 
+function css(callback) {
+    // Copy the backend files to dist
+    gulp.src('./src/assets/css/**/*')
+        .pipe(gulp.dest('./dist/assets/css'));
+    return callback();
+};
+
 function copyLibs() {
     var destPath = 'dist/assets/libs';
 
@@ -182,12 +190,12 @@ function copyAll() {
 };
 
 const build = gulp.series(
-    gulp.parallel(cleanDist, copyAll, html, scss, js, plugins, backend), // Adicionado 'backend' aqui
+    gulp.parallel(cleanDist, copyAll, html, scss, js, plugins, backend, css), // Adicionado 'backend' aqui
     gulp.parallel(scss, html, js, plugins)
 );
 
 const defaults = gulp.series(
-    gulp.parallel(cleanDist, copyAll, html, scss, js, plugins, backend, copyLibs), // Adicionado 'backend' aqui
+    gulp.parallel(cleanDist, copyAll, html, scss, js, plugins, backend, css, copyLibs), // Adicionado 'backend' aqui
     gulp.parallel(startServer, browsersyncFn, watch, html, js, scss, plugins)
 );
 
@@ -200,6 +208,7 @@ exports.scss = scss;
 exports.html = html;
 exports.cleanDist = cleanDist;
 exports.copyAll = copyAll;
+exports.css = css;
 exports.backend = backend; // Adicionado 'backend' aqui
 
 exports.watch = watch;
