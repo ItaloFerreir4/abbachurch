@@ -40,6 +40,10 @@
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
+                                </div>
+                                <div class="col-12 col-lg-6">
                                     <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
                                     <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                 </div>
@@ -135,35 +139,6 @@
                             </div>
                         </div>
                     </div>
-                    <span class="option-access" id="optionAccess">Alterar dados de acesso</span>
-                    <div class="card custom-card" id="contentAccess" data-close="1">
-                        <div class="card-header">
-                            <div class="card-title">Acesso</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12 col-lg-4">
-                                    <label for="emailPessoa" class="mb-2 text-muted">Email</label>
-                                    <input disabled type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
-                                </div>
-                                <div class="col-12 col-lg-4" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Nova senha</label>
-                                    <input disabled type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye-edit" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-lg-4" style="position: relative;">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha</label>
-                                    <input disabled type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye-edit" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <input type="hidden" name="changeAccess" id="changeAccess" value="0">
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-12">
                             <button id="submitBtn"  class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
@@ -205,61 +180,6 @@
                 
                 FinLoader();
             });
-        });
-
-        document.getElementById('optionAccess').addEventListener('click', function() {
-
-            let contentAccess = document.getElementById('contentAccess');
-            let close = contentAccess.getAttribute('data-close');
-            let emailPessoa = document.getElementById('emailPessoa');
-            let senhaUsuario = document.getElementById('senhaUsuario');
-            let confirmeSenhaUsuario = document.getElementById('confirmeSenhaUsuario');
-            let optionAccess = document.getElementById('optionAccess');
-            let changeAccess = document.getElementById('changeAccess');
-            let iconEye = document.getElementsByClassName('icon-eye-edit');
-
-            if (close === '1') {
-
-                contentAccess.setAttribute('data-close', '0');
-
-                emailPessoa.disabled = false;
-
-                senhaUsuario.disabled = false;
-                senhaUsuario.value = '';
-                confirmeSenhaUsuario.disabled = false;
-                confirmeSenhaUsuario.value = '';
-
-                optionAccess.innerHTML = 'Cancelar';
-                changeAccess.value = '1';
-
-                iconEye[0].style = 'pointer-events: auto; cursor: pointer; margin:10px;';
-                iconEye[1].style = 'pointer-events: auto; cursor: pointer; margin:10px;';
-
-                validarSenha();
-
-            } else {
-
-                contentAccess.setAttribute('data-close', '1');
-
-                emailPessoa.disabled = true;
-
-                senhaUsuario.disabled = true;
-                senhaUsuario.value = 'undefined';
-                senhaUsuario.type = 'password';
-
-                confirmeSenhaUsuario.disabled = true;
-                confirmeSenhaUsuario.value = 'undefined';
-                confirmeSenhaUsuario.type = 'password';
-
-                optionAccess.innerHTML = 'Alterar dados de acesso';
-                changeAccess.value = '0';
-
-                iconEye[0].style = 'pointer-events: none; cursor: default; margin:10px;';
-                iconEye[1].style = 'pointer-events: none; cursor: default; margin:10px;';
-
-                validarSenha();
-
-            }
         });
 
         function CarregarPessoa(){
@@ -431,51 +351,16 @@
 
             let email = document.getElementById('emailPessoa');
             let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
 
             if (emailRegex.test(email.value)) {
                 email.classList.remove('border-red');
                 email.classList.add('border-green');
-
-                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
-                    submitBtn.disabled = false;
-                }
-
+                submitBtn.disabled = false;
             } else {
                 email.classList.remove('border-green');
                 email.classList.add('border-red');
                 submitBtn.disabled = true;
-            }
-
-        }
-
-        function validarSenha() {
-
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
-            let submitBtn = document.getElementById('submitBtn');
-            let email = document.getElementById('emailPessoa');
-            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (senha.value.length < 5) {
-                submitBtn.disabled = true;
-            } else if (senha.value !== confirmaSenha.value) {
-                senha.classList.remove('border-green');
-                confirmaSenha.classList.remove('border-green');
-                senha.classList.add('border-red');
-                confirmaSenha.classList.add('border-red');
-                submitBtn.disabled = true;
-            } else {
-                senha.classList.remove('border-red');
-                confirmaSenha.classList.remove('border-red');
-                senha.classList.add('border-green');
-                confirmaSenha.classList.add('border-green');
-                
-                if (emailRegex.test(email.value)) {
-                    submitBtn.disabled = false;
-                }
             }
 
         }

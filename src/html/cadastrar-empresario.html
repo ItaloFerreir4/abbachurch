@@ -39,20 +39,6 @@
                                     <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
                                     <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
                                 </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
-                                    <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
-                                    <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
                                     <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
@@ -265,64 +251,18 @@
 
             let email = document.getElementById('emailPessoa');
             let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
 
             if (emailRegex.test(email.value)) {
                 email.classList.remove('border-red');
                 email.classList.add('border-green');
-
-                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
-                    submitBtn.disabled = false;
-                }
-
+                submitBtn.disabled = false;
             } else {
                 email.classList.remove('border-green');
                 email.classList.add('border-red');
                 submitBtn.disabled = true;
             }
 
-        }
-
-            function validarSenha() {
-
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
-            let submitBtn = document.getElementById('submitBtn');
-            let email = document.getElementById('emailPessoa');
-            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (senha.value.length < 5) {
-                submitBtn.disabled = true;
-            } else if (senha.value !== confirmaSenha.value) {
-                senha.classList.remove('border-green');
-                confirmaSenha.classList.remove('border-green');
-                senha.classList.add('border-red');
-                confirmaSenha.classList.add('border-red');
-                submitBtn.disabled = true;
-            } else {
-                senha.classList.remove('border-red');
-                confirmaSenha.classList.remove('border-red');
-                senha.classList.add('border-green');
-                confirmaSenha.classList.add('border-green');
-                
-                if (emailRegex.test(email.value)) {
-                    submitBtn.disabled = false;
-                }
-            }
-
-        }
-
-        function toggleVisibilidadeSenha(element, input) {
-            var senhaInput = document.getElementById(input);
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
-                element.innerHTML = '<i class="bi bi-eye-fill"></i>';
-            } else {
-                senhaInput.type = 'password';
-                element.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
-            }
         }
 
         function ListaPastores(){

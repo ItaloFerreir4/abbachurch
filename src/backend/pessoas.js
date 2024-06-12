@@ -106,9 +106,6 @@ async function cadastrarPessoa(tipoPessoa, fotoPessoa, nomePessoa, emailPessoa, 
             case 'admin':
                 await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
             break;
-            case 'empresario':
-                await cadastrarUsuario(pessoaId, senhaUsuario, tipoPessoa);
-            break;
         }
 
         await cadastrarRedes(pessoaId, instagram, facebook, linkedin);
@@ -296,6 +293,14 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
                 UPDATE pastores
                 SET igrejaId = '${igrejaId}'
                 WHERE pessoaId = ${idPessoa};
+                `;
+                await executarQuery(query);
+                break;
+            case 'empresario':
+                query = `
+                UPDATE pessoas
+                SET emailPessoa = '${emailPessoa}'
+                WHERE idPessoa = ${idPessoa};
                 `;
                 await executarQuery(query);
                 break;
