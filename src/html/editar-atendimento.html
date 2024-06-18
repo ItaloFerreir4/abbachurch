@@ -1,0 +1,253 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Atendimento", "dashbordsubtitle":
+        'Atendimentos', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="timeline-atendimento">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <form id="form-atendimento" enctype="multipart/form-data">
+                            <div class="card custom-card">
+                                <div class="card-header">
+                                    <div class="card-title">Atendimento</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-6 mb-2">
+                                            <label for="atendenteAtendimento" class="mb-2 text-muted">Atendente*</label>
+                                            <select class="form-select single-select" id="atendenteAtendimento" name="atendenteAtendimento">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2">
+                                            <label for="atendidoAtendimento" class="mb-2 text-muted">Atendido*</label>
+                                            <select class="form-select single-select" id="atendidoAtendimento" name="atendidoAtendimento">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mb-2">
+                                            <label for="tituloAtendimento" class="mb-2 text-muted">Título*</label>
+                                            <input type="text" class="form-control" id="tituloAtendimento" name="tituloAtendimento">
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <label for="dataAtendimento" class="mb-2 text-muted">Data*</label>
+                                            <input type="text" class="form-control mb-2 datetime" id="dataAtendimento" name="dataAtendimento">
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <label for="anotacaoAtendimento" class="mb-2 text-muted">Anotações*</label>
+                                            <textarea type="text" class="form-control" id="anotacaoAtendimento" name="anotacaoAtendimento" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-primary mb-4" id="submitBtn" type="button" onClick="EditarAtendimento()">Atualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = [];
+
+        window.addEventListener("load", function() {
+
+            IniLoader();
+
+            Promise.all([ListaPessoas()])
+            .then(function () {
+                CarregarAtendimento();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
+            });
+        });
+
+        function ListaPessoas(){
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'todos' };
+                const selectAtendente = $("#atendenteAtendimento");
+                const selectAtendido = $("#atendidoAtendimento");
+
+                selectAtendente.empty();
+                selectAtendido.empty();
+
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        data.forEach(function(pessoa) {
+                            selectAtendente.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                            selectAtendido.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+
+        function CarregarAtendimento(){
+            const idAtendimento = sessionStorage.getItem('atendimento');
+            const formData = { idAtendimento : idAtendimento}
+
+            IniLoader();
+
+            $.post('api/carregarAtendimento', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(atendimento) {
+                        for (const propriedade in atendimento) {
+                            const valor = atendimento[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo && valor) {
+                                if (propriedade === 'atendenteAtendimento'){
+                                    campo.value = valor;
+                                    $('#atendenteAtendimento').val(valor).trigger('change');
+                                }
+                                else if (propriedade === 'atendidoAtendimento'){
+                                    campo.value = valor;
+                                    $('#atendidoAtendimento').val(valor).trigger('change');
+                                }
+                                else if (propriedade === 'dataAtendimento') {
+                                    const parsedDate = new Date(valor);
+                                    const data = formatarDataHora(parsedDate);
+                                    campo.value = data;
+                                }
+                                else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarAtendimento() {
+
+            const idAtendimento = sessionStorage.getItem('atendimento');
+            let formData = $('#form-atendimento').serializeArray();
+
+            formData.push({ name: 'idAtendimento', value: idAtendimento });
+
+            console.log(formData);
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else {
+                IniLoader();
+                $.post('api/atualizarAtendimento', formData)
+                .done(function (data) {
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Atualizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao atualizar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+
+        }
+
+        
+    </script>
+
+</body>
+
+</html>

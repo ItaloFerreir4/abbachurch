@@ -1,0 +1,183 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+<style>
+    header, aside{
+        display: none!important;
+    }
+
+    .page-header-breadcrumb{
+        margin-top: -65px;
+    }
+</style>
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Membro", "dashbordsubtitle":
+        'Membros', "dashbordsubtitle2": 'Cadastrar'})
+        
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <form id="form-pessoa" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Membro</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
+                                    <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
+                                    <input type="text" class="form-control mb-2" id="nomePessoa" name="nomePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="telefonePessoa" class="mb-2 text-muted">Telefone*</label>
+                                    <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
+                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin', 'estadoCivilPessoa', 'generoPessoa', 'profissaoPessoa', 'escolaridadePessoa', 'idiomaPessoa', 'nacionalidadePessoa'];
+
+        window.addEventListener("load", function() {
+        });
+
+        function CadastrarUsuario() {
+            
+            let formData = $('#form-pessoa').serializeArray();
+
+            formData.push({ name: 'tipoPessoa', value: 'membro' });
+
+            const firstEmptyField = formData
+                .map(field => verificacaoCampos(excludedFields, field))
+                .find(result => result !== null);
+
+            if (firstEmptyField) {
+                const errorMessage = `Preencha o campo: ${firstEmptyField.fieldLabel}`;
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: errorMessage,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } 
+            else {
+                IniLoader();
+                $.post('api/cadastrarPessoa', formData)
+                .done(function (data) {
+
+                    cleanform();
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cadastrado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+            }
+            
+        } 
+
+        function validarEmail() {
+
+            let email = document.getElementById('emailPessoa');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let submitBtn = document.getElementById('submitBtn');
+
+            if (emailRegex.test(email.value)) {
+                email.classList.remove('border-red');
+                email.classList.add('border-green');
+                submitBtn.disabled = false;
+            } else {
+                email.classList.remove('border-green');
+                email.classList.add('border-red');
+                submitBtn.disabled = true;
+            }
+
+        }
+
+        function cleanform() {
+            document.getElementById('form-pessoa').reset();
+            InputSemImagem();
+            let select2 = document.querySelectorAll('.select2-selection__choice__remove');
+            if(select2.length > 0){
+                select2.forEach(function(item) {
+                    item.click();
+                });
+            }
+            document.getElementById('emailPessoa').focus();
+        }
+    
+    </script>
+
+</body>
+
+</html>

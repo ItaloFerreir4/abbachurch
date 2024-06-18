@@ -42,6 +42,16 @@ async function listarPessoas(idUserLog, tipoUserLog, tipoPessoa, pessoaId) {
         case 'empresario':
             query = 'SELECT * FROM pessoas pe, empresarios em WHERE em.pessoaId = pe.idPessoa';
             break;
+        case 'membro':
+            query = `
+            SELECT *
+            FROM pessoas pe
+            LEFT JOIN usuarios us ON pe.idPessoa = us.pessoaId
+            LEFT JOIN filhos fi ON pe.idPessoa = fi.pessoaId
+            LEFT JOIN conjuge co ON pe.idPessoa = co.pessoaId
+            LEFT JOIN empresarios em ON pe.idPessoa = em.pessoaId
+            WHERE us.pessoaId IS NULL AND fi.pessoaId IS NULL AND co.pessoaId IS NULL AND em.pessoaId IS NULL;`;
+            break;
     }
 
     try {
@@ -297,6 +307,14 @@ async function atualizarPessoa(idPessoa, tipoPessoa, fotoPessoa, nomePessoa, ema
                 await executarQuery(query);
                 break;
             case 'empresario':
+                query = `
+                UPDATE pessoas
+                SET emailPessoa = '${emailPessoa}'
+                WHERE idPessoa = ${idPessoa};
+                `;
+                await executarQuery(query);
+                break;
+            case 'membro':
                 query = `
                 UPDATE pessoas
                 SET emailPessoa = '${emailPessoa}'

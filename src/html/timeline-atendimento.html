@@ -1,0 +1,189 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Timeline", "dashbordsubtitle":
+        'Atendimentos', "dashbordsubtitle2": 'Timeline'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-atendimentos">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="timeline list-unstyled"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+
+    <script>
+        window.addEventListener("load", function() {
+            ListarAtendimentos();
+        });
+
+        function ListarAtendimentos(){
+    
+            IniLoader();
+    
+            const atendidoAtendimento = sessionStorage.getItem('atendidoAtendimento');
+            
+            const formData = { tipoListagem : 'atendimentoPessoa', atendidoAtendimento :  atendidoAtendimento }
+    
+            const elementTimeLine = document.querySelector('.timeline');
+
+            elementTimeLine.innerHTML = '';
+    
+            $.post('api/listarAtendimentos', formData)
+                .done(function (data) {
+                    data.forEach(function(atendimento) {
+
+                        const data = formatDate(atendimento.dataAtendimento);
+                        const hora = formatTime(atendimento.dataAtendimento);
+    
+                        const elementLi = document.createElement('li');
+    
+                        elementLi.innerHTML = `
+                        <div class="timeline-time text-end">
+                            <span class="time d-inline-block">${data}</span>
+                        </div>
+                        <div class="timeline-icon">
+                            <a href="javascript:void(0);"></a>
+                        </div>
+                        <div class="timeline-body">
+                            <div class="d-flex align-items-top timeline-main-content mt-0">
+                                <div class="flex-fill">
+                                    <div class="align-items-center">
+                                        <div class="mt-sm-0 mt-2">
+                                            <p class="mb-0 fs-14 fw-semibold">${atendimento.tituloAtendimento}</p>
+                                            <p class="mb-0 text-muted">${atendimento.anotacaoAtendimento}</p>
+                                        </div>
+                                        <div class="mt-2 d-flex justify-content-between">
+                                            <div class="timeline-acitions">
+                                                <button class="btn btn-sm btn-icon btn-success-light rounded-pill btn-wave waves-effect waves-light" onClick="EditarAtendimento(${atendimento.idAtendimento})"><i class="las la-pen"></i></button>
+                                                <button class="btn btn-sm btn-icon btn-danger-light rounded-pill btn-wave waves-effect waves-light" onClick="DeletarAtendimento(${atendimento.idAtendimento})"><i class="las la-trash"></i></button>
+                                            </div>
+                                            <span class="float-end badge bg-light text-muted timeline-badge mt-2 rounded-1">
+                                                ${hora}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;   
+                        
+                        elementTimeLine.appendChild(elementLi);
+                    });
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao listar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+    
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = date.toLocaleString('default', { month: 'short' });
+            return `${day} ${month}`;
+        }
+
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const minutes = date.getMinutes();
+            let hours = date.getHours();
+            const ampm = hours >= 12? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        function EditarAtendimento(idAtendimento){
+            sessionStorage.setItem('atendimento', idAtendimento);
+            window.location.href = "editar-atendimento";
+        }
+
+        function DeletarAtendimento(idAtendimento){
+
+            const dataApi = { idAtendimento: idAtendimento };
+
+            Swal.fire({
+            title: "Quer realmente deletar?",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Deletar",
+            cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    IniLoader();
+                    $.post('/api/deletarAtendimento', dataApi)
+                        .done(function (data) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Deletado com sucesso!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+
+                            ListarAtendimentos();
+                        })
+                        .fail(function (error) {
+                            console.error('Erro na requisição:', error);
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Erro ao deletar!',
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        });
+                }
+            });
+
+        }
+    
+    </script>
+</body>
+
+</html>

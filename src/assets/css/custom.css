@@ -51,3 +51,9 @@
 #contentAccess[data-close="0"] {
     filter: grayscale(0%);
 }
+
+.ifr-add-membro{
+    width: 100%;
+    min-height: 400px;
+    max-width: 700px;
+}

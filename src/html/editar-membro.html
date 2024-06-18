@@ -13,45 +13,31 @@
     <div class="page">
         @SPK@include("partials/header.html")
         @SPK@include("partials/sidebar.html")
-        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Cadastrar Voluntário", "dashbordsubtitle":
-        'Voluntários', "dashbordsubtitle2": 'Cadastrar'})
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Editar Membro", "dashbordsubtitle":
+        'Membros', "dashbordsubtitle2": 'Editar'})
 
         <!-- Start::app-content -->
         <div class="main-content app-content">
             <div class="row">
                 <div class="col-12">
-                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-voluntarios">Voltar</a>
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-membros">Voltar</a>
                 </div>
             </div>
             <div class="container-fluid">
                 <form id="form-pessoa" enctype="multipart/form-data">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Voluntário</div>
+                            <div class="card-title">Membro</div>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 col-lg-6">
-                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto*</label>
+                                    <label for="fotoPessoa" class="mb-2 text-muted">Foto</label>
                                     <input type="file" class="single-fileupload" name="fotoPessoa" id="fotoPessoa" accept="image/png, image/jpeg, image/gif">
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="emailPessoa" class="mb-2 text-muted">Email*</label>
                                     <input type="email" class="form-control mb-2" id="emailPessoa" name="emailPessoa" oninput="validarEmail()">
-                                </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="senhaUsuario" class="mb-2 text-muted">Senha*</label>
-                                    <input type="password" class="form-control mb-2" id="senhaUsuario" name="senhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'senhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
-                                </div>
-                                <div class="col-12 col-lg-6" style="position: relative;">
-                                    <label for="confirmeSenhaUsuario" class="mb-2 text-muted">Confirme a senha*</label>
-                                    <input type="password" class="form-control mb-2" id="confirmeSenhaUsuario" name="confirmeSenhaUsuario" oninput="validarSenha()">
-                                    <span style="margin:10px;" class="icon-eye" onclick="toggleVisibilidadeSenha(this, 'confirmeSenhaUsuario')">
-                                        <i class="bi bi-eye-slash-fill"></i>
-                                    </span>
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <label for="nomePessoa" class="mb-2 text-muted">Nome*</label>
@@ -62,7 +48,11 @@
                                     <input type="phone" class="form-control mb-2" id="telefonePessoa" name="telefonePessoa">
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil*</label>
+                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
+                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <label for="estadoCivilPessoa" class="mb-2 text-muted">Estado Civil</label>
                                     <select class="form-select mb-2" id="estadoCivilPessoa" name="estadoCivilPessoa">
                                         <option>Solteiro(a)</option>
                                         <option>Casado(a)</option>
@@ -72,7 +62,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="generoPessoa" class="mb-2 text-muted">Gênero*</label>
+                                    <label for="generoPessoa" class="mb-2 text-muted">Gênero</label>
                                     <select class="form-select mb-2" id="generoPessoa" name="generoPessoa">
                                         <option>Selecione uma opção</option>
                                         <option value="F">Feminino</option>
@@ -80,15 +70,11 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <label for="dataNascimentoPessoa" class="mb-2 text-muted">Data Nascimento*</label>
-                                    <input type="date" class="form-control mb-2" id="dataNascimentoPessoa" name="dataNascimentoPessoa">
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <label for="profissaoPessoa" class="mb-2 text-muted">Profissão*</label>
+                                    <label for="profissaoPessoa" class="mb-2 text-muted">Profissão</label>
                                     <input type="text" class="form-control mb-2" id="profissaoPessoa" name="profissaoPessoa">
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
-                                    <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade*</label>
+                                    <label for="escolaridadePessoa" class="mb-2 text-muted">Escolaridade</label>
                                     <select class="form-select" id="escolaridadePessoa" name="escolaridadePessoa">
                                         <option>Selecione uma opção</option>
                                         <option>Analfabeto</option>
@@ -106,7 +92,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
-                                    <label for="idiomaPessoa" class="mb-2 text-muted">Idiomas*</label>
+                                    <label for="idiomaPessoa" class="mb-2 text-muted">Idiomas</label>
                                     <select class="form-select multiple-select" id="idiomaPessoa" name="idiomaPessoa" multiple="multiple">
                                         <option>Português</option>
                                         <option>Ingles</option>
@@ -115,18 +101,8 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
-                                    <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade*</label>
+                                    <label for="nacionalidadePessoa" class="mb-2 text-muted">Nacionalidade</label>
                                     <select class="form-select single-select" id="nacionalidadePessoa" name="nacionalidadePessoa">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="categoriasVoluntario" class="mb-2 text-muted">Habilidades*</label>
-                                    <select class="form-select multiple-select" id="categoriasVoluntario" name="categoriasVoluntario" multiple="multiple">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="pastorId" class="mb-2 text-muted">Pastor Responsavel*</label>
-                                    <select class="form-select single-select" id="pastorId" name="pastorId">
                                     </select>
                                 </div>
                             </div>
@@ -155,7 +131,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-primary mb-4" id="submitBtn" disabled type="button" onClick="CadastrarUsuario()">Cadastrar</button>
+                            <button id="submitBtn"  class="btn btn-primary mb-4" type="button" onClick="EditarPessoa()">Atualizar</button>
                         </div>
                     </div>
                 </form>
@@ -179,33 +155,118 @@
     <script src="../assets/js/custom.js"></script>
 
     <script>
-        const excludedFields = ['instagram', 'facebook', 'linkedin'];
-
+        const excludedFields = ['instagram', 'facebook', 'linkedin', 'estadoCivilPessoa', 'generoPessoa', 'profissaoPessoa', 'escolaridadePessoa', 'idiomaPessoa', 'nacionalidadePessoa'];
+        
         window.addEventListener("load", function() {
-            InputSemImagem();
-            ListaPastores();
-            ListaHabilidades();
-            ListaPaises();
+            
+            IniLoader();
+
+            Promise.all([ListaPaises()])
+            .then(function () {
+                CarregarPessoa();
+            })
+            .catch(function (error) {
+                console.error('Erro ao carregar dados:', error);
+                
+                FinLoader();
+            });
         });
 
-        function CadastrarUsuario() {
-            
+        function CarregarPessoa(){
+            const idPessoa = sessionStorage.getItem('pessoa');
+            const formData = { idPessoa : idPessoa, tipoPessoa : 'perfil' }
+
+            $.post('api/carregarPessoa', formData)
+                .done(function (data) { console.log(data);
+                    
+                    data.forEach(function(pessoa) {
+                        for (const propriedade in pessoa) {
+                            const valor = pessoa[propriedade];
+                            const campo = document.getElementById(propriedade);
+    
+                            if (campo && valor) {
+                                if (propriedade === 'dataNascimentoPessoa') {
+                                    const valorComoData = new Date(valor);
+
+                                    if (Object.prototype.toString.call(valorComoData) === '[object Date]' && !isNaN(valorComoData)) {
+                                        const dataFormatada = valorComoData.toISOString().split('T')[0];
+                                        campo.value = dataFormatada;
+                                    } else {
+                                        campo.value = valor;
+                                    }
+                                } else if(propriedade === 'fotoPessoa') {
+                                    
+                                    if(valor){
+                                        const caminho = '../assets/uploads/' + valor;
+                                        InputComImagem(caminho);
+                                    }
+                                    else{
+                                        InputSemImagem();
+                                    }
+
+                                }
+                                else if (propriedade === 'idiomaPessoa'){
+
+                                    const idiomasArray = valor.split(',');
+                                    $('#idiomaPessoa').val(idiomasArray).trigger('change');
+
+                                }
+                                else if (propriedade === 'nacionalidadePessoa'){
+                                    campo.value = valor;
+                                    $('#nacionalidadePessoa').val(valor).trigger('change');
+                                }
+                                else if (propriedade === 'generoPessoa'){
+                                    if(valor == null || valor == ""){
+                                        campo.value = "Selecione uma opção";
+                                    }
+                                    else{
+                                        campo.value = valor;
+                                    }
+                                }
+                                else {
+                                    campo.value = valor;
+                                }
+                            }
+
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function EditarPessoa() {
+
+            const idPessoa = sessionStorage.getItem('pessoa');
             let formData = $('#form-pessoa').serializeArray();
-            let habilidadesSelecionadas = $('#categoriasVoluntario').val();
             let idiomasSelecionados = $('#idiomaPessoa').val();
-            let habilidadesString = habilidadesSelecionadas.join(',');
             let idiomasString = idiomasSelecionados.join(',');
 
-            const itensParaRemover = ['idiomaPessoa', 'categoriasVoluntario'];
+            const itensParaRemover = ['idiomaPessoa'];
 
             // Remover todas as entradas relacionadas ao campo idiomaPessoa do formData
             formData = formData.filter(function(item) {
                 return !itensParaRemover.includes(item.name);
             });
 
-            formData.push({ name: 'categoriasVoluntario', value: habilidadesString });
             formData.push({ name: 'idiomaPessoa', value: idiomasString });
-            formData.push({ name: 'tipoPessoa', value: 'voluntario' });
+            formData.push({ name: 'idPessoa', value: idPessoa });
+            formData.push({ name: 'tipoPessoa', value: 'membro' });
 
             const firstEmptyField = formData
                 .map(field => verificacaoCampos(excludedFields, field))
@@ -222,18 +283,15 @@
                     timer: 1500
                 });
 
-            } 
-            else {
+            } else {
                 IniLoader();
-                $.post('api/cadastrarPessoa', formData)
+                $.post('api/atualizarPessoa', formData)
                 .done(function (data) {
-
-                    cleanform();
                     
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
-                        title: 'Cadastrado com sucesso!',
+                        title: 'Atualizado com sucesso!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -243,7 +301,7 @@
 
                     console.error('Erro na requisição:', error);
 
-                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao cadastrar!';
+                    message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao atualizar!';
 
                     Swal.fire({
                         position: 'center',
@@ -258,25 +316,19 @@
                     FinLoader();
                 });
             }
-            
-        } 
+
+        }
 
         function validarEmail() {
 
             let email = document.getElementById('emailPessoa');
             let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
             let submitBtn = document.getElementById('submitBtn');
 
             if (emailRegex.test(email.value)) {
                 email.classList.remove('border-red');
                 email.classList.add('border-green');
-
-                if (senha.value == confirmaSenha.value && senha.value.length >= 5) {
-                    submitBtn.disabled = false;
-                }
-
+                submitBtn.disabled = false;
             } else {
                 email.classList.remove('border-green');
                 email.classList.add('border-red');
@@ -284,62 +336,22 @@
             }
 
         }
-
-        function validarSenha() {
-
-            let senha = document.getElementById('senhaUsuario');
-            let confirmaSenha = document.getElementById('confirmeSenhaUsuario');
-            let submitBtn = document.getElementById('submitBtn');
-            let email = document.getElementById('emailPessoa');
-            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (senha.value.length < 5) {
-                submitBtn.disabled = true;
-            } else if (senha.value !== confirmaSenha.value) {
-                senha.classList.remove('border-green');
-                confirmaSenha.classList.remove('border-green');
-                senha.classList.add('border-red');
-                confirmaSenha.classList.add('border-red');
-                submitBtn.disabled = true;
-            } else {
-                senha.classList.remove('border-red');
-                confirmaSenha.classList.remove('border-red');
-                senha.classList.add('border-green');
-                confirmaSenha.classList.add('border-green');
-                
-                if (emailRegex.test(email.value)) {
-                    submitBtn.disabled = false;
-                }
-            }
-
-        }
-
-        function toggleVisibilidadeSenha(element, input) {
-            var senhaInput = document.getElementById(input);
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
-                element.innerHTML = '<i class="bi bi-eye-fill"></i>';
-            } else {
-                senhaInput.type = 'password';
-                element.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
-            }
-        }
-
+    
         function ListaPastores(){
-            const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
-            const selectPastor = $("#pastorId");
+            return new Promise(function (resolve, reject) {
+                const formData = { tipoPessoa : 'pastor',  pessoaId : '' };
+                const selectPastor = $("#pastorId");
 
-            selectPastor.empty();
+                selectPastor.empty();
 
-            IniLoader();
-
-            $.post('api/listarPessoas', formData)
-                .done(function (data) {
-                    data.forEach(function(pessoa) {
-                        selectPastor.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
-                    });
-                })
-                .fail(function (error) {
+                $.post('api/listarPessoas', formData)
+                    .done(function (data) {
+                        data.forEach(function(pessoa) {
+                            selectPastor.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
                     console.error('Erro na requisição:', error);
                     Swal.fire({
                         position: 'center',
@@ -348,27 +360,25 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
+                    reject(error);
                 });
+            });
         }
     
         function ListaHabilidades(){
+            return new Promise(function (resolve, reject) {
+                $.post('api/listarCategorias')
+                    .done(function (data) {
+                        const categorias = data.map(function(categoria) {
+                            return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
+                        });
 
-            IniLoader();
-
-            $.post('api/listarCategorias')
-                .done(function (data) {
-                    const categorias = data.map(function(categoria) {
-                        return { id: categoria.nomeCategoria, text: categoria.nomeCategoria };
-                    });
-
-                    $('#categoriasVoluntario').select2({
-                        data: categorias
-                    });
-                })
-                .fail(function (error) {
+                        $('#habilidadesEmpresario').select2({
+                            data: categorias
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
                     console.error('Erro na requisição:', error);
                     Swal.fire({
                         position: 'center',
@@ -377,52 +387,38 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                })
-                .always(function () {
-                    FinLoader();
+                    reject(error);
                 });
+            });
         }
 
         function ListaPaises(){
-            const selectPaises = $("#nacionalidadePessoa");
+            return new Promise(function (resolve, reject) {
+                const selectPaises = $("#nacionalidadePessoa");
 
-            selectPaises.empty();
+                selectPaises.empty();
 
-            IniLoader();
-
-            $.post('api/listarNomePaises')
-                .done(function (data) {
-                    data.forEach(function(pais) {
-                        selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                $.post('api/listarNomePaises')
+                    .done(function (data) {
+                        data.forEach(function(pais) {
+                            selectPaises.append('<option value="' + pais + '">' + pais + '</option>');
+                        });
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
                     });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                })
-                .always(function () {
-                    FinLoader();
-                });
+            });
         }
 
-        function cleanform() {
-            document.getElementById('form-pessoa').reset();
-            InputSemImagem();
-            let select2 = document.querySelectorAll('.select2-selection__choice__remove');
-            if(select2.length > 0){
-                select2.forEach(function(item) {
-                    item.click();
-                });
-            }
-            document.getElementById('emailPessoa').focus();
-        }
-    
     </script>
 
 </body>

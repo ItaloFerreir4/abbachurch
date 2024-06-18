@@ -17,10 +17,11 @@ const { cadastrarEmpresario,atualizarEmpresario } = require('./empresarios');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
 const { listarEmpresas, cadastrarEmpresa, deletarEmpresa, carregarEmpresa, atualizarEmpresa } = require('./empresas');
-const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
 const { listarSegmentos, cadastrarSegmento, deletarSegmento, carregarSegmento, atualizarSegmento } = require('./segmentos');
+const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
+const { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento } = require('./atendimentos');
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
@@ -1834,7 +1835,6 @@ app.post('/api/carregarEmpresa', async (req, res) => {
     }
 });
 
-
 app.post('/api/listarSegmentos', async (req, res) => {
 
     try {
@@ -1914,6 +1914,100 @@ app.post('/api/carregarSegmento', async (req, res) => {
 
     try {
         const resultado = await carregarSegmento(idSegmento);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/listarAtendimentos', async (req, res) => {
+
+    const { tipoListagem, atendidoAtendimento } = req.body;
+
+    try {
+        const lista = await listarAtendimentos(tipoListagem, atendidoAtendimento);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/cadastrarAtendimento', async (req, res) => {
+
+    const { atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento } = req.body;
+    
+    try {
+        const resultado = await cadastrarAtendimento(atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento);
+        
+        if (resultado) {
+            res.json({ message: 'Cadastrado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao cadastrar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarAtendimento', async (req, res) => {
+
+    const { idAtendimento, atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento } = req.body;
+    
+    try {
+        const resultado = await atualizarAtendimento(idAtendimento, atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/deletarAtendimento', async (req, res) => {
+
+    const { idAtendimento } = req.body;
+
+    try {
+        const resultado = await deletarAtendimento(idAtendimento);
+
+        if (resultado) {
+            res.json({ message: 'Deletado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao deletar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/carregarAtendimento', async (req, res) => {
+
+    const { idAtendimento } = req.body;
+
+    try {
+        const resultado = await carregarAtendimento(idAtendimento);
 
         if (resultado) {
             res.json(resultado);
