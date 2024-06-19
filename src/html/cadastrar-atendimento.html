@@ -20,7 +20,7 @@
         <div class="main-content app-content">
             <div class="row">
                 <div class="col-12">
-                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-atendimentos">Voltar</a>
+                    <button type="button" style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" onclick="Voltar()">Voltar</button>
                     <button type="button" style="margin-left: 13px;" class="btn btn-success btn-wave waves-effect waves-light ml-3" onclick="CadastroMembro()">Cadastrar Membro</button>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-lg-6 mb-2">
-                                    <label for="atendidoAtendimento" class="mb-2 text-muted">Atendido*</label>
+                                    <label for="atendidoAtendimento" class="mb-2 text-muted">Paciente*</label>
                                     <select class="form-select single-select" id="atendidoAtendimento" name="atendidoAtendimento">
                                     </select>
                                 </div>
@@ -113,7 +113,7 @@
                 $.post('api/cadastrarAtendimento', formData)
                 .done(function (data) {
 
-                    cleanform();
+                    // cleanform();
                     
                     Swal.fire({
                         position: 'center',
@@ -122,6 +122,14 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    
+                    const atendido = formData.find(item => item.name === 'atendidoAtendimento').value;
+
+                    sessionStorage.setItem('atendidoAtendimento', atendido);
+
+                    setTimeout(() => {
+                        window.location.href = "timeline-atendimento";
+                    }, 1400);
 
                 })
                 .fail(function (error) {
@@ -145,6 +153,7 @@
         }
 
         function ListaPessoas(){
+            const paciente = sessionStorage.getItem('atendidoAtendimento');
             const formData = { tipoPessoa : 'todos' };
             const selectAtendente = $("#atendenteAtendimento");
             const selectAtendido = $("#atendidoAtendimento");
@@ -152,13 +161,27 @@
             selectAtendente.empty();
             selectAtendido.empty();
 
+            let referrer = document.referrer;
+            referrer = new URL(referrer);
+
+            const caminhoC = referrer.pathname == '/timeline-atendimento';
+
+            if(paciente && caminhoC){
+                selectAtendido.prop("disabled", true);
+            }
+
             IniLoader();
 
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     data.forEach(function(pessoa) {
                         selectAtendente.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
-                        selectAtendido.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        if(paciente && paciente == pessoa.idPessoa && caminhoC){
+                            selectAtendido.append('<option value="' + pessoa.idPessoa + '" selected>' + pessoa.nomePessoa + '</option>');
+                        }
+                        else{
+                            selectAtendido.append('<option value="' + pessoa.idPessoa + '">' + pessoa.nomePessoa + '</option>');
+                        }
                     });
                 })
                 .fail(function (error) {
@@ -191,6 +214,18 @@
                     ListaPessoas();
                 }
             });
+        }
+    
+        function Voltar(){
+            let referrer = document.referrer;
+            referrer = new URL(referrer);
+
+            if(sessionStorage.getItem('atendidoAtendimento') && referrer.pathname == '/timeline-atendimento'){
+                window.location.href = "timeline-atendimento";
+            }
+            else{
+                window.location.href = "listar-atendimentos";
+            }
         }
     </script>
 

@@ -39,7 +39,7 @@
                                             </select>
                                         </div>
                                         <div class="col-12 col-lg-6 mb-2">
-                                            <label for="atendidoAtendimento" class="mb-2 text-muted">Atendido*</label>
+                                            <label for="atendidoAtendimento" class="mb-2 text-muted">Paciente*</label>
                                             <select class="form-select single-select" id="atendidoAtendimento" name="atendidoAtendimento">
                                             </select>
                                         </div>
@@ -109,6 +109,8 @@
 
                 selectAtendente.empty();
                 selectAtendido.empty();
+
+                selectAtendido.prop("disabled", true);
 
                 $.post('api/listarPessoas', formData)
                     .done(function (data) {
@@ -245,7 +247,6 @@
 
         }
 
-        
     </script>
 
 </body>

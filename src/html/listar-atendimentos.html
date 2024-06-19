@@ -76,9 +76,9 @@
         window.addEventListener("load", function() {
             ListarPessoas();
 
-            tabela.on('page.dt', function () {
-                sessionStorage.setItem('tabelaAtendimentos', tabela.page());
-            });
+            if (sessionStorage.getItem('atendidoAtendimento')) {
+                sessionStorage.removeItem('atendidoAtendimento');
+            }
         });
 
         function ListarPessoas(){
@@ -136,6 +136,10 @@
                 .always(function () {
                     FinLoader();
                 });
+
+            tabela.on('page.dt', function () {
+                sessionStorage.setItem('tabelaAtendimentos', tabela.page());
+            });
         }
 
         function TimeLine(atendidoAtendimento){
