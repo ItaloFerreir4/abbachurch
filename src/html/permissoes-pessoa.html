@@ -1,0 +1,183 @@
+@SPK@include("partials/mainhead.html")
+
+@SPK@include("partials/fileupload_link.html")
+
+<link rel="stylesheet" href="../assets/css/custom.css">
+
+</head>
+
+<body>
+    @SPK@include("partials/switcher.html")
+    @SPK@include("partials/loader.html")
+
+    <div class="page">
+        @SPK@include("partials/header.html")
+        @SPK@include("partials/sidebar.html")
+        @SPK@include("partials/dashbord-page-header.html", {"dashbordtitle": "Permissões", "dashbordsubtitle":
+        'Permissões', "dashbordsubtitle2": 'Editar'})
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="row">
+                <div class="col-12">
+                    <a style="margin-left: 13px;" class="btn btn-secondary btn-wave waves-effect waves-light ml-3" href="listar-voluntarios">Voltar</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <form id="form-permissao" enctype="multipart/form-data">
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <div class="card-title">Permissões</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="atendimento">Atendimento</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="atendimento" name="atendimento" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="evento">Evento</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="evento" name="evento" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="ministerio">Ministério</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="ministerio" name="ministerio" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="igreja">Igreja</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="igreja" name="igreja" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="relatorio">Relatório</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="relatorio" name="relatorio" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="criativo">Criativo</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="criativo" name="criativo" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="requisicao">Requisição</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="requisicao" name="requisicao" onChange="AtualizarPermissao(this)">
+                                </div>
+                                <div class="col-12 col-lg-6 form-check form-switch">
+                                    <label class="form-check-label mb-2 text-muted" for="empower">Abba Empower</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="empower" name="empower" onChange="AtualizarPermissao(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        @SPK@include("partials/headersearch_modal.html")
+        @SPK@include("partials/footer.html")
+        @SPK@include("partials/side-bar.html")
+
+    </div>
+
+    @SPK@include("partials/commonjs.html")
+
+    @SPK@include("partials/custom_switcherjs.html")
+
+    @SPK@include("partials/fileupload_script.html")
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+    <script>
+        const excludedFields = ['instagram', 'facebook', 'linkedin'];
+        
+        window.addEventListener("load", function() {
+            CarregarPermissoes();
+        });
+
+        function CarregarPermissoes(){
+            
+            IniLoader();
+
+            const pessoaId = sessionStorage.getItem('pessoa');
+            const formData = { pessoaId : pessoaId, tipoListagem : 'pessoa' }
+
+            $.post('api/listarPermissoes', formData)
+                .done(function (data) {
+                    
+                    data.forEach(function(permissao) {
+                        const input = document.getElementById(permissao.nomePermissao);
+                        if(input){
+                            input.checked = true;
+                        }
+                    });
+
+                })
+                .fail(function (error) {
+
+                    console.error('Erro na requisição:', error);
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao carregar!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                })
+                .always(function () {
+                    FinLoader();
+                });
+        }
+
+        function AtualizarPermissao(input) {
+
+            const pessoaId = sessionStorage.getItem('pessoa');
+
+            permissao = input.checked ? 'adicionar' : 'apagar';
+
+            const formData = { 
+                pessoaId : pessoaId, 
+                nomePermissao : input.name,
+                valorPermissao : permissao
+            }
+
+            IniLoader();
+
+            $.post('api/atualizarPermissao', formData)
+            .done(function (data) {
+                
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Atualizado com sucesso!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            })
+            .fail(function (error) {
+
+                console.error('Erro na requisição:', error);
+
+                message = error.responseJSON.message ? error.responseJSON.message : 'Erro ao atualizar!';
+
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            })
+            .always(function () {
+                FinLoader();
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

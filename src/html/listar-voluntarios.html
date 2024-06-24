@@ -137,6 +137,7 @@
                                     <option value="1" ${pessoa.statusUsuario === 1 ? 'selected' : ''}>Ativo</option>
                                     <option value="2" ${pessoa.statusUsuario === 2 ? 'selected' : ''}>Inativo</option>
                                 </select>
+                                <button class="btn btn-success btn-sm mr-1" onClick="PermissaoPessoa(${pessoa.idPessoa})">Permissões</button>
                                 <button class="btn btn-success btn-sm mr-1" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
                                 <button class="btn btn-danger btn-sm mr-1" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
                             </div>`;
@@ -248,6 +249,12 @@
             sessionStorage.setItem('pessoa', pessoaId);
             window.location.href = "editar-voluntario";
         }
+
+        function PermissaoPessoa(pessoaId){
+            sessionStorage.setItem('pessoa', pessoaId);
+            window.location.href = "permissoes-pessoa";
+        }
+
     </script>
 
 </body>

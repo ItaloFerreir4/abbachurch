@@ -32,12 +32,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-12 col-lg-6 mb-2">
-                                    <label for="atendenteAtendimento" class="mb-2 text-muted">Atendente*</label>
-                                    <select class="form-select single-select" id="atendenteAtendimento" name="atendenteAtendimento">
-                                    </select>
-                                </div>
-                                <div class="col-12 col-lg-6 mb-2">
+                                <div class="col-12 mb-2">
                                     <label for="atendidoAtendimento" class="mb-2 text-muted">Paciente*</label>
                                     <select class="form-select single-select" id="atendidoAtendimento" name="atendidoAtendimento">
                                     </select>
@@ -164,7 +159,7 @@
             let referrer = document.referrer;
             referrer = new URL(referrer);
 
-            const caminhoC = referrer.pathname == '/timeline-atendimento';
+            const caminhoC = referrer.pathname == '/timeline-atendimento' || referrer.pathname == '/listar-atendimentos';
 
             if(paciente && caminhoC){
                 selectAtendido.prop("disabled", true);

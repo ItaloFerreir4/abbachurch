@@ -13,6 +13,7 @@ const { saveImage } = require('./upload-imagem');
 const { translateElements } = require('./translate');
 const { listarNomePaises } = require('./paises');
 const { listarDoacoes, cadastrarDoacao } = require('./doacoes');
+const { listarPermissoes, atualizarPermissao, verificarPermissoes } = require('./permissoes');
 const { cadastrarEmpresario,atualizarEmpresario } = require('./empresarios');
 const { listarIgrejas, cadastrarIgreja, deletarIgreja, carregarIgreja, atualizarIgreja } = require('./igrejas');
 const { listarEventos, cadastrarEvento, deletarEvento, carregarEvento, atualizarEvento } = require('./eventos');
@@ -1949,8 +1950,10 @@ app.post('/api/listarAtendimentos', async (req, res) => {
 
 app.post('/api/cadastrarAtendimento', async (req, res) => {
 
-    const { atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento } = req.body;
+    const { atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento } = req.body;
     
+    const atendenteAtendimento = req.session.idPessoa;
+
     try {
         const resultado = await cadastrarAtendimento(atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento);
         
@@ -2019,6 +2022,90 @@ app.post('/api/carregarAtendimento', async (req, res) => {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });
     }
+});
+
+app.post('/api/listarPermissoes', async (req, res) => {
+
+    const { tipoListagem, pessoaId } = req.body;
+
+    try {
+        const lista = await listarPermissoes(tipoListagem, pessoaId);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/permissoes', async (req, res) => {
+
+    const pessoaId = req.session.idPessoa;
+
+    try {
+        const lista = await listarPermissoes('pessoa', pessoaId);
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
+});
+
+app.post('/api/atualizarPermissao', async (req, res) => {
+
+    const { pessoaId, nomePermissao, valorPermissao } = req.body;
+    
+    try {
+        const resultado = await atualizarPermissao(pessoaId, nomePermissao, valorPermissao);
+        
+        if (resultado) {
+            res.json({ message: 'Atualizado com sucesso' });
+        } else {
+            res.status(401).json({ message: 'Erro ao atualizar' });
+        }
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/verificar-permissao', async (req, res) => {
+
+    const { page } = req.body;
+    const tipoUser = req.session.tipoUsuario;
+    const pessoaId = req.session.idPessoa;
+    const permissoesPage =  [
+        { page: '/cadastrar-atendimento', roles: ['atendimento'] },
+        { page: '/editar-atendimento', roles: ['atendimento'] },
+        { page: '/timeline-atendimento', roles: ['atendimento'] },
+        { page: '/listar-atendimentos', roles: ['atendimento'] },
+    ];
+
+    const permissoes = permissoesPage.find(item => item.page === page);
+
+    if (permissoes && tipoUser != 0) {
+        const resultado = await verificarPermissoes(pessoaId, permissoes.roles);
+        if(!resultado){
+            res.json({ redirect: '/home' });
+        }
+    } else {
+        console.log('Nenhuma permissão encontrada para a página:', page);
+        res.json({ message: 'Não irá redirecionar' });
+    }
+
 });
 
 app.get('/api/api-listagem-empresas', async (req, res) => {

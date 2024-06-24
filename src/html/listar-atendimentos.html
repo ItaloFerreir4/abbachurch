@@ -26,7 +26,7 @@
                                 <table id="responsiveTable" class="table table-bordered text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th class="all" scope="col">Nome</th>
+                                            <th class="all" scope="col">Paciente</th>
                                             <th class="min-desktop" scope="col">E-mail</th>
                                             <th class="min-desktop" scope="col">Telefone</th>
                                             <th class="min-desktop" scope="col">Ações</th>
@@ -115,6 +115,7 @@
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
                             `<div class="btns-actions">
+                                <button class="btn btn-success btn-sm mr-1" onclick="CadastrarAtendimento(${pessoa.idPessoa})">Cadastrar</button>
                                 <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="TimeLine(${pessoa.idPessoa})">Timeline</button>
                             </div>`
                         ]).draw();
@@ -145,6 +146,11 @@
         function TimeLine(atendidoAtendimento){
             sessionStorage.setItem('atendidoAtendimento', atendidoAtendimento);
             window.location.href = "timeline-atendimento";
+        }
+
+        function CadastrarAtendimento(atendidoAtendimento){
+            sessionStorage.setItem('atendidoAtendimento', atendidoAtendimento);
+            window.location.href = "cadastrar-atendimento";
         }
     
     </script>

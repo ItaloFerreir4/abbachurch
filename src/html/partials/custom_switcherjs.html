@@ -87,30 +87,59 @@
     }
 
     function hideElementsBasedOnUserRole(tipoUser) {
-        const elements = document.querySelectorAll('.restricao'); // Substitua 'your-target-elements' com o seletor CSS desejado para seus elementos
+        const elements = document.querySelectorAll('.restricao');
 
-        elements.forEach(element => {
-            const elementClasses = element.classList;
+        $.post('api/permissoes')
+        .done(function (data) {
+            const permissoes = data.map((permissao) => permissao.nomePermissao);
+            elements.forEach(element => {
+                const elementClasses = element.classList;
 
-            // Verifica se há pelo menos uma classe restrita ao tipo de usuário
-            let hideElement = true;
+                // Verifica se há pelo menos uma classe restrita ao tipo de usuário
+                let hideElement = true;
 
-            if (
-                (elementClasses.contains('admin') && tipoUser === '0') ||
-                (elementClasses.contains('pastor') && tipoUser === '1') ||
-                (elementClasses.contains('lider') && tipoUser === '2') ||
-                (elementClasses.contains('ministerios') && tipoUser === '3') ||
-                (elementClasses.contains('voluntarios') && tipoUser === '4') ||
-                (elementClasses.contains('admin') && tipoUser === '5') ||
-                (elementClasses.contains('empresario') && tipoUser === '6')
-            ) {
-                hideElement = false;
+                if (
+                    (elementClasses.contains('admin') && tipoUser === '0') ||
+                    (elementClasses.contains('pastor') && tipoUser === '1') ||
+                    (elementClasses.contains('lider') && tipoUser === '2') ||
+                    (elementClasses.contains('ministerios') && tipoUser === '3') ||
+                    (elementClasses.contains('voluntarios') && tipoUser === '4') ||
+                    (elementClasses.contains('admin') && tipoUser === '5') ||
+                    (elementClasses.contains('empresario') && tipoUser === '6')
+                ) {
+                    hideElement = false;
+                }
+
+                permissoes.forEach((permissao) => {
+                    if (elementClasses.contains(permissao)) {
+                        hideElement = false;
+                    }
+                });
+
+                // Se pelo menos uma classe corresponder, mantenha o elemento visível
+                if (hideElement) {
+                    element.style.display = 'none';
+                }
+            });
+            
+        }).fail(function (error) {
+            console.error('Erro na requisição:', error);
+        });  
+
+    }
+
+    function verificarPermissaoPage(){
+        const formData = {
+            page : window.location.pathname
+        }
+        
+        $.post('api/verificar-permissao', formData)
+        .done(function (data) {
+            if(data.redirect){
+                window.location.href = data.redirect;
             }
-
-            // Se pelo menos uma classe corresponder, mantenha o elemento visível
-            if (hideElement) {
-                element.style.display = 'none';
-            }
+        }).fail(function (error) {
+            console.error('Erro na requisição:', error);
         });
     }
 

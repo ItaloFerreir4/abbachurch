@@ -110,6 +110,7 @@
                 selectAtendente.empty();
                 selectAtendido.empty();
 
+                selectAtendente.prop("disabled", true);
                 selectAtendido.prop("disabled", true);
 
                 $.post('api/listarPessoas', formData)
