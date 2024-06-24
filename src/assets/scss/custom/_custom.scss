@@ -19,14 +19,14 @@ body {
 /* End::body */
 
 *::-webkit-scrollbar {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: 0.35rem;
+  height: 0.35rem;
   transition: all ease 0.3s;
   background-color: $gray-1;
 }
 *::-webkit-scrollbar-thumb {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: 0.35rem;
+  height: 0.35rem;
   background-color: $gray-4;
 }
 
