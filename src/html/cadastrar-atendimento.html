@@ -88,6 +88,8 @@
             
             let formData = $('#form-atendimento').serializeArray();
 
+            console.log(formData);
+
             const firstEmptyField = formData
                 .map(field => verificacaoCampos(excludedFields, field))
                 .find(result => result !== null);
