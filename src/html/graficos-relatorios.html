@@ -122,6 +122,58 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Atendimentos</p>
+                                        <h3 class="mb-0" id="elqtdAtendimentos"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Atendimentos Abertos</p>
+                                        <h3 class="mb-0" id="elqtdAtendimentosAbertos"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Atendimentos Em Andamento</p>
+                                        <h3 class="mb-0" id="elqtdAtendimentosAndamento"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col card-background flex-fill">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="fw-medium mb-1 text-muted translate">Total de Atendimentos Encerrados</p>
+                                        <h3 class="mb-0" id="elqtdAtendimentosEncerrados"></h3>
+                                    </div>
+                                    <div class="avatar avatar-md br-4 bg-primary-transparent ms-auto"> <i class="bi bi-person"></i> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card custom-card">
                     <div class="card-header">
@@ -165,7 +217,7 @@
 
         window.addEventListener("load", function() {
             IniLoader();
-            Promise.all([QtdRequisicoes(), QtdPastores(), QtdLideres(), QtdVoluntarios(), QtdEventos()])
+            Promise.all([QtdRequisicoes(), QtdPastores(), QtdLideres(), QtdVoluntarios(), QtdEventos(), QtdAtendimentos()])
             .then(function () {
                 CarregarWidgets();
             })
@@ -414,6 +466,41 @@
                     .done(function (data) {
                         if(data.length > 0){
                             elEventos.innerHTML = data.length;
+                        }
+                        resolve(true);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        reject(error);
+                    });
+            });
+        }
+        
+        function QtdAtendimentos(){
+            return new Promise(function (resolve, reject) {
+                const elAtendimentos = document.getElementById("elqtdAtendimentos");
+                const elAtendimentosAbertos = document.getElementById("elqtdAtendimentosAbertos");
+                const elAtendimentosAndamento = document.getElementById("elqtdAtendimentosAndamento");
+                const elAtendimentosEncerrados = document.getElementById("elqtdAtendimentosEncerrados");
+                const formData = { tipoListagem : 'pessoasAtendidas' }
+
+                $.post('api/listarAtendimentos', formData)
+                    .done(function (data) {
+                        if(data.length > 0){
+                            let dataAbertos = data.filter(atendimento => atendimento.statusAtendimento == 0);
+                            let dataAndamento = data.filter(atendimento => atendimento.statusAtendimento == 1);
+                            let dataEncerrados = data.filter(atendimento => atendimento.statusAtendimento == 2);
+                            elAtendimentos.innerHTML = data.length;
+                            elAtendimentosAbertos.innerHTML = dataAbertos.length;
+                            elAtendimentosAndamento.innerHTML = dataAndamento.length;
+                            elAtendimentosEncerrados.innerHTML = dataEncerrados.length;
                         }
                         resolve(true);
                     })
