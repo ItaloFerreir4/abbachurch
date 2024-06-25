@@ -124,6 +124,7 @@
                                 <label class="form-check-label" for="adminPastor_${pessoa.idPessoa}"></label>
                             </div>`,
                             `<div class="btns-actions">
+                                <button class="btn btn-success btn-sm mr-1" onClick="PermissaoPessoa(${pessoa.idPessoa})">Permissões</button>
                                 <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="EditarPessoa(${pessoa.idPessoa})">Editar</button>
                                 <button class="btn btn-danger btn-sm mr-1" id="${pessoa.idPessoa}" onClick="DeletarPessoa(${pessoa.idPessoa})">Deletar</button>
                             </div>`
@@ -254,6 +255,12 @@
             sessionStorage.setItem('pessoa', pessoaId);
             window.location.href = "editar-pastor";
         }
+        
+        function PermissaoPessoa(pessoaId){
+            sessionStorage.setItem('pessoa', pessoaId);
+            window.location.href = "permissoes-pessoa";
+        }
+        
     </script>
 
 </body>

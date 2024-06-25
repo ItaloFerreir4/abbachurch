@@ -22,7 +22,7 @@ const { listarSegmentos, cadastrarSegmento, deletarSegmento, carregarSegmento, a
 const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
-const { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento } = require('./atendimentos');
+const { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento, atualizarStatusAtendimento } = require('./atendimentos');
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
@@ -62,6 +62,17 @@ const authenticateMiddleware = (req, res, next) => {
 };
 
 app.use(authenticateMiddleware);
+
+app.use(function(err, req, res, next) {
+    if (err.code === 'ENOENT') {
+        // Se o erro for "file not found", redirecione para a home
+        res.redirect('/home');
+    } else {
+        // Outros erros
+        console.error(err.stack);
+        res.status(500).send('Error!');
+    }
+});
 
 app.post('/nova-senha', async (req, res) => {
     const { senha, token } = req.body;
@@ -2016,6 +2027,25 @@ app.post('/api/carregarAtendimento', async (req, res) => {
             res.json(resultado);
         } else {
             res.status(401).json({ message: 'Erro ao Carregar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+});
+
+app.post('/api/atualizarStatusAtendimento', async (req, res) => {
+
+    const { pessoaId, statusAtendimento } = req.body;
+
+    try {
+        const resultado = await atualizarStatusAtendimento(pessoaId, statusAtendimento);
+
+        if (resultado) {
+            res.json(resultado);
+        } else {
+            res.status(401).json({ message: 'Erro ao Atualizar' });
         }
 
     } catch (erro) {

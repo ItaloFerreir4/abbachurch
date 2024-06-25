@@ -115,6 +115,11 @@
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
                             `<div class="btns-actions">
+                                <select class="btn btn-outline-light btn-wave waves-effect waves-light btn-sm mr-1" onChange="AlterarStatus(${pessoa.idPessoa}, this.value)">
+                                    <option value="0" ${pessoa.statusAtendimento === 0 ? 'selected' : ''}>Aberto</option>
+                                    <option value="1" ${pessoa.statusAtendimento === 1 ? 'selected' : ''}>Em Andamento</option>
+                                    <option value="2" ${pessoa.statusAtendimento === 2 ? 'selected' : ''}>Encerrado</option>
+                                </select>
                                 <button class="btn btn-success btn-sm mr-1" onclick="CadastrarAtendimento(${pessoa.idPessoa})">Cadastrar</button>
                                 <button class="btn btn-success btn-sm mr-1" id="${pessoa.idPessoa}" onClick="TimeLine(${pessoa.idPessoa})">Timeline</button>
                             </div>`
@@ -142,6 +147,38 @@
                 sessionStorage.setItem('tabelaAtendimentos', tabela.page());
             });
         }
+
+        function AlterarStatus(pessoaId, status){
+
+            const dataApi = { pessoaId: pessoaId, statusAtendimento : status };
+
+            IniLoader();
+
+            $.post('/api/atualizarStatusAtendimento', dataApi)
+                .done(function (data) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Status alterado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+
+                    ListarPessoas();
+                })
+                .fail(function (error) {
+                    console.error('Erro na requisição:', error);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Erro ao alterar!',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+                });
+
+        }
+
 
         function TimeLine(atendidoAtendimento){
             sessionStorage.setItem('atendidoAtendimento', atendidoAtendimento);

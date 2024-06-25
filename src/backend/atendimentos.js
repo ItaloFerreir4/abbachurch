@@ -35,8 +35,8 @@ async function cadastrarAtendimento(atendenteAtendimento, atendidoAtendimento, t
     anotacaoAtendimento = anotacaoAtendimento.replace(/(['"])/g, "\\$1");
     
     const query = `
-    INSERT INTO atendimentos (atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento) 
-    VALUES ('${atendenteAtendimento}', '${atendidoAtendimento}', '${tituloAtendimento}', '${anotacaoAtendimento}', '${dataAtendimento}')`;
+    INSERT INTO atendimentos (atendenteAtendimento, atendidoAtendimento, tituloAtendimento, anotacaoAtendimento, dataAtendimento, statusAtendimento) 
+    VALUES ('${atendenteAtendimento}', '${atendidoAtendimento}', '${tituloAtendimento}', '${anotacaoAtendimento}', '${dataAtendimento}', 1)`;
 
     try {
         const resultado = await executarQuery(query);
@@ -99,4 +99,22 @@ async function atualizarAtendimento(idAtendimento, atendenteAtendimento, atendid
     }
 }
 
-module.exports = { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento };
+async function atualizarStatusAtendimento(pessoaId, statusAtendimento) {
+    
+    let query = `
+        UPDATE atendimentos
+        SET statusAtendimento = '${statusAtendimento}'
+        WHERE atendidoAtendimento = ${pessoaId};
+        `;
+
+    try {
+        const resultados = await executarQuery(query);
+        return resultados ? true : false;
+    } catch (erro) {
+        console.error('Erro:', erro);
+        throw erro;
+    }
+
+}
+
+module.exports = { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento, atualizarStatusAtendimento };
