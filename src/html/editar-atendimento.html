@@ -193,9 +193,15 @@
         function EditarAtendimento() {
 
             const idAtendimento = sessionStorage.getItem('atendimento');
+            
+            const selectAtendente = $("#atendenteAtendimento");
+            const selectAtendido = $("#atendidoAtendimento");
+
             let formData = $('#form-atendimento').serializeArray();
 
             formData.push({ name: 'idAtendimento', value: idAtendimento });
+            formData.push({ name: 'atendenteAtendimento', value: selectAtendente.val() });
+            formData.push({ name: 'atendidoAtendimento', value: selectAtendido.val() });
 
             console.log(formData);
 
