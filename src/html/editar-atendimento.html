@@ -49,7 +49,7 @@
                                         </div>
                                         <div class="col-12 col-lg-6">
                                             <label for="dataAtendimento" class="mb-2 text-muted">Data*</label>
-                                            <input type="text" class="form-control mb-2 datetime" id="dataAtendimento" name="dataAtendimento">
+                                            <input type="text" class="form-control mb-2 datetimelimit" id="dataAtendimento" name="dataAtendimento">
                                         </div>
                                         <div class="col-12 mb-2">
                                             <label for="anotacaoAtendimento" class="mb-2 text-muted">Anotações*</label>
@@ -89,6 +89,12 @@
         window.addEventListener("load", function() {
 
             IniLoader();
+
+            flatpickr(".datetimelimit", {
+                enableTime: true,
+                dateFormat: "Y-m-d h:i K",
+                maxDate: "today"
+            });
 
             Promise.all([ListaPessoas()])
             .then(function () {
