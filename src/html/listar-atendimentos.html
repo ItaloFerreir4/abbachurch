@@ -112,7 +112,7 @@
                 .done(function (data) {
                     data.forEach(function(pessoa) {
 
-                        let data = evento.dataAtendimento;
+                        let data = pessoa.dataAtendimento;
                         data = new Date(data);
 
                         tabela.row.add([
