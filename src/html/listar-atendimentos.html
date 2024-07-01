@@ -26,6 +26,7 @@
                                 <table id="responsiveTable" class="table table-bordered text-nowrap">
                                     <thead>
                                         <tr>
+                                            <th class="all" scope="col">Data</th>
                                             <th class="all" scope="col">Paciente</th>
                                             <th class="min-desktop" scope="col">E-mail</th>
                                             <th class="min-desktop" scope="col">Telefone</th>
@@ -111,6 +112,7 @@
                 .done(function (data) {
                     data.forEach(function(pessoa) {
                         tabela.row.add([
+                            pessoa.dataAtendimento,
                             pessoa.nomePessoa,
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
