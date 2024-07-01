@@ -111,8 +111,12 @@
             $.post('api/listarAtendimentos', formData)
                 .done(function (data) {
                     data.forEach(function(pessoa) {
+
+                        let data = evento.dataAtendimento;
+                        data = new Date(data);
+
                         tabela.row.add([
-                            pessoa.dataAtendimento,
+                            data,
                             pessoa.nomePessoa,
                             pessoa.emailPessoa,
                             pessoa.telefonePessoa,
