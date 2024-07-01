@@ -22,11 +22,11 @@ const { listarSegmentos, cadastrarSegmento, deletarSegmento, carregarSegmento, a
 const { listarRelatorios, cadastrarRelatorio, deletarRelatorio, carregarRelatorio, atualizarRelatorio } = require('./relatorios');
 const { listarCategorias, cadastrarCategoria, deletarCategoria, carregarCategoria, atualizarCategoria } = require('./categorias');
 const { listarMinisterios, cadastrarMinisterio, deletarMinisterio, carregarMinisterio, atualizarMinisterio } = require('./ministerios');
-const { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento, atualizarStatusAtendimento } = require('./atendimentos');
 const { listarCriativos, cadastrarCriativo, deletarCriativo, carregarCriativo, atualizarCriativo, atualizarStatusCriativo } = require('./criativos');
 const { listarRequisicoes, cadastrarRequisicao, deletarRequisicao, carregarRequisicao, atualizarRequisicao, atualizarStatusRequisicao } = require('./requisicoes');
 const { listarCategoriasEventos, cadastrarCategoriaEvento, deletarCategoriaEvento, carregarCategoriaEvento, atualizarCategoriaEvento } = require('./categorias-eventos');
 const { listarCategoriasRelatorio, cadastrarCategoriaRelatorio, deletarCategoriaRelatorio, carregarCategoriaRelatorio, atualizarCategoriaRelatorio, atualizarWidgetRelatorio } = require('./categorias-relatorio');
+const { listarAtendimentos, cadastrarAtendimento, deletarAtendimento, carregarAtendimento, atualizarAtendimento, atualizarStatusAtendimento, listarHistoricoAtualizacaoAtendimentos } = require('./atendimentos');
 const { listarEventosVoluntario, listarTodasAcoes, listarVoluntariosEvento, cadastrarVoluntarioEvento, deletarVoluntarioEvento, carregarVoluntarioEvento, atualizarVoluntarioEvento } = require('./voluntarios-evento');
 const { listarPessoas, cadastrarPessoa, cadastrarFilho, cadastrarVoluntario, deletarPessoa, carregarPessoa, atualizarPessoa, atualizarVoluntario, atualizarStatusVoluntario, alterarAdminPastor, cadastrarLider, deletarLider, isLider } = require('./pessoas');
 const e = require('express');
@@ -1937,6 +1937,24 @@ app.post('/api/carregarSegmento', async (req, res) => {
         console.error('Erro:', erro);
         res.status(500).json({ message: 'Erro no servidor' });
     }
+});
+
+app.post('/api/listarHistoricoAtualizacaoAtendimentos', async (req, res) => {
+
+    try {
+        const lista = await listarHistoricoAtualizacaoAtendimentos();
+
+        if (lista) {
+            res.json(lista);
+        } else {
+            res.status(401).json({ message: 'Erro ao listar' });
+        }
+
+    } catch (erro) {
+        console.error('Erro:', erro);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+
 });
 
 app.post('/api/listarAtendimentos', async (req, res) => {

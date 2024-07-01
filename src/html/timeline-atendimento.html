@@ -8,6 +8,52 @@
     .app-content{
         margin-top: 40px;
     }
+
+    .timeline > li{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .timeline .timeline-time{
+        position: relative!important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin-top: 0;
+        inset-block-start: 2rem;
+    }
+
+    .timeline .timeline-body{
+        margin-left: 45px;
+    }
+
+    @media(max-width: 1200px){
+        .app-content{
+            margin-top: 5px;
+        }
+
+        .timeline > li{
+            flex-direction: column;
+        }
+
+        .timeline .timeline-time{
+            gap: 5px;
+            flex-wrap: wrap;
+            flex-direction: row;
+            align-items: flex-start;
+            inset-block-start: 0!important;
+        }
+
+        .timeline .timeline-time .time{
+            position: relative;
+            margin: 0;
+            top: 0;
+        }
+
+        .timeline .timeline-body{
+            margin-left: 0;
+        }
+    }
 </style>
 
 </head>
@@ -70,64 +116,100 @@
             const elementTimeLine = document.querySelector('.timeline');
 
             elementTimeLine.innerHTML = '';
-    
-            $.post('api/listarAtendimentos', formData)
-                .done(function (data) {
-                    data.forEach(function(atendimento) {
 
-                        const data = formatDate(atendimento.dataAtendimento);
-                        const hora = formatTime(atendimento.dataAtendimento);
+            Promise.all([ListarHistoricoAtualizacao()]).then(function ([dataHistoricoAtt]) {
     
-                        const elementLi = document.createElement('li');
-    
-                        elementLi.innerHTML = `
-                        <div class="timeline-time text-end">
-                            <span class="time d-inline-block">${data}</span>
-                        </div>
-                        <div class="timeline-icon">
-                            <a href="javascript:void(0);"></a>
-                        </div>
-                        <div class="timeline-body">
-                            <div class="d-flex align-items-top timeline-main-content mt-0">
-                                <div class="flex-fill">
-                                    <div class="align-items-center">
-                                        <div class="mt-sm-0 mt-2">
-                                            <p class="mb-0 fs-14 fw-semibold">${atendimento.tituloAtendimento}</p>
-                                            <p class="mb-0 text-muted">${atendimento.anotacaoAtendimento}</p>
-                                        </div>
-                                        <div class="mt-2 d-flex justify-content-between">
-                                            <div class="timeline-acitions">
-                                                <button class="btn btn-sm btn-icon btn-success-light rounded-pill btn-wave waves-effect waves-light" onClick="EditarAtendimento(${atendimento.idAtendimento})"><i class="las la-pen"></i></button>
-                                                <button class="btn btn-sm btn-icon btn-danger-light rounded-pill btn-wave waves-effect waves-light" onClick="DeletarAtendimento(${atendimento.idAtendimento})"><i class="las la-trash"></i></button>
+                $.post('api/listarAtendimentos', formData)
+                    .done(function (data) {
+                        data.forEach(function(atendimento) {
+
+                            const data = formatDate(atendimento.dataAtendimento);
+                            const hora = formatTime(atendimento.dataAtendimento);
+        
+                            const elementLi = document.createElement('li');
+
+                            let atualizacoes = dataHistoricoAtt.filter(historico => historico.atendimentoId === atendimento.idAtendimento);
+                            atualizacoes = atualizacoes.sort((a, b) => new Date(b.dataAtualizacaoAtendimento) - new Date(a.dataAtualizacaoAtendimento));
+
+                            console.log(atualizacoes);
+
+                            let atualizacoesHtml = '';
+                            atualizacoes.forEach(function (atualizacao) {
+                                const dataAtualizacao = formatDate(atualizacao.dataAtualizacaoAtendimento);
+                                atualizacoesHtml += `<span class="alert alert-success d-inline-block mt-1 mb-0">Atualizado em ${dataAtualizacao}</span>`;
+                            });
+        
+                            elementLi.innerHTML = `
+                            <div class="timeline-time text-end">
+                                <span class="time d-inline-block">${data}</span>
+                                ${atualizacoesHtml}
+                            </div>
+                            <div class="timeline-icon">
+                                <a href="javascript:void(0);"></a>
+                            </div>
+                            <div class="timeline-body">
+                                <div class="d-flex align-items-top timeline-main-content mt-0">
+                                    <div class="flex-fill">
+                                        <div class="align-items-center">
+                                            <div class="mt-sm-0 mt-2">
+                                                <p class="mb-0 fs-14 fw-semibold">${atendimento.tituloAtendimento}</p>
+                                                <p class="mb-0 text-muted">${atendimento.anotacaoAtendimento}</p>
                                             </div>
-                                            <span class="float-end badge bg-light text-muted timeline-badge mt-2 rounded-1">
-                                                ${hora}
-                                            </span>
+                                            <div class="mt-2 d-flex justify-content-between">
+                                                <div class="timeline-acitions">
+                                                    <button class="btn btn-sm btn-icon btn-success-light rounded-pill btn-wave waves-effect waves-light" onClick="EditarAtendimento(${atendimento.idAtendimento})"><i class="las la-pen"></i></button>
+                                                    <button class="btn btn-sm btn-icon btn-danger-light rounded-pill btn-wave waves-effect waves-light" onClick="DeletarAtendimento(${atendimento.idAtendimento})"><i class="las la-trash"></i></button>
+                                                </div>
+                                                <span class="float-end badge bg-light text-muted timeline-badge mt-2 rounded-1">
+                                                    ${hora}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        `;   
-                        
-                        elementTimeLine.appendChild(elementLi);
+                            `;   
+                            
+                            elementTimeLine.appendChild(elementLi);
+                        });
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .always(function () {
+                        FinLoader();
                     });
-                })
-                .fail(function (error) {
-                    console.error('Erro na requisição:', error);
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Erro ao listar!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                })
-                .always(function () {
-                    FinLoader();
-                });
+            });
         }
     
+        function ListarHistoricoAtualizacao(){
+            return new Promise(function (resolve, reject) {
+                $.post('api/listarHistoricoAtualizacaoAtendimentos')
+                    .done(function (data) {
+                        resolve(data);
+                    })
+                    .fail(function (error) {
+                        console.error('Erro na requisição:', error);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Erro ao listar!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        FinLoader();
+                        reject(error);
+                    });
+            });
+        }
+
         function formatDate(dateString) {
             const date = new Date(dateString);
             const day = date.getDate();
