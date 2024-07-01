@@ -13,7 +13,7 @@ async function listarAtendimentos(tipoListagem, atendidoAtendimento) {
             query = 'SELECT pe.*, at.* FROM pessoas pe INNER JOIN atendimentos at ON pe.idPessoa = at.atendidoAtendimento GROUP BY at.atendidoAtendimento;';
             break;
         case 'atendimentoPessoa':
-            query = `SELECT * FROM pessoas pe INNER JOIN atendimentos at ON at.atendidoAtendimento = ${atendidoAtendimento} AND pe.idPessoa = at.atendidoAtendimento ORDER BY at.dataAtendimento DESC`;
+            query = `SELECT * FROM pessoas pe INNER JOIN atendimentos at ON at.atendidoAtendimento = ${atendidoAtendimento} AND pe.idPessoa = at.atendidoAtendimento ORDER BY at.dataAtendimento DESC, at.idAtendimento DESC;`;
             break;
     }
     
