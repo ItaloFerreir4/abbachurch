@@ -176,6 +176,8 @@
 
             IniLoader();
 
+            selectAtendido.append('<option value="" selected>Selecione um opção</option>');
+
             $.post('api/listarPessoas', formData)
                 .done(function (data) {
                     data.forEach(function(pessoa) {
